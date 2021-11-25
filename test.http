@@ -1,5 +1,5 @@
 ### Тестирование поиска книг по названию
-GET http://book-library-fedyancev.ru:8082/books?title=Мечтают ли андройды об электроовцах?
+PUT http://book-library-fedyancev.ru:8082/books?title=Мечтают ли андройды об электроовцах?
 
 > {%
   client.test('Тестирование поиска книги по названию', function () {
@@ -8,4 +8,19 @@ GET http://book-library-fedyancev.ru:8082/books?title=Мечтают ли анд
  });
  %}
 
+PUT http://spisok-kontaktov.ru:80/contact_list/1
+
+{ "blacklist" : true}
+
+HTTP/1.1 200 OK
+
+Получатель 1 был добавлен в черный список.
+
+
+GET http://spisok-kontaktov.ru:80/address/1
+
+
+HTTP/1.1 200 OK
+
+Вывод адреса получателя с номером 1.
 
