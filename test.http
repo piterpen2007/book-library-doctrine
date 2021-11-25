@@ -1,0 +1,11 @@
+### Тестирование поиска книг по названию
+GET http://book-library-fedyancev.ru:8082/books?title=Мечтают ли андройды об электроовцах?
+
+> {%
+  client.test('Тестирование поиска книги по названию', function () {
+   client.assert(response.status === 200, 'Проверяю код ответа. Фактическое знаение: ' + response.status);
+   client.assert(response.body === "Hello", 'Валидный ответ');
+ });
+ %}
+
+
