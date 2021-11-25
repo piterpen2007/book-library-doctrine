@@ -8,19 +8,25 @@ PUT http://book-library-fedyancev.ru:8082/books?title=Мечтают ли анд
  });
  %}
 
-PUT http://spisok-kontaktov.ru:80/contact_list/1
+Сценарий №1
+HTTP запрос
+	PUT http://spisok-kontaktov.ru:80/contact_list/1 HTTP/1.1
 
-{ "blacklist" : true}
+	{ "blacklist" : true}
 
-HTTP/1.1 200 OK
+HTTP ответ
+	HTTP/1.1 200 OK
 
-Получатель 1 был добавлен в черный список.
+	Успешно
+
+Сценарий №2
+HTTP запрос
+	GET http://spisok-kontaktov.ru:80/address/1
 
 
-GET http://spisok-kontaktov.ru:80/address/1
+HTTP ответ
+	HTTP/1.1 200 OK
+	Content-Type: application/json; charset=utf-8
 
-
-HTTP/1.1 200 OK
-
-Вывод адреса получателя с номером 1.
+	id , id_recipient , id_address
 
