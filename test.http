@@ -1,5 +1,5 @@
 ### Тестирование поиска книг по названию
-GET http://book-library-fedyancev.ru:8082/books?title=Мечтают ли андройды об электроовцах?
+GET http://book-library-fedyancev.ru:8082/books?title=Мечтают ли андроиды об электроовцах?
 
 > {%
    client.test('Тестирование поиска книги по названию', function () {
