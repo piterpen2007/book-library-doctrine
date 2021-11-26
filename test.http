@@ -18,6 +18,25 @@ GET http://book-library-fedyancev.ru:8082/books?title=Мечтают ли анд
  });
  %}
 
+### Тестирование поиска книг по фамилии автора
+ GET http://book-library-fedyancev.ru:8082/books?author_surname=Дик
+
+> {%
+ client.test('Тестирование поиска книг по фамилии автора', function () {
+   client.assert(response.status === 200, 'Проверяю код ответа. Фактическое знаение: ' + response.status);
+   client.assert(response.contentType.mimeType === "application/json", 'Проверяю application/json. Фактическое знаение: ' + response.contentType.mimeType);
+   client.assert(response.body.hasOwnProperty('length') && response.body.length === 1, "В ответе есть один элемент");
+   client.assert(response.body[0]['id'] === 10, "id книги не корректен");
+   client.assert(response.body[0]['title'] === "Мечтают ли андроиды об электроовцах?", "название книги не корректно");
+   client.assert(response.body[0]['year'] === 1966, "год книги не корректен");
+   client.assert(response.body[0]['author'] !== undefined, "нет данных о авторе");
+   client.assert(response.body[0]['author']['id'] === 5, "id автора не корректен");
+   client.assert(response.body[0]['author']['name'] === "Филип", "имя не корректен");
+   client.assert(response.body[0]['author']['surname'] === "Дик", "фамилия не корректен");
+   client.assert(response.body[0]['author']['birthday'] === "16.12.1928", "Дата рождения автора не корректен");
+   client.assert(response.body[0]['author']['country'] === "us", "страна не корректен");
+ %}}
+
 ### Тестирование поиска авторов по фамилии
 
 GET http://book-library-fedyancev.ru:8082/authors?surname=Паланик

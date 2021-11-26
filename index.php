@@ -13,14 +13,24 @@ if('/books' === $_SERVER['PATH_INFO']) {
     foreach ($authorsJson as $info) {
         $authorIdToInfo[$info['id']] = $info;
     }
+
     $httpCode = 200;
     $result = [];
+
     foreach ($booksJson as $book) {
-        if (array_key_exists('title', $_GET) && $book['title'] === $_GET['title']) {
 
-            $author = $authorIdToInfo[$book['author_id']];
+        if(array_key_exists('author_surname', $_GET)) {
+            $bookMeetSearchCriteria = $_GET['author_surname'] === $authorIdToInfo[$book['author_id']]['surname'];
+        } else {
+            $bookMeetSearchCriteria = true;
+        }
 
-            $book['author'] = $author;
+        if ($bookMeetSearchCriteria && array_key_exists('title', $_GET)) {
+            $bookMeetSearchCriteria = $_GET['title'] === $book['title'];
+        }
+
+        if ($bookMeetSearchCriteria ) {
+            $book['author'] = $authorIdToInfo[$book['author_id']];
             unset($book['author_id']);
             $result[] = $book;
         }
