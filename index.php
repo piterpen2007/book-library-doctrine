@@ -3,23 +3,23 @@ $pathToAuthors = __DIR__ . '/authors.json';
 $authorsTxt = file_get_contents($pathToAuthors);
 $authorsJson = json_decode($authorsTxt,true);
 
+
 $pathToBooks = __DIR__ . '/books.json';
 $booksTxt = file_get_contents($pathToBooks);
 $booksJson = json_decode($booksTxt,true);
 
 if('/books' === $_SERVER['PATH_INFO']) {
+    $authorIdToInfo = [];
+    foreach ($authorsJson as $info) {
+        $authorIdToInfo[$info['id']] = $info;
+    }
     $httpCode = 200;
     $result = [];
     foreach ($booksJson as $book) {
         if (array_key_exists('title', $_GET) && $book['title'] === $_GET['title']) {
 
-            $author = null;
-            foreach ($authorsJson as $currentAuthor) {
-                if ($currentAuthor['id'] === $book['author_id']) {
-                    $author = $currentAuthor;
-                    break;
-                }
-            }
+            $author = $authorIdToInfo[$book['author_id']];
+
             $book['author'] = $author;
             unset($book['author_id']);
             $result[] = $book;
