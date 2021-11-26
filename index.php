@@ -12,15 +12,25 @@ if('/books' === $_SERVER['PATH_INFO']) {
     $result = [];
     foreach ($booksJson as $book) {
         if (array_key_exists('title', $_GET) && $book['title'] === $_GET['title']) {
+
+            $author = null;
+            foreach ($authorsJson as $currentAuthor) {
+                if ($currentAuthor['id'] === $book['author_id']) {
+                    $author = $currentAuthor;
+                    break;
+                }
+            }
+            $book['author'] = $author;
+            unset($book['author_id']);
             $result[] = $book;
         }
     }
 } elseif ('/authors' === $_SERVER['PATH_INFO']) {
     $httpCode = 200;
     $result = [];
-    foreach ($authorsJson as $author) {
-        if (array_key_exists('surname',$_GET) && $author['surname'] === $_GET['surname']) {
-            $result[] = $author;
+    foreach ($authorsJson as $currentAuthor) {
+        if (array_key_exists('surname',$_GET) && $currentAuthor['surname'] === $_GET['surname']) {
+            $result[] = $currentAuthor;
         }
     }
 } else {
