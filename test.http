@@ -1,34 +1,47 @@
 ### Тестирование поиска книг по названию
-PUT http://book-library-fedyancev.ru:8082/books?title=Мечтают ли андройды об электроовцах?
+GET http://book-library-fedyancev.ru:8082/books?title=Мечтают ли андройды об электроовцах?
 
 > {%
-  client.test('Тестирование поиска книги по названию', function () {
+   client.test('Тестирование поиска книги по названию', function () {
    client.assert(response.status === 200, 'Проверяю код ответа. Фактическое знаение: ' + response.status);
-   client.assert(response.body === "Hello", 'Валидный ответ');
+   client.assert(response.contentType.mimeType === "application/json", 'Проверяю application/json. Фактическое знаение: ' + response.contentType.mimeType);
+   client.assert(response.body.hasOwnProperty('length') && response.body.length === 1, "В ответе есть один элемент");
+   client.assert(response.body[0]['id'] === 10, "id книги не корректен");
+   client.assert(response.body[0]['title'] === "Мечтают ли андроиды об электроовцах?", "название книги не корректно");
+   client.assert(response.body[0]['year'] === 1966, "год книги не корректен");
+   client.assert(response.body[0]['author_id'] === 5, "id автора не корректен");
  });
  %}
 
-Сценарий №1
-HTTP запрос
-	PUT http://spisok-kontaktov.ru:80/contact_list/1 HTTP/1.1
+### Тестирование поиска авторов по фамилии
 
-	{ "blacklist" : true}
+GET http://book-library-fedyancev.ru:8082/authors?surname=Паланик
 
-HTTP ответ
-	HTTP/1.1 200 OK
+> {%
+  client.test("Тестирование поиска авторов по фамилии", function () {
+      client.assert(response.status === 200, 'Проверяю код ответа. Фактическое знаение: ' + response.status);
+      client.assert(response.contentType.mimeType === "application/json", 'Проверяю application/json. Фактическое знаение: ' + response.contentType.mimeType);
+      client.assert(response.body.hasOwnProperty('length') && response.body.length === 1, "В ответе есть один элемент");
+      client.assert(response.body[0]['id'] === 1, "id автора не корректен");
+      client.assert(response.body[0]['name'] === "Чак", "имя не корректен");
+      client.assert(response.body[0]['surname'] === "Паланик", "фамилия не корректен");
+      client.assert(response.body[0]['birthday'] === "21.02.1962", "Дата рождения автора не корректен");
+  })
+%}
 
-	Успешно
 
-Сценарий №2
-HTTP запрос
-	GET http://spisok-kontaktov.ru:80/address/1
+### Тестирование неподдерживаемого приложения url
+GET http://book-library-fedyancev.ru:8082/hhh?param=ru
 
+> {%
+     client.test("Неподдерживаемый запрос", function () {
+            client.assert(response.status === 404, 'Проверяю код ответа. Фактическое знаение: ' + response.status);
+            client.assert(response.contentType.mimeType === "application/json", 'Проверяю application/json. Фактическое знаение: ' + response.contentType.mimeType);
+            client.assert(response.body[0]['status'] === "fail", "Некорректный статус");
+            client.assert(response.body[0]['message'] === "unsupported request", "Некорректное сообщение");
+     })
+ %}
 
-HTTP ответ
-	HTTP/1.1 200 OK
-	Content-Type: application/json; charset=utf-8
-
-	id , id_recipient , id_address
 
 
 
