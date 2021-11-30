@@ -87,8 +87,8 @@ GET http://book-library-fedyancev.ru:8082/hhh?param=ru
      client.test("Неподдерживаемый запрос", function () {
             client.assert(response.status === 404, 'Проверяю код ответа. Фактическое знаение: ' + response.status);
             client.assert(response.contentType.mimeType === "application/json", 'Проверяю application/json. Фактическое знаение: ' + response.contentType.mimeType);
-            client.assert(response.body[0]['status'] === "fail", "Некорректный статус");
-            client.assert(response.body[0]['message'] === "unsupported request", "Некорректное сообщение");
+            client.assert(response.body['status'] === "fail", "Некорректный статус");
+            client.assert(response.body['message'] === "unsupported request", "Некорректное сообщение");
      })
  %}
 
@@ -99,8 +99,8 @@ GET http://book-library-fedyancev.ru:8082/?param=ru
      client.test("Неподдерживаемый запрос", function () {
             client.assert(response.status === 404, 'Проверяю код ответа. Фактическое знаение: ' + response.status);
             client.assert(response.contentType.mimeType === "application/json", 'Проверяю application/json. Фактическое знаение: ' + response.contentType.mimeType);
-            client.assert(response.body[0]['status'] === "fail", "Некорректный статус");
-            client.assert(response.body[0]['message'] === "unsupported request", "Некорректное сообщение");
+            client.assert(response.body['status'] === "fail", "Некорректный статус");
+            client.assert(response.body['message'] === "unsupported request", "Некорректное сообщение");
      })
  %}
 
