@@ -61,12 +61,12 @@ function loadData (string $sourceName):array
     return json_decode($content, true);
 }
 
-
-logger('Url request received' . $_SERVER['REQUEST_URI']);
-
-$pathInfo = array_key_exists('PATH_INFO', $_SERVER) && $_SERVER['PATH_INFO'] ? $_SERVER['PATH_INFO'] : '';
-
-if ('/books' === $pathInfo) {
+/** Функция поиска книги
+ *
+ * @return array - возвращает результат поиска по книгам
+ */
+function findBooks ():array
+{
     $authorsJson = loadData('authors');
     $booksJson = loadData('books');
 
@@ -98,7 +98,18 @@ if ('/books' === $pathInfo) {
         }
     }
     logger('found books ' . count($result));
-} elseif ('/authors' === $pathInfo) {
+    return [
+        'httpCode' => $httpCode,
+        'result' => $result
+    ];
+}
+
+/** Функция поиска авторов
+ *
+ * @return array - возвращает результат поиска по авторам
+ */
+function findAuthors ():array
+{
     $authorsJson = loadData('authors');
 
     $httpCode = 200;
@@ -113,7 +124,31 @@ if ('/books' === $pathInfo) {
         }
     }
     logger('found authors: ' . count($result));
-} else {
-    errorHandling('unsupported request', 404, 'fail');
+    return [
+        'httpCode' => $httpCode,
+        'result' => $result
+    ];
+
 }
-render($result, $httpCode);
+
+/** Функция реализации веб приложения
+ *
+ * @return array
+ */
+function app ():array
+{
+    logger('Url request received' . $_SERVER['REQUEST_URI']);
+
+    $pathInfo = array_key_exists('PATH_INFO', $_SERVER) && $_SERVER['PATH_INFO'] ? $_SERVER['PATH_INFO'] : '';
+
+    if ('/books' === $pathInfo) {
+        $result = findBooks();
+    } elseif ('/authors' === $pathInfo) {
+        $result = findAuthors();
+    } else {
+        errorHandling('unsupported request', 404, 'fail');
+    }
+    return $result;
+}
+$resultApp = app();
+render($resultApp['result'], $resultApp['httpCode']);
