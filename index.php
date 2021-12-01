@@ -1,24 +1,39 @@
 <?php
-
+$b = 3;
+$f = function (string &$arg):void {
+    $arg = 5;
+};
+$f($b);
 /**
  * Функция валидации
  *
- * @param string $paramName - имя параметра
- * @param array $param - имя запроса
- * @param string $errorMessage - сообщение об ошибке
+ * @param array $validateParameters - валидируемые параметры, ключ имя параметра, а значение это текст сообщения о ошибке
+ * @param array $params - все множество параметров
+ * @return array - сообщение о ошибках
  */
-function paramTypeValidation(string $paramName, array $param, string $errorMessage)
+function paramTypeValidation(array $validateParameters, array $params):?array
 {
-    if (array_key_exists($paramName, $param) && false === is_string($param[$paramName])) {
-        errorHandling($errorMessage, 500, 'fail');
-    }
+  $result = null;
+  foreach ($validateParameters as $paramName => $errMsg) {
+      if (array_key_exists($paramName, $params) && false === is_string($params[$paramName])) {
+          $result = [
+                'httpCode' => '500',
+                'result' => [
+                    'status' => 'fail',
+                    'message' => $errMsg
+                ]
+          ];
+          break;
+      }
+  }
+  return $result;
 }
 
 /**
  * Логирует текстовое сообщение
  * @param string $errMsg - сообщение о ошибке
  */
-function logger ( string $errMsg):void
+function loggerInFile ( string $errMsg):void
 {
     file_put_contents(__DIR__ . '/app.log',"{$errMsg}\n", FILE_APPEND);
 }
@@ -33,23 +48,6 @@ function render(array $data, int $httpCode)
     echo json_encode($data);
     exit();
 }
-
-/**
- * Обработка ошибок
- * @param string $message - сообщение о причине ошибке
- * @param int $httpCode - http code
- * @param string $status - статус ошибки
- */
-function errorHandling(string $message, int $httpCode, string $status): void
-{
-    $result = [
-        'status' => $status,
-        'message' => $message
-    ];
-    logger($message);
-    render($result, $httpCode);
-}
-
 /**
  * @param string $sourceName - путь до файла
  * @return array - вывод содержимого файла в виде массива
@@ -62,93 +60,119 @@ function loadData (string $sourceName):array
 }
 
 /** Функция поиска книги
- *
+ * @param $request array - параметры которые передаёт пользователь
+ * @logger callable - параметр инкапсулирующий логгирование
  * @return array - возвращает результат поиска по книгам
  */
-function findBooks ():array
+function findBooks (array $request, callable $logger):array
 {
     $authorsJson = loadData('authors');
-    $booksJson = loadData('books');
+    $booksJson   = loadData('books');
 
-    $httpCode = 200;
-    $result = [];
-    logger('dispatch "books" url');
-    paramTypeValidation('author_surname',$_GET,'inccorrect author surname');
-    paramTypeValidation('title', $_GET,'inccorrect title book');
-    $authorIdToInfo = [];
-    foreach ($authorsJson as $info) {
-        $authorIdToInfo[$info['id']] = $info;
-    }
+    $logger('dispatch "books" url');
 
-    foreach ($booksJson as $book) {
-        if (array_key_exists('author_surname', $_GET)) {
-            $bookMeetSearchCriteria = $_GET['author_surname'] === $authorIdToInfo[$book['author_id']]['surname'];
-        } else {
-            $bookMeetSearchCriteria = true;
-        }
-
-        if ($bookMeetSearchCriteria && array_key_exists('title', $_GET)) {
-            $bookMeetSearchCriteria = $_GET['title'] === $book['title'];
-        }
-
-        if ($bookMeetSearchCriteria) {
-            $book['author'] = $authorIdToInfo[$book['author_id']];
-            unset($book['author_id']);
-            $result[] = $book;
-        }
-    }
-    logger('found books ' . count($result));
-    return [
-        'httpCode' => $httpCode,
-        'result' => $result
+    $paramValidations = [
+        'author_surname' => 'inccorrect author surname',
+        'title' =>'inccorrect title book'
     ];
+
+    if(null === ($result = paramTypeValidation($paramValidations, $request))) {
+        $foundBooks = [];
+        $authorIdToInfo = [];
+        foreach ($authorsJson as $info) {
+            $authorIdToInfo[$info['id']] = $info;
+        }
+
+        foreach ($booksJson as $book) {
+            if (array_key_exists('author_surname', $request)) {
+                $bookMeetSearchCriteria = $request['author_surname'] === $authorIdToInfo[$book['author_id']]['surname'];
+            } else {
+                $bookMeetSearchCriteria = true;
+            }
+
+            if ($bookMeetSearchCriteria && array_key_exists('title', $request)) {
+                $bookMeetSearchCriteria = $request['title'] === $book['title'];
+            }
+
+            if ($bookMeetSearchCriteria) {
+                $book['author'] = $authorIdToInfo[$book['author_id']];
+                unset($book['author_id']);
+                $foundBooks[] = $book;
+            }
+        }
+        $logger('found books ' . count($foundBooks));
+        return [
+            'httpCode' => 200,
+            'result' => $foundBooks
+        ];
+    }
+    return $result;
 }
 
 /** Функция поиска авторов
- *
+ * @param $request array - параметры которые передаёт пользователь
+ * @logger callable - параметр инкапсулирующий логгирование
  * @return array - возвращает результат поиска по авторам
  */
-function findAuthors ():array
+function findAuthors (array $request, callable $logger):array
 {
     $authorsJson = loadData('authors');
+    $logger('dispatch "authors" url');
 
-    $httpCode = 200;
-    $result = [];
-    $searchParamCorrect = true;
-
-    logger('dispatch "authors" url');
-    paramTypeValidation('surname', $_GET,'inccorrect surname author');
-    foreach ($authorsJson as $currentAuthor) {
-        if (array_key_exists('surname', $_GET) && $currentAuthor['surname'] === $_GET['surname']) {
-            $result[] = $currentAuthor;
-        }
-    }
-    logger('found authors: ' . count($result));
-    return [
-        'httpCode' => $httpCode,
-        'result' => $result
+    $paramValidations = [
+        'surname' => 'inccorrect surname author'
     ];
+
+    if(null === ($result = paramTypeValidation($paramValidations, $request))) {
+        $foundAuthor = [];
+        foreach ($authorsJson as $currentAuthor) {
+            if (array_key_exists('surname', $request) && $currentAuthor['surname'] === $request['surname']) {
+                $foundAuthor[] = $currentAuthor;
+            }
+        }
+        $logger('found authors: ' . count($foundAuthor));
+        return [
+            'httpCode' => 200,
+            'result' => $foundAuthor
+        ];
+    }
+    return $result;
 
 }
 
 /** Функция реализации веб приложения
- *
+ * @param $requestUri string - URI запроса
+ * @param $request array - параметры которые передаёт пользователь
+ * @logger callable - параметр инкапсулирующий логгирование
  * @return array
  */
-function app ():array
+function app (string $requestUri ,array $request,callable $logger):array
 {
-    logger('Url request received' . $_SERVER['REQUEST_URI']);
+    $logger('Url request received' . $requestUri);
+    $urlPath = parse_url($requestUri, PHP_URL_PATH);
 
-    $pathInfo = array_key_exists('PATH_INFO', $_SERVER) && $_SERVER['PATH_INFO'] ? $_SERVER['PATH_INFO'] : '';
-
-    if ('/books' === $pathInfo) {
-        $result = findBooks();
-    } elseif ('/authors' === $pathInfo) {
-        $result = findAuthors();
+    if ('/books' === $urlPath) {
+        $result = findBooks($request, $logger);
+    } elseif ('/authors' === $urlPath) {
+        $result = findAuthors($request, $logger);
     } else {
-        errorHandling('unsupported request', 404, 'fail');
+        $result = [
+            'httpCode' => 404,
+            'result' => [
+                'status' => 'fail',
+                'message' => 'unsupported request'
+            ]
+        ];
+        $logger($result['result']['message']);
     }
     return $result;
 }
-$resultApp = app();
+
+
+$resultApp = app
+(
+    $_SERVER['REQUEST_URI'],
+    $_GET,
+    'loggerInFile'
+);
 render($resultApp['result'], $resultApp['httpCode']);
