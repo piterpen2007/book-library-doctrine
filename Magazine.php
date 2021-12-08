@@ -2,7 +2,8 @@
 
 require_once __DIR__ . '/Author.php';
 require_once __DIR__ . '/AbstractTextDocument.php';
-class Magazine extends AbstractTextDocument {
+require_once __DIR__ . '/invalidDataStructureException.php';
+final class Magazine extends AbstractTextDocument {
     /**
      * @var int Номер журнала
      */
@@ -11,6 +12,20 @@ class Magazine extends AbstractTextDocument {
      * @var ?Author данные о авторе
      */
     private ?Author $author;
+
+    /**
+     * @param int $id
+     * @param string $title
+     * @param int $year
+     * @param Author|null $author
+     * @param int $number
+     */
+    public function __construct(int $id, string $title, int $year, ?Author $author, int $number)
+    {
+        parent::__construct($id, $title, $year);
+        $this->number = $number;
+        $this->author = $author;
+    }
 
     /**
      * @return int
@@ -63,6 +78,27 @@ class Magazine extends AbstractTextDocument {
         $jsonData['number'] = $this->number;
         return $jsonData;
     }
+    public static function createFromArray(array $data):Magazine
+    {
+        $requiredFields = [
+            'id',
+            'title',
+            'year',
+            'number',
+            'author'
+        ];
+
+        $missingFields = array_diff($requiredFields,array_keys($data));
+
+        if (count($missingFields) > 0) {
+            $errMsg = sprintf('Отсутствуют обязательные элементы: %s', implode(',', $missingFields));
+            throw new invalidDataStructureException($errMsg);
+        }
+
+        return new Magazine($data['id'],$data['title'],$data['year'],$data['author'],$data['number']);
+    }
+
+
 
 
 }

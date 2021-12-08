@@ -1,15 +1,17 @@
 <?php
 
 require_once __DIR__ . '/app.function.php';
+require_once __DIR__ . '/AppConfig.php';
 
 /** Функция поиска авторов
  * @param $request array - параметры которые передаёт пользователь
+ * @param $appConfig - конфиг приложения
  * @logger callable - параметр инкапсулирующий логгирование
  * @return array - возвращает результат поиска по авторам
  */
-return static function (array $request, callable $logger):array
+return static function (array $request, callable $logger, AppConfig $appConfig):array
 {
-    $authorsJson = loadData('authors');
+    $authorsJson = loadData($appConfig->getPathToAuthor());
     $logger('dispatch "authors" url');
 
     $paramValidations = [
@@ -20,17 +22,7 @@ return static function (array $request, callable $logger):array
         $foundAuthor = [];
         foreach ($authorsJson as $currentAuthor) {
             if (array_key_exists('surname', $request) && $currentAuthor['surname'] === $request['surname']) {
-
-                $authorObj = new Author();
-                $authorObj->setId($currentAuthor['id'])
-                    ->setName($currentAuthor['name'])
-                    ->setSurname($currentAuthor['surname'])
-                    ->setBirthday($currentAuthor['birthday'])
-                    ->setCountry($currentAuthor['country']);
-
-
-                $foundAuthor[] = $authorObj;
-
+                $foundAuthor[] = Author::createFromArray($currentAuthor);
             }
         }
         $logger('found authors: ' . count($foundAuthor));

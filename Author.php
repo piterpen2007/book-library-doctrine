@@ -1,9 +1,9 @@
 <?php
-
+require_once __DIR__ . '/invalidDataStructureException.php';
 /**
  * Автор
  */
-class Author implements JsonSerializable
+final class Author implements JsonSerializable
 {
     /**
     * @var int id автора
@@ -25,6 +25,22 @@ class Author implements JsonSerializable
      * @var string Страна рождения автора
      */
     private string $country;
+
+    /**
+     * @param int $id
+     * @param string $name
+     * @param string $surname
+     * @param string $birthday
+     * @param string $country
+     */
+    public function __construct(int $id, string $name, string $surname, string $birthday, string $country)
+    {
+        $this->id = $id;
+        $this->name = $name;
+        $this->surname = $surname;
+        $this->birthday = $birthday;
+        $this->country = $country;
+    }
 
     /**
      * @return int
@@ -124,6 +140,24 @@ class Author implements JsonSerializable
             'birthday' => $this->birthday,
             'country' => $this->country
         ];
+    }
+    public static function createFromArray(array $data):Author
+    {
+        $requiredFields = [
+            'id',
+            'name',
+            'surname',
+            'birthday',
+            'country'
+        ];
+
+        $missingFields = array_diff($requiredFields,array_keys($data));
+
+        if (count($missingFields) > 0) {
+            $errMsg = sprintf('Отсутствуют обязательные элементы: %s', implode(',', $missingFields));
+            throw new invalidDataStructureException($errMsg);
+        }
+        return new Author($data['id'],$data['name'],$data['surname'],$data['birthday'], $data['country']);
     }
 
 }

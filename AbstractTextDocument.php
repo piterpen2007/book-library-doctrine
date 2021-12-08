@@ -15,6 +15,20 @@ abstract class AbstractTextDocument implements JsonSerializable
      */
     private int $year;
 
+    /** Конструктор класса
+     *
+     * @param int $id - id книги
+     * @param string $title - Заголовок книги
+     * @param int $year - Год выпуска книги
+     */
+    public function __construct(int $id, string $title, int $year)
+    {
+        $this->id = $id;
+        $this->title = $title;
+        $this->year = $year;
+    }
+
+
     /** Устанавливает id текстового документа
      *
      * @param int $id
@@ -30,7 +44,7 @@ abstract class AbstractTextDocument implements JsonSerializable
     /**
      * @return int
      */
-    public function getId(): int
+    final public function getId(): int
     {
         return $this->id;
     }
@@ -39,7 +53,7 @@ abstract class AbstractTextDocument implements JsonSerializable
      *
      * @return string
      */
-    public function getTitle(): string
+    final public function getTitle(): string
     {
         return $this->title;
     }
@@ -57,7 +71,7 @@ abstract class AbstractTextDocument implements JsonSerializable
     /**
      * @return int
      */
-    public function getYear(): int
+    final public function getYear(): int
     {
         return $this->year;
     }
@@ -86,4 +100,5 @@ abstract class AbstractTextDocument implements JsonSerializable
             'title_for_printing' => $this->getTitleForPrinting()
         ];
     }
+    abstract public static function createFromArray(array $data):AbstractTextDocument;
 }

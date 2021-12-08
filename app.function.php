@@ -6,8 +6,7 @@
  */
 function loadData (string $sourceName):array
 {
-    $pathToFile = __DIR__ . "/{$sourceName}.json";
-    $content = file_get_contents($pathToFile);
+    $content = file_get_contents($sourceName);
     return json_decode($content, true);
 }
 
@@ -59,28 +58,58 @@ function loggerInFile ( string $errMsg):void
 }
 
 /** Функция реализации веб приложения
+ *
  * @param $handler array - массив сопоставляющий url parh с функциями реализующими логику обработки запроса
  * @param $requestUri string - URI запроса
- * @param $request array - параметры которые передаёт пользователь
  * @param $logger callable - параметр инкапсулирующий логгирование
+ * @param $appConfigFactory callable - фабрика реализзующая логику создания конфига приложения
  * @return array
  */
-function app (array $handler,string $requestUri ,array $request,callable $logger):array
+function app (array $handler,string $requestUri ,callable $logger, callable $appConfigFactory):array
 {
-    $logger('Url request received' . $requestUri);
-    $urlPath=  parse_url($requestUri, PHP_URL_PATH);
+    try {
+        $query = parse_url($requestUri, PHP_URL_QUERY);
+        $requestParams = [];
+        parse_str($query,$requestParams );
 
-    if (array_key_exists($urlPath, $handler)) {
-        $result = $handler[$urlPath]($request,$logger);
-    } else {
+        $appConfig = $appConfigFactory();
+
+        if (!$appConfig instanceof AppConfig) {
+            throw new Exception('incorrect application config');
+        }
+
+        $logger('Url request received' . $requestUri);
+        $urlPath = parse_url($requestUri, PHP_URL_PATH);
+
+        if (array_key_exists($urlPath, $handler)) {
+            $result = $handler[$urlPath]($requestParams, $logger, $appConfig);
+        } else {
+            $result = [
+                'httpCode' => 404,
+                'result' => [
+                    'status' => 'fail',
+                    'message' => 'unsupported request'
+                ]
+            ];
+            $logger($result['result']['message']);
+        }
+    }catch (invalidDataStructureException $e) {
         $result = [
-            'httpCode' => 404,
+            'httpCode' => 503,
             'result' => [
                 'status' => 'fail',
-                'message' => 'unsupported request'
+                'message' => $e->getMessage()
             ]
         ];
-        $logger($result['result']['message']);
+    } catch (Throwable $e) {
+
+        $result = [
+            'httpCode' => 500,
+            'result' => [
+                'status' => 'fail',
+                'message' => $e->getMessage()
+            ]
+        ];
     }
     return $result;
 }

@@ -2,13 +2,25 @@
 
 require_once __DIR__ . '/Author.php';
 require_once __DIR__ . '/AbstractTextDocument.php';
-
-class Book extends AbstractTextDocument
+require_once __DIR__ . '/invalidDataStructureException.php';
+final class Book extends AbstractTextDocument
 {
     /**
      * @var Author данные о авторе
      */
     private Author $author;
+
+    /**
+     * @param int $id
+     * @param string $title
+     * @param int $year
+     * @param Author $author
+     */
+    public function __construct(int $id, string $title, int $year, Author $author)
+    {
+        parent::__construct($id, $title, $year);
+        $this->author = $author;
+    }
 
     /** Возвращает автора книги
      * @return Author
@@ -17,6 +29,7 @@ class Book extends AbstractTextDocument
     {
         return $this->author;
     }
+
 
     /**
      * Устанавливает автора книги
@@ -42,5 +55,26 @@ class Book extends AbstractTextDocument
         $jsonData = parent::jsonSerialize();
         $jsonData['author'] = $this->author;
         return $jsonData;
+    }
+
+    public static function createFromArray(array $data):Book
+    {
+        $requiredFields = [
+            'id',
+            'title',
+            'year',
+            'author'
+        ];
+
+
+        $missingFields = array_diff($requiredFields,array_keys($data));
+
+        if (count($missingFields) > 0) {
+            $errMsg = sprintf('Отсутствуют обязательные элементы: %s', implode(',',$missingFields));
+            throw new invalidDataStructureException($errMsg);
+        }
+
+
+        return new Book($data['id'],$data['title'],$data['year'],$data['author']);
     }
 }

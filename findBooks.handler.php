@@ -4,17 +4,18 @@ require_once __DIR__ . '/app.function.php';
 require_once __DIR__ . '/Magazine.php';
 require_once __DIR__ . '/Author.php';
 require_once __DIR__ . '/Book.php';
+require_once __DIR__ . '/AppConfig.php';
 
 /** Функция поиска книги
 * @param $request array - параметры которые передаёт пользователь
 * @logger callable - параметр инкапсулирующий логгирование
 * @return array - возвращает результат поиска по книгам
 */
-return static function (array $request, callable $logger):array
+return static function (array $request, callable $logger, AppConfig $appConfig):array
 {
-    $authorsJson = loadData('authors');
-    $booksJson   = loadData('books');
-    $magazinesJson = loadData('magazines');
+    $authorsJson = loadData($appConfig->getPathToAuthor());
+    $booksJson   = loadData($appConfig->getPathToBooks());
+    $magazinesJson = loadData($appConfig->getPathToMagazines());
 
     $logger('dispatch "books" url');
 
@@ -29,14 +30,9 @@ return static function (array $request, callable $logger):array
         $foundBooks = [];
         $authorIdToInfo = [];
         foreach ($authorsJson as $info) {
-            $authorObj = new Author();
-            $authorObj->setId($info['id'])
-            ->setName($info['name'])
-            ->setSurname($info['surname'])
-            ->setBirthday($info['birthday'])
-            ->setCountry($info['country']);
+            $authorObj = Author::createFromArray($info);
 
-            $authorIdToInfo[$info['id']] = $authorObj;
+            $authorIdToInfo[$authorObj->getId()] = $authorObj;
         }
 
         foreach ($booksJson as $book) {
@@ -51,20 +47,12 @@ return static function (array $request, callable $logger):array
             }
 
             if ($bookMeetSearchCriteria) {
+                $book['author'] = null === $book['author_id'] ? null : $authorIdToInfo[$book['author_id']];
                 if (array_key_exists('number',$book)) {
-                    $bookObj = new Magazine();
-                    $bookObj->setNumber($book['number']);
-
+                    $bookObj = Magazine::createFromArray($book);
                 } else {
-                    $bookObj = new Book();
+                    $bookObj = Book::createFromArray($book);
                 }
-                $bookObj->setId($book['id'])
-                    ->setTitle($book['title'])
-                    ->setYear($book['year'])
-                    ->setAuthor(null === $book['author_id'] ? null : $authorIdToInfo[$book['author_id']]);
-
-                //$book['author'] = $authorIdToInfo[$book['author_id']];
-                //unset($book['author_id']);
                 $foundBooks[] = $bookObj;
             }
         }

@@ -1,5 +1,5 @@
 ### Тестирование поиска книг по названию
-GET http://book-library-fedyancev.ru:8082/books?title=Мечтают ли андроиды об электроовцах?
+GET http://book-library-fedyancev.ru:8083/books?title=Мечтают ли андроиды об электроовцах?
 
 > {%
    client.test('Тестирование поиска книги по названию', function () {
@@ -19,7 +19,7 @@ GET http://book-library-fedyancev.ru:8082/books?title=Мечтают ли анд
  %}
 
 ### Тестирование ситуации, когда передали некорректное название книги
-GET http://book-library-fedyancev.ru:8082/books?title[]=Мечтают ли андроиды об электроовцах?
+GET http://book-library-fedyancev.ru:8083/books?title[]=Мечтают ли андроиды об электроовцах?
 
 > {%
      client.test("Тестирование ситуации, когда передали некорректное имя автора для поиска книги", function () {
@@ -31,7 +31,7 @@ GET http://book-library-fedyancev.ru:8082/books?title[]=Мечтают ли ан
  %}
 
 ### Тестирование ситуации, когда передали некорректное название книги
-GET http://book-library-fedyancev.ru:8082/books?author_surname[]=Дик
+GET http://book-library-fedyancev.ru:8083/books?author_surname[]=Дик
 
 > {%
      client.test("Тестирование ситуации, когда передали некорректное имя автора для поиска книги", function () {
@@ -44,7 +44,7 @@ GET http://book-library-fedyancev.ru:8082/books?author_surname[]=Дик
 
 
 ### Тестирование поиска книг по фамилии автора
-GET http://book-library-fedyancev.ru:8082/books?author_surname=Дик
+GET http://book-library-fedyancev.ru:8083/books?author_surname=Дик
 
 > {%
  client.test('Тестирование поиска книг по фамилии автора', function () {
@@ -64,7 +64,7 @@ GET http://book-library-fedyancev.ru:8082/books?author_surname=Дик
 %}
 
 ### Тестирование поиска авторов по фамилии
-GET http://book-library-fedyancev.ru:8082/authors?surname=Паланик
+GET http://book-library-fedyancev.ru:8083/authors?surname=Паланик
 
 > {%
   client.test("Тестирование поиска авторов по фамилии", function () {
@@ -81,7 +81,7 @@ GET http://book-library-fedyancev.ru:8082/authors?surname=Паланик
 
 
 ### Тестирование неподдерживаемого приложения url
-GET http://book-library-fedyancev.ru:8082/hhh?param=ru
+GET http://book-library-fedyancev.ru:8083/hhh?param=ru
 
 > {%
      client.test("Неподдерживаемый запрос", function () {
@@ -93,7 +93,7 @@ GET http://book-library-fedyancev.ru:8082/hhh?param=ru
  %}
 
 ### Тестирование запроса без path
-GET http://book-library-fedyancev.ru:8082/?param=ru
+GET http://book-library-fedyancev.ru:8083/?param=ru
 
 > {%
      client.test("Неподдерживаемый запрос", function () {
@@ -105,7 +105,7 @@ GET http://book-library-fedyancev.ru:8082/?param=ru
  %}
 
 ### Тестирование ситуации, когда передали некорректное название книги
-GET http://book-library-fedyancev.ru:8082/authors?surname[]=Дик
+GET http://book-library-fedyancev.ru:8083/authors?surname[]=Дик
 
 > {%
      client.test("Тестирование ситуации, когда передали некорректное имя автора для поиска книги", function () {
@@ -117,7 +117,7 @@ GET http://book-library-fedyancev.ru:8082/authors?surname[]=Дик
  %}
 
 ### Тестирование поиска журнала по названию
-GET http://book-library-fedyancev.ru:8082/books?title=Логос
+GET http://book-library-fedyancev.ru:8083/books?title=Логос
 
 > {%
    client.test('Тестирование поиска журнала по названию', function () {
