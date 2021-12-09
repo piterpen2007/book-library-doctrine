@@ -2,7 +2,8 @@
 
 require_once __DIR__ . '/Author.php';
 require_once __DIR__ . '/AbstractTextDocument.php';
-require_once __DIR__ . '/invalidDataStructureException.php';
+require_once __DIR__ . '/../Infrastructure/invalidDataStructureException.php';
+
 final class Magazine extends AbstractTextDocument {
     /**
      * @var int Номер журнала
@@ -78,6 +79,7 @@ final class Magazine extends AbstractTextDocument {
         $jsonData['number'] = $this->number;
         return $jsonData;
     }
+
     public static function createFromArray(array $data):Magazine
     {
         $requiredFields = [

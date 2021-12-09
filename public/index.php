@@ -1,0 +1,16 @@
+<?php
+
+require_once __DIR__ . '/../src/Infrastructure/app.function.php';
+require_once __DIR__ . '/../src/Infrastructure/AppConfig.php';
+
+
+
+$resultApp = app
+(
+    include __DIR__ . '/../config/request.handlers.php',
+    $_SERVER['REQUEST_URI'],
+    'loggerInFile',
+    static function() {return AppConfig::createFromArray(include __DIR__ . '/../config/dev/config.php');}
+
+);
+render($resultApp['result'], $resultApp['httpCode']);

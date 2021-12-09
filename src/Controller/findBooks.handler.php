@@ -1,10 +1,10 @@
 <?php
 
-require_once __DIR__ . '/app.function.php';
-require_once __DIR__ . '/Magazine.php';
-require_once __DIR__ . '/Author.php';
-require_once __DIR__ . '/Book.php';
-require_once __DIR__ . '/AppConfig.php';
+require_once __DIR__ . '/../Infrastructure/app.function.php';
+require_once __DIR__ . '/../Entity/Magazine.php';
+require_once __DIR__ . '/../Entity/Author.php';
+require_once __DIR__ . '/../Entity/Book.php';
+require_once __DIR__ . '/../Infrastructure/AppConfig.php';
 
 /** Функция поиска книги
 * @param $request array - параметры которые передаёт пользователь

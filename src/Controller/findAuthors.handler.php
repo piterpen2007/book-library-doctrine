@@ -1,7 +1,7 @@
 <?php
 
-require_once __DIR__ . '/app.function.php';
-require_once __DIR__ . '/AppConfig.php';
+require_once __DIR__ . '/../Infrastructure/app.function.php';
+require_once __DIR__ . '/../Infrastructure/AppConfig.php';
 
 /** Функция поиска авторов
  * @param $request array - параметры которые передаёт пользователь

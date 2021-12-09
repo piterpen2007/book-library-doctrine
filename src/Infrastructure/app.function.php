@@ -1,5 +1,5 @@
 <?php
-
+require_once __DIR__ . '/AppConfig.php';
 /**
  * @param string $sourceName - путь до файла
  * @return array - вывод содержимого файла в виде массива
@@ -54,7 +54,7 @@ function paramTypeValidation(array $validateParameters, array $params):?array
  */
 function loggerInFile ( string $errMsg):void
 {
-    file_put_contents(__DIR__ . '/app.log',"{$errMsg}\n", FILE_APPEND);
+    file_put_contents(__DIR__ . '/../../var/log/app.log',"{$errMsg}\n", FILE_APPEND);
 }
 
 /** Функция реализации веб приложения

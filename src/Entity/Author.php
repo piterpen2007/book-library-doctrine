@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/invalidDataStructureException.php';
+require_once __DIR__ . '/../Infrastructure/invalidDataStructureException.php';
 /**
  * Автор
  */

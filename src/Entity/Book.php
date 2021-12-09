@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/Author.php';
 require_once __DIR__ . '/AbstractTextDocument.php';
-require_once __DIR__ . '/invalidDataStructureException.php';
+require_once __DIR__ . '/../Infrastructure/invalidDataStructureException.php';
 final class Book extends AbstractTextDocument
 {
     /**

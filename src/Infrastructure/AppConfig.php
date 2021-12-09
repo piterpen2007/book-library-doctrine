@@ -8,15 +8,15 @@ class AppConfig
     /** Путь до файла с данными о авторе
      * @var string
      */
-    private string $pathToAuthor = __DIR__ . '/authors.json';
+    private string $pathToAuthor = __DIR__ . '/../../data/authors.json';
     /** Путь до файла с данными о книгах
      * @var string
      */
-    private string $pathToBooks = __DIR__ . '/books.json';
+    private string $pathToBooks = __DIR__ . '/../../data/books.json';
     /** Путь до файла с данными о журналах
      * @var string
      */
-    private string $pathToMagazines = __DIR__ . '/magazines.json';
+    private string $pathToMagazines = __DIR__ . '/../../data/magazines.json';
 
     /**
      * @return string

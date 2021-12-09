@@ -1,6 +1,6 @@
 <?php
-require_once  __DIR__ . '/AppConfig.php';
-require_once  __DIR__ . '/app.function.php';
+require_once __DIR__ . '/../src/Infrastructure/AppConfig.php';
+require_once __DIR__ . '/../src/Infrastructure/app.function.php';
 
 /** Вычисляет расскхождение массивов с доп проверкой индекса. Поддержка многомерных массивов
  * @param array $a1
@@ -35,7 +35,7 @@ class UnitTest
 {
     private static function testDataProvider():array
     {
-        $handlers = include __DIR__ . '/request.handlers.php';
+        $handlers = include __DIR__ . '/../config/request.handlers.php';
         return [
             [
                 'testName'=>'Тестирование поиска книг по названию',
@@ -43,7 +43,7 @@ class UnitTest
                     $handlers,
                     '/books?title=Мечтают ли андроиды об электроовцах?',
                     function() {},
-                    static function () {return AppConfig::createFromArray(include __DIR__ . '/dev.env.config.php');}
+                    static function () {return AppConfig::createFromArray(include __DIR__ . '/../config/dev/config.php');}
                 ],
                 'out' => [
                     'httpCode' => 200,
@@ -73,8 +73,8 @@ class UnitTest
                     function () {
                     },
                     static function (){
-                        $config = include __DIR__ . '/dev.env.config.php';
-                        $config['pathToBooks'] = __DIR__ . '/broken.books.json';
+                        $config = include __DIR__ . '/../config/dev/config.php';
+                        $config['pathToBooks'] = __DIR__ . '/../test/data/broken.books.json';
                         return AppConfig::createFromArray($config);
                     }
                 ],
@@ -113,8 +113,8 @@ class UnitTest
                     static function () {
                     },
                     static function (){
-                        $config = include __DIR__ . '/dev.env.config.php';
-                        $config['pathToBooks'] = __DIR__ . '/unknown.books.json';
+                        $config = include __DIR__ . '/../config/dev/config.php';
+                        $config['pathToBooks'] = __DIR__ . '/data/unknown.books.json';
                         return AppConfig::createFromArray($config);
     }
                 ],
@@ -134,8 +134,8 @@ class UnitTest
                     function () {
                     },
                     static function (){
-                        $config = include __DIR__ . '/dev.env.config.php';
-                        $config['pathToMagazines'] = __DIR__ . '/broken.magazines.json';
+                        $config = include __DIR__ . '/../config/dev/config.php';
+                        $config['pathToMagazines'] = __DIR__ . '/../test/data/broken.magazines.json';
                         return AppConfig::createFromArray($config);
                     }
                 ],
@@ -157,8 +157,8 @@ class UnitTest
                     static function () {
                     },
                     static function (){
-                        $config = include __DIR__ . '/dev.env.config.php';
-                        $config['pathToAuthor'] = __DIR__ . '/broken.authors.json';
+                        $config = include __DIR__ . '/../config/dev/config.php';
+                        $config['pathToAuthor'] = __DIR__ . '/../test/data/broken.authors.json';
                         return AppConfig::createFromArray($config);
                     }
                 ],
@@ -178,8 +178,8 @@ class UnitTest
                     static function () {
                     },
                     static function (){
-                        $config = include __DIR__ . '/dev.env.config.php';
-                        $config['pathToAuthor'] = __DIR__ . '/unknown.authors.json';
+                        $config = include __DIR__ . '/../config/dev/config.php';
+                        $config['pathToAuthor'] = __DIR__ . '/data/unknown.authors.json';
                         return AppConfig::createFromArray($config);
                     }
                 ],
@@ -199,8 +199,8 @@ class UnitTest
                     static function () {
                     },
                     static function (){
-                        $config = include __DIR__ . '/dev.env.config.php';
-                        $config['pathToMagazines'] = __DIR__ . '/unknown.magazines.json';
+                        $config = include __DIR__ . '/../config/dev/config.php';
+                        $config['pathToMagazines'] = __DIR__ . '/data/unknown.magazines.json';
                         return AppConfig::createFromArray($config);
                     }
                 ],
