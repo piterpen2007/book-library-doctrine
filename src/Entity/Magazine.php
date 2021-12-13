@@ -1,10 +1,14 @@
 <?php
 
+namespace Entity;
+
+
 require_once __DIR__ . '/Author.php';
 require_once __DIR__ . '/AbstractTextDocument.php';
 require_once __DIR__ . '/../Infrastructure/invalidDataStructureException.php';
 
-final class Magazine extends AbstractTextDocument {
+final class Magazine extends AbstractTextDocument
+{
     /**
      * @var int Номер журнала
      */
@@ -65,14 +69,15 @@ final class Magazine extends AbstractTextDocument {
     }
 
     /** Выводит заголовок для печати
-    *
-    * @return string
-    */
-    public function getTitleForPrinting():string
+     *
+     * @return string
+     */
+    public function getTitleForPrinting(): string
     {
         return "{$this->getTitle()} . {$this->getYear()} . Номер:  {$this->getNumber()}";
     }
-    public function jsonSerialize():array
+
+    public function jsonSerialize(): array
     {
         $jsonData = parent::jsonSerialize();
         $jsonData['author'] = $this->author;
@@ -80,7 +85,7 @@ final class Magazine extends AbstractTextDocument {
         return $jsonData;
     }
 
-    public static function createFromArray(array $data):Magazine
+    public static function createFromArray(array $data): Magazine
     {
         $requiredFields = [
             'id',
@@ -90,17 +95,15 @@ final class Magazine extends AbstractTextDocument {
             'author'
         ];
 
-        $missingFields = array_diff($requiredFields,array_keys($data));
+        $missingFields = array_diff($requiredFields, array_keys($data));
 
         if (count($missingFields) > 0) {
             $errMsg = sprintf('Отсутствуют обязательные элементы: %s', implode(',', $missingFields));
-            throw new invalidDataStructureException($errMsg);
+            throw new \Infrastructure\invalidDataStructureException($errMsg);
         }
 
-        return new Magazine($data['id'],$data['title'],$data['year'],$data['author'],$data['number']);
+        return new Magazine($data['id'], $data['title'], $data['year'], $data['author'], $data['number']);
     }
-
-
 
 
 }

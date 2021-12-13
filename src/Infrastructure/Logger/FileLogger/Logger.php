@@ -1,10 +1,12 @@
 <?php
+namespace  Infrastructure\Logger\FileLogger;
+
 require_once __DIR__ . '/../LoggerInterface.php';
 
 /**
  *  Логирует в файл
  */
-class Logger implements LoggerInterface
+class Logger implements \Infrastructure\Logger\LoggerInterface
 {
     /**
      * @var string путь до файла где пишутся логи

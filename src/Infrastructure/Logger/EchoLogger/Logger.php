@@ -1,10 +1,12 @@
 <?php
+namespace Infrastructure\Logger\EchoLogger;
+
 require_once __DIR__ . '/../LoggerInterface.php';
 
 /**
  *  Логирует в консоль с помощью echo
  */
-class Logger implements LoggerInterface
+class Logger implements \Infrastructure\Logger\LoggerInterface
 {
 
     /**

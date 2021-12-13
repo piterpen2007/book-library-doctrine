@@ -1,5 +1,6 @@
 <?php
 
+namespace Infrastructure;
 /**
  *  Конфиг приложения
  */
@@ -31,7 +32,7 @@ class AppConfig
     /**
      * @var string путь до файла логирования
      */
-    private string $pathToLogFile =  __DIR__ . '/../../var/log/app.log';
+    private string $pathToLogFile = __DIR__ . '/../../var/log/app.log';
 
     /** Возвращает путь до файла с логами
      * @return string
@@ -46,7 +47,7 @@ class AppConfig
      *
      * @param string $pathToLogFile путь до файла с логами
      * @return AppConfig
-     * @throws Exception
+     * @throws \Exception
      */
     private function setPathToLogFile(string $pathToLogFile): AppConfig
     {
@@ -80,7 +81,7 @@ class AppConfig
      * @param string $pathToAuthor
      * @return AppConfig
      *
-     * @throws Exception
+     * @throws \Exception
      */
     private function setPathToAuthor(string $pathToAuthor): AppConfig
     {
@@ -100,7 +101,7 @@ class AppConfig
     /**
      * @param string $pathToBooks
      * @return AppConfig
-     * @throws Exception
+     * @throws \Exception
      */
     private function setPathToBooks(string $pathToBooks): AppConfig
     {
@@ -121,7 +122,7 @@ class AppConfig
      *
      * @param string $pathToMagazines
      * @return AppConfig
-     * @throws Exception
+     * @throws \Exception
      */
     private function setPathToMagazines(string $pathToMagazines): AppConfig
     {
@@ -133,12 +134,12 @@ class AppConfig
     /**
      * @param string $path
      * @return void
-     * @throws Exception
+     * @throws \Exception
      */
-    private function validateFilePath(string $path):void
+    private function validateFilePath(string $path): void
     {
-        if(false === file_exists($path)) {
-            throw new Exception('Некорректный путь до файла с данными');
+        if (false === file_exists($path)) {
+            throw new \Exception('Некорректный путь до файла с данными');
         }
     }
 
@@ -151,7 +152,7 @@ class AppConfig
      * @uses AppConfig::setPathToLogFile()
      * @uses AppConfig::setLoggerType()
      */
-    public static function createFromArray(array $config):self
+    public static function createFromArray(array $config): self
     {
         $appConfig = new self();
 

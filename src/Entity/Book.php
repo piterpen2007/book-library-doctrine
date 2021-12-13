@@ -1,8 +1,12 @@
 <?php
 
+namespace Entity;
+
+
 require_once __DIR__ . '/Author.php';
 require_once __DIR__ . '/AbstractTextDocument.php';
 require_once __DIR__ . '/../Infrastructure/invalidDataStructureException.php';
+
 final class Book extends AbstractTextDocument
 {
     /**
@@ -46,18 +50,19 @@ final class Book extends AbstractTextDocument
      *
      * @return string
      */
-    public function getTitleForPrinting():string
+    public function getTitleForPrinting(): string
     {
         return "{$this->getTitle()} . {$this->getAuthor()->getSurname()} {$this->getAuthor()->getName()} . {$this->getYear()}";
     }
-    public function jsonSerialize():array
+
+    public function jsonSerialize(): array
     {
         $jsonData = parent::jsonSerialize();
         $jsonData['author'] = $this->author;
         return $jsonData;
     }
 
-    public static function createFromArray(array $data):Book
+    public static function createFromArray(array $data): Book
     {
         $requiredFields = [
             'id',
@@ -67,14 +72,14 @@ final class Book extends AbstractTextDocument
         ];
 
 
-        $missingFields = array_diff($requiredFields,array_keys($data));
+        $missingFields = array_diff($requiredFields, array_keys($data));
 
         if (count($missingFields) > 0) {
-            $errMsg = sprintf('Отсутствуют обязательные элементы: %s', implode(',',$missingFields));
-            throw new invalidDataStructureException($errMsg);
+            $errMsg = sprintf('Отсутствуют обязательные элементы: %s', implode(',', $missingFields));
+            throw new \Infrastructure\invalidDataStructureException($errMsg);
         }
 
 
-        return new Book($data['id'],$data['title'],$data['year'],$data['author']);
+        return new Book($data['id'], $data['title'], $data['year'], $data['author']);
     }
 }

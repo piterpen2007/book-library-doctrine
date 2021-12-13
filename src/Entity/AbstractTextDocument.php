@@ -1,6 +1,7 @@
 <?php
+namespace Entity;
 
-abstract class AbstractTextDocument implements JsonSerializable
+abstract class AbstractTextDocument implements \JsonSerializable
 {
     /**
      * @var int id книги
@@ -34,7 +35,7 @@ abstract class AbstractTextDocument implements JsonSerializable
      * @param int $id
      * @return $this
      */
-    public function setId(int $id):self
+    public function setId(int $id): self
     {
         $this->id = $id;
 
@@ -89,9 +90,9 @@ abstract class AbstractTextDocument implements JsonSerializable
     /** Возвращает заголовок для печати
      * @return string
      */
-    abstract public function getTitleForPrinting():string;
+    abstract public function getTitleForPrinting(): string;
 
-    public function jsonSerialize():array
+    public function jsonSerialize(): array
     {
         return [
             'id' => $this->id,
@@ -100,5 +101,6 @@ abstract class AbstractTextDocument implements JsonSerializable
             'title_for_printing' => $this->getTitleForPrinting()
         ];
     }
-    abstract public static function createFromArray(array $data):AbstractTextDocument;
+
+    abstract public static function createFromArray(array $data): AbstractTextDocument;
 }

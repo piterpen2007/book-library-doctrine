@@ -1,15 +1,18 @@
 <?php
+
+namespace Entity;
 require_once __DIR__ . '/../Infrastructure/invalidDataStructureException.php';
+
 /**
  * Автор
  */
-final class Author implements JsonSerializable
+final class Author implements \JsonSerializable
 {
     /**
-    * @var int id автора
-    */
+     * @var int id автора
+     */
     private int $id;
-     /**
+    /**
      * @var string Имя автора
      */
     private string $name;
@@ -131,17 +134,24 @@ final class Author implements JsonSerializable
         $this->country = $country;
         return $this;
     }
-    public function jsonSerialize()
+
+    public function jsonSerialize():array
     {
         return [
             'id' => $this->id,
-            'name'=> $this->name,
+            'name' => $this->name,
             'surname' => $this->surname,
             'birthday' => $this->birthday,
             'country' => $this->country
         ];
     }
-    public static function createFromArray(array $data):Author
+
+    /**
+     * @param array $data
+     * @return Author
+     * @throws \Exception
+     */
+    public static function createFromArray(array $data): Author
     {
         $requiredFields = [
             'id',
@@ -151,13 +161,13 @@ final class Author implements JsonSerializable
             'country'
         ];
 
-        $missingFields = array_diff($requiredFields,array_keys($data));
+        $missingFields = array_diff($requiredFields, array_keys($data));
 
         if (count($missingFields) > 0) {
             $errMsg = sprintf('Отсутствуют обязательные элементы: %s', implode(',', $missingFields));
-            throw new invalidDataStructureException($errMsg);
+            throw new \Infrastructure\invalidDataStructureException($errMsg);
         }
-        return new Author($data['id'],$data['name'],$data['surname'],$data['birthday'], $data['country']);
+        return new Author($data['id'], $data['name'], $data['surname'], $data['birthday'], $data['country']);
     }
 
 }

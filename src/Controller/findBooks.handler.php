@@ -1,4 +1,10 @@
 <?php
+namespace Controller;
+use Entity\Author;
+use Entity\Book;
+use Entity\Magazine;
+use Infrastructure\AppConfig;
+use Infrastructure\Logger\LoggerInterface;
 
 require_once __DIR__ . '/../Infrastructure/app.function.php';
 require_once __DIR__ . '/../Entity/Magazine.php';
@@ -13,9 +19,9 @@ require_once __DIR__ . '/../Infrastructure/Logger/LoggerInterface.php';
 */
 return static function (array $request, LoggerInterface $logger, AppConfig $appConfig):array
 {
-    $authorsJson = loadData($appConfig->getPathToAuthor());
-    $booksJson   = loadData($appConfig->getPathToBooks());
-    $magazinesJson = loadData($appConfig->getPathToMagazines());
+    $authorsJson = \Infrastructure\loadData($appConfig->getPathToAuthor());
+    $booksJson   = \Infrastructure\loadData($appConfig->getPathToBooks());
+    $magazinesJson = \Infrastructure\loadData($appConfig->getPathToMagazines());
 
     $logger->log('dispatch "books" url');
 
@@ -26,7 +32,7 @@ return static function (array $request, LoggerInterface $logger, AppConfig $appC
 
     $booksJson = array_merge($booksJson,$magazinesJson);
 
-    if(null === ($result = paramTypeValidation($paramValidations, $request))) {
+    if(null === ($result = \Infrastructure\paramTypeValidation($paramValidations, $request))) {
         $foundBooks = [];
         $authorIdToInfo = [];
         foreach ($authorsJson as $info) {

@@ -1,4 +1,8 @@
 <?php
+
+use Infrastructure\AppConfig;
+use Infrastructure\Logger\LoggerInterface;
+
 require_once __DIR__ . '/../src/Infrastructure/AppConfig.php';
 require_once __DIR__ . '/../src/Infrastructure/app.function.php';
 require_once __DIR__ . '/../src/Infrastructure/Logger/LoggerInterface.php';
@@ -40,7 +44,7 @@ class UnitTest
     {
         $handlers = include __DIR__ . '/../config/request.handlers.php';
 
-        $loggerFactory = static function():LoggerInterface {return new Logger();};
+        $loggerFactory = static function():LoggerInterface {return new \Infrastructure\Logger\NullLogger\Logger();};
 
         return [
             [
@@ -48,7 +52,7 @@ class UnitTest
                 'in' => [
                     $handlers,
                     '/books?title=Мечтают ли андроиды об электроовцах?',
-                    'Factory::create',
+                    '\Infrastructure\Logger\Factory::create',
                     static function (){
                         $config = include __DIR__ . '/../config/dev/config.php';
                         $config['loggerType'] = 'echoLogger';
@@ -255,7 +259,7 @@ class UnitTest
         foreach (static::testDataProvider() as $testItem) {
             echo "-----{$testItem['testName']}-----\n";
             //Arrange и Act
-            $appResult = app(...$testItem['in']);
+            $appResult = \Infrastructure\app(...$testItem['in']);
 
             //Assert
             if ($appResult['httpCode'] === $testItem['out']['httpCode']) {
