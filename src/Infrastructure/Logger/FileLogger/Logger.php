@@ -1,8 +1,8 @@
 <?php
-namespace  Infrastructure\Logger\FileLogger;
+namespace EfTech\BookLibrary\Infrastructure\Logger\FileLogger;
 
 require_once __DIR__ . '/../LoggerInterface.php';
-use \Infrastructure\Logger\LoggerInterface;
+use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
 /**
  *  Логирует в файл
  */

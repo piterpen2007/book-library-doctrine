@@ -1,5 +1,5 @@
 <?php
-namespace Entity;
+namespace EfTech\BookLibrary\Entity;
 
 use JsonSerializable;
 

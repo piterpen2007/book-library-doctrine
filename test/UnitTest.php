@@ -1,9 +1,9 @@
 <?php
 
-use Infrastructure\AppConfig;
-use Infrastructure\Logger\LoggerInterface;
-use Infrastructure\Logger\NullLogger\Logger;
-use function Infrastructure\app;
+use EfTech\BookLibrary\Infrastructure\AppConfig;
+use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
+use EfTech\BookLibrary\Infrastructure\Logger\NullLogger\Logger;
+use function EfTech\BookLibrary\Infrastructure\app;
 
 require_once __DIR__ . '/../src/Infrastructure/AppConfig.php';
 require_once __DIR__ . '/../src/Infrastructure/app.function.php';
@@ -54,7 +54,7 @@ class UnitTest
                 'in' => [
                     $handlers,
                     '/books?title=Мечтают ли андроиды об электроовцах?',
-                    '\Infrastructure\Logger\Factory::create',
+                    'EfTech\BookLibrary\Infrastructure\Logger\Factory::create',
                     static function (){
                         $config = include __DIR__ . '/../config/dev/config.php';
                         $config['loggerType'] = 'echoLogger';

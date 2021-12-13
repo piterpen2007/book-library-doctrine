@@ -1,8 +1,8 @@
 <?php
-namespace Infrastructure\Logger\NullLogger;
+namespace EfTech\BookLibrary\Infrastructure\Logger\NullLogger;
 require_once __DIR__ . '/../LoggerInterface.php';
 
-use \Infrastructure\Logger\LoggerInterface;
+use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
 
 /**
  *  Логгирует в никуда

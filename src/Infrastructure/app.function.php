@@ -1,6 +1,6 @@
 <?php
-namespace Infrastructure;
-use Infrastructure\Logger\LoggerInterface;
+namespace EfTech\BookLibrary\Infrastructure;
+use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
 use Throwable;
 use UnexpectedValueException;
 
@@ -72,7 +72,7 @@ function app (array $handler,string $requestUri , callable $loggerFactory, calla
         parse_str($query,$requestParams );
 
         $appConfig = $appConfigFactory();
-        if (!($appConfig instanceof \Infrastructure\AppConfig)) {
+        if (!($appConfig instanceof \EfTech\BookLibrary\Infrastructure\AppConfig)) {
             throw new UnexpectedValueException('incorrect application config');
         }
 
@@ -96,7 +96,7 @@ function app (array $handler,string $requestUri , callable $loggerFactory, calla
             ];
             $logger->log($result['result']['message']);
         }
-    }catch (\Infrastructure\invalidDataStructureException $e) {
+    }catch (\EfTech\BookLibrary\Infrastructure\invalidDataStructureException $e) {
         $result = [
             'httpCode' => 503,
             'result' => [

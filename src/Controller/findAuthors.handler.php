@@ -1,11 +1,11 @@
 <?php
-namespace Controller;
+namespace EfTech\BookLibrary\Controller;
 
-use Entity\Author;
-use Infrastructure\AppConfig;
-use Infrastructure\Logger\LoggerInterface;
-use function Infrastructure\loadData;
-use function Infrastructure\paramTypeValidation;
+use EfTech\BookLibrary\Entity\Author;
+use EfTech\BookLibrary\Infrastructure\AppConfig;
+use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
+use function EfTech\BookLibrary\Infrastructure\loadData;
+use function EfTech\BookLibrary\Infrastructure\paramTypeValidation;
 
 require_once __DIR__ . '/../Infrastructure/app.function.php';
 require_once __DIR__ . '/../Infrastructure/AppConfig.php';

@@ -1,12 +1,12 @@
 <?php
-namespace Controller;
-use Entity\Author;
-use Entity\Book;
-use Entity\Magazine;
-use Infrastructure\AppConfig;
-use Infrastructure\Logger\LoggerInterface;
-use function Infrastructure\loadData;
-use function Infrastructure\paramTypeValidation;
+namespace EfTech\BookLibrary\Controller;
+use EfTech\BookLibrary\Entity\Author;
+use EfTech\BookLibrary\Entity\Book;
+use EfTech\BookLibrary\Entity\Magazine;
+use EfTech\BookLibrary\Infrastructure\AppConfig;
+use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
+use function EfTech\BookLibrary\Infrastructure\loadData;
+use function EfTech\BookLibrary\Infrastructure\paramTypeValidation;
 
 require_once __DIR__ . '/../Infrastructure/app.function.php';
 require_once __DIR__ . '/../Entity/Magazine.php';

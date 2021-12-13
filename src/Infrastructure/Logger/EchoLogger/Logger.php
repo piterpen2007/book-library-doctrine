@@ -1,6 +1,6 @@
 <?php
-namespace Infrastructure\Logger\EchoLogger;
-use \Infrastructure\Logger\LoggerInterface;
+namespace EfTech\BookLibrary\Infrastructure\Logger\EchoLogger;
+use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
 require_once __DIR__ . '/../LoggerInterface.php';
 
 /**

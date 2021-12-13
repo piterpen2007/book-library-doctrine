@@ -1,5 +1,5 @@
 <?php
-namespace Infrastructure\Logger;
+namespace EfTech\BookLibrary\Infrastructure\Logger;
 
 /** Интерфейс логирования
  *

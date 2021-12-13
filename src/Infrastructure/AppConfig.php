@@ -1,6 +1,6 @@
 <?php
 
-namespace Infrastructure;
+namespace EfTech\BookLibrary\Infrastructure;
 use Exception;
 
 /**

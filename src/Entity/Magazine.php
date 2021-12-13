@@ -1,9 +1,9 @@
 <?php
 
-namespace Entity;
+namespace EfTech\BookLibrary\Entity;
 
 
-use Infrastructure\invalidDataStructureException;
+use EfTech\BookLibrary\Infrastructure\invalidDataStructureException;
 
 require_once __DIR__ . '/Author.php';
 require_once __DIR__ . '/AbstractTextDocument.php';

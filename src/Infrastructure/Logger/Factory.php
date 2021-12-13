@@ -1,7 +1,7 @@
 <?php
-namespace Infrastructure\Logger;
+namespace EfTech\BookLibrary\Infrastructure\Logger;
 use Exception;
-use Infrastructure\AppConfig;
+use EfTech\BookLibrary\Infrastructure\AppConfig;
 require_once __DIR__ . '/LoggerInterface.php';
 require_once __DIR__ . '/../AppConfig.php';
 
@@ -20,13 +20,13 @@ class Factory
     {
         if ('fileLogger' === $appConfig->getLoggerType()) {
             require_once __DIR__ . '/FileLogger/Logger.php';
-            $logger = new \Infrastructure\Logger\FileLogger\Logger($appConfig->getPathToLogFile());
+            $logger = new \EfTech\BookLibrary\Infrastructure\Logger\FileLogger\Logger($appConfig->getPathToLogFile());
         } elseif ('nullLogger' === $appConfig->getLoggerType()) {
             require_once __DIR__ . '/NullLogger/Logger.php';
-            $logger = new \Infrastructure\Logger\NullLogger\Logger();
+            $logger = new \EfTech\BookLibrary\Infrastructure\Logger\NullLogger\Logger();
         } elseif ('echoLogger' === $appConfig->getLoggerType()) {
             require_once __DIR__ . '/EchoLogger/Logger.php';
-            $logger = new \Infrastructure\Logger\EchoLogger\Logger();
+            $logger = new \EfTech\BookLibrary\Infrastructure\Logger\EchoLogger\Logger();
         } else {
             throw new Exception('Unknown logger type');
         }
