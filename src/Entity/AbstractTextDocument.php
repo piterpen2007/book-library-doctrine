@@ -1,7 +1,9 @@
 <?php
 namespace Entity;
 
-abstract class AbstractTextDocument implements \JsonSerializable
+use JsonSerializable;
+
+abstract class AbstractTextDocument implements JsonSerializable
 {
     /**
      * @var int id книги

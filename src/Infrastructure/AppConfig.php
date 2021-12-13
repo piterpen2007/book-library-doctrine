@@ -1,6 +1,8 @@
 <?php
 
 namespace Infrastructure;
+use Exception;
+
 /**
  *  Конфиг приложения
  */
@@ -47,7 +49,7 @@ class AppConfig
      *
      * @param string $pathToLogFile путь до файла с логами
      * @return AppConfig
-     * @throws \Exception
+     * @throws Exception
      */
     private function setPathToLogFile(string $pathToLogFile): AppConfig
     {
@@ -81,7 +83,7 @@ class AppConfig
      * @param string $pathToAuthor
      * @return AppConfig
      *
-     * @throws \Exception
+     * @throws Exception
      */
     private function setPathToAuthor(string $pathToAuthor): AppConfig
     {
@@ -101,7 +103,7 @@ class AppConfig
     /**
      * @param string $pathToBooks
      * @return AppConfig
-     * @throws \Exception
+     * @throws Exception
      */
     private function setPathToBooks(string $pathToBooks): AppConfig
     {
@@ -122,7 +124,7 @@ class AppConfig
      *
      * @param string $pathToMagazines
      * @return AppConfig
-     * @throws \Exception
+     * @throws Exception
      */
     private function setPathToMagazines(string $pathToMagazines): AppConfig
     {
@@ -134,12 +136,12 @@ class AppConfig
     /**
      * @param string $path
      * @return void
-     * @throws \Exception
+     * @throws Exception
      */
     private function validateFilePath(string $path): void
     {
         if (false === file_exists($path)) {
-            throw new \Exception('Некорректный путь до файла с данными');
+            throw new Exception('Некорректный путь до файла с данными');
         }
     }
 

@@ -1,12 +1,13 @@
 <?php
 use Infrastructure\AppConfig;
-
+use function \Infrastructure\app;
+use function \Infrastructure\render;
 require_once __DIR__ . '/../src/Infrastructure/app.function.php';
 require_once __DIR__ . '/../src/Infrastructure/AppConfig.php';
 require_once __DIR__ . '/../src/Infrastructure/Logger/Factory.php';
 
 
-$resultApp = \Infrastructure\app
+$resultApp = app
 (
     include __DIR__ . '/../config/request.handlers.php',
     $_SERVER['REQUEST_URI'],
@@ -14,4 +15,4 @@ $resultApp = \Infrastructure\app
     static function() {return AppConfig::createFromArray(include __DIR__ . '/../config/dev/config.php');}
 
 );
-\Infrastructure\render($resultApp['result'], $resultApp['httpCode']);
+render($resultApp['result'], $resultApp['httpCode']);

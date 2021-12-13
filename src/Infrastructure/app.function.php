@@ -1,6 +1,8 @@
 <?php
 namespace Infrastructure;
 use Infrastructure\Logger\LoggerInterface;
+use Throwable;
+use UnexpectedValueException;
 
 require_once __DIR__ . '/AppConfig.php';
 require_once __DIR__ . '/invalidDataStructureException.php';
@@ -71,12 +73,12 @@ function app (array $handler,string $requestUri , callable $loggerFactory, calla
 
         $appConfig = $appConfigFactory();
         if (!($appConfig instanceof \Infrastructure\AppConfig)) {
-            throw new \UnexpectedValueException('incorrect application config');
+            throw new UnexpectedValueException('incorrect application config');
         }
 
         $logger = $loggerFactory($appConfig);
         if (!($logger instanceof LoggerInterface)) {
-            throw new \UnexpectedValueException('incorrect logger');
+            throw new UnexpectedValueException('incorrect logger');
         }
 
         $logger->log('Url request received' . $requestUri);
@@ -102,7 +104,7 @@ function app (array $handler,string $requestUri , callable $loggerFactory, calla
                 'message' => $e->getMessage()
             ]
         ];
-    } catch (\Throwable $e) {
+    } catch (Throwable $e) {
 
         $result = [
             'httpCode' => 500,

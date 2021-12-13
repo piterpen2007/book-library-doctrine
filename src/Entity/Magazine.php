@@ -3,6 +3,8 @@
 namespace Entity;
 
 
+use Infrastructure\invalidDataStructureException;
+
 require_once __DIR__ . '/Author.php';
 require_once __DIR__ . '/AbstractTextDocument.php';
 require_once __DIR__ . '/../Infrastructure/invalidDataStructureException.php';
@@ -99,7 +101,7 @@ final class Magazine extends AbstractTextDocument
 
         if (count($missingFields) > 0) {
             $errMsg = sprintf('Отсутствуют обязательные элементы: %s', implode(',', $missingFields));
-            throw new \Infrastructure\invalidDataStructureException($errMsg);
+            throw new invalidDataStructureException($errMsg);
         }
 
         return new Magazine($data['id'], $data['title'], $data['year'], $data['author'], $data['number']);

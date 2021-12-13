@@ -2,11 +2,11 @@
 namespace  Infrastructure\Logger\FileLogger;
 
 require_once __DIR__ . '/../LoggerInterface.php';
-
+use \Infrastructure\Logger\LoggerInterface;
 /**
  *  Логирует в файл
  */
-class Logger implements \Infrastructure\Logger\LoggerInterface
+class Logger implements LoggerInterface
 {
     /**
      * @var string путь до файла где пишутся логи

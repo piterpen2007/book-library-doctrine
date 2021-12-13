@@ -1,12 +1,16 @@
 <?php
 
 namespace Entity;
+use Exception;
+use Infrastructure\invalidDataStructureException;
+use JsonSerializable;
+
 require_once __DIR__ . '/../Infrastructure/invalidDataStructureException.php';
 
 /**
  * Автор
  */
-final class Author implements \JsonSerializable
+final class Author implements JsonSerializable
 {
     /**
      * @var int id автора
@@ -149,7 +153,7 @@ final class Author implements \JsonSerializable
     /**
      * @param array $data
      * @return Author
-     * @throws \Exception
+     * @throws Exception
      */
     public static function createFromArray(array $data): Author
     {
@@ -165,7 +169,7 @@ final class Author implements \JsonSerializable
 
         if (count($missingFields) > 0) {
             $errMsg = sprintf('Отсутствуют обязательные элементы: %s', implode(',', $missingFields));
-            throw new \Infrastructure\invalidDataStructureException($errMsg);
+            throw new invalidDataStructureException($errMsg);
         }
         return new Author($data['id'], $data['name'], $data['surname'], $data['birthday'], $data['country']);
     }

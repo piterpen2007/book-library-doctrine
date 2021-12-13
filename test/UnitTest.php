@@ -2,6 +2,8 @@
 
 use Infrastructure\AppConfig;
 use Infrastructure\Logger\LoggerInterface;
+use Infrastructure\Logger\NullLogger\Logger;
+use function Infrastructure\app;
 
 require_once __DIR__ . '/../src/Infrastructure/AppConfig.php';
 require_once __DIR__ . '/../src/Infrastructure/app.function.php';
@@ -44,7 +46,7 @@ class UnitTest
     {
         $handlers = include __DIR__ . '/../config/request.handlers.php';
 
-        $loggerFactory = static function():LoggerInterface {return new \Infrastructure\Logger\NullLogger\Logger();};
+        $loggerFactory = static function():LoggerInterface {return new Logger();};
 
         return [
             [
@@ -259,7 +261,7 @@ class UnitTest
         foreach (static::testDataProvider() as $testItem) {
             echo "-----{$testItem['testName']}-----\n";
             //Arrange и Act
-            $appResult = \Infrastructure\app(...$testItem['in']);
+            $appResult = app(...$testItem['in']);
 
             //Assert
             if ($appResult['httpCode'] === $testItem['out']['httpCode']) {
