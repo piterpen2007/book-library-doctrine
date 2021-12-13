@@ -5,19 +5,19 @@ require_once __DIR__ . '/../Entity/Magazine.php';
 require_once __DIR__ . '/../Entity/Author.php';
 require_once __DIR__ . '/../Entity/Book.php';
 require_once __DIR__ . '/../Infrastructure/AppConfig.php';
-
+require_once __DIR__ . '/../Infrastructure/Logger/LoggerInterface.php';
 /** Функция поиска книги
 * @param $request array - параметры которые передаёт пользователь
 * @logger callable - параметр инкапсулирующий логгирование
 * @return array - возвращает результат поиска по книгам
 */
-return static function (array $request, callable $logger, AppConfig $appConfig):array
+return static function (array $request, LoggerInterface $logger, AppConfig $appConfig):array
 {
     $authorsJson = loadData($appConfig->getPathToAuthor());
     $booksJson   = loadData($appConfig->getPathToBooks());
     $magazinesJson = loadData($appConfig->getPathToMagazines());
 
-    $logger('dispatch "books" url');
+    $logger->log('dispatch "books" url');
 
     $paramValidations = [
         'author_surname' => 'inccorrect author surname',
@@ -56,7 +56,7 @@ return static function (array $request, callable $logger, AppConfig $appConfig):
                 $foundBooks[] = $bookObj;
             }
         }
-        $logger('found books ' . count($foundBooks));
+        $logger->log('found books ' . count($foundBooks));
         return [
             'httpCode' => 200,
             'result' => $foundBooks

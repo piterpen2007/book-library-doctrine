@@ -1,5 +1,8 @@
 <?php
 require_once __DIR__ . '/AppConfig.php';
+require_once __DIR__ . '/invalidDataStructureException.php';
+require_once __DIR__ . '/Logger/LoggerInterface.php';
+
 /**
  * @param string $sourceName - путь до файла
  * @return array - вывод содержимого файла в виде массива
@@ -48,24 +51,15 @@ function paramTypeValidation(array $validateParameters, array $params):?array
     return $result;
 }
 
-/**
- * Логирует текстовое сообщение
- * @param string $errMsg - сообщение о ошибке
- */
-function loggerInFile ( string $errMsg):void
-{
-    file_put_contents(__DIR__ . '/../../var/log/app.log',"{$errMsg}\n", FILE_APPEND);
-}
-
 /** Функция реализации веб приложения
  *
  * @param $handler array - массив сопоставляющий url parh с функциями реализующими логику обработки запроса
  * @param $requestUri string - URI запроса
- * @param $logger callable - параметр инкапсулирующий логгирование
+ * @param $loggerFactory callable - фабрика логгеров
  * @param $appConfigFactory callable - фабрика реализзующая логику создания конфига приложения
  * @return array
  */
-function app (array $handler,string $requestUri ,callable $logger, callable $appConfigFactory):array
+function app (array $handler,string $requestUri , callable $loggerFactory, callable $appConfigFactory):array
 {
     try {
         $query = parse_url($requestUri, PHP_URL_QUERY);
@@ -73,12 +67,16 @@ function app (array $handler,string $requestUri ,callable $logger, callable $app
         parse_str($query,$requestParams );
 
         $appConfig = $appConfigFactory();
-
-        if (!$appConfig instanceof AppConfig) {
-            throw new Exception('incorrect application config');
+        if (!($appConfig instanceof AppConfig)) {
+            throw new UnexpectedValueException('incorrect application config');
         }
 
-        $logger('Url request received' . $requestUri);
+        $logger = $loggerFactory($appConfig);
+        if (!($logger instanceof LoggerInterface)) {
+            throw new UnexpectedValueException('incorrect logger');
+        }
+
+        $logger->log('Url request received' . $requestUri);
         $urlPath = parse_url($requestUri, PHP_URL_PATH);
 
         if (array_key_exists($urlPath, $handler)) {
@@ -91,7 +89,7 @@ function app (array $handler,string $requestUri ,callable $logger, callable $app
                     'message' => 'unsupported request'
                 ]
             ];
-            $logger($result['result']['message']);
+            $logger->log($result['result']['message']);
         }
     }catch (invalidDataStructureException $e) {
         $result = [

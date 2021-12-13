@@ -1,6 +1,9 @@
 <?php
 require_once __DIR__ . '/../src/Infrastructure/AppConfig.php';
 require_once __DIR__ . '/../src/Infrastructure/app.function.php';
+require_once __DIR__ . '/../src/Infrastructure/Logger/LoggerInterface.php';
+require_once __DIR__ . '/../src/Infrastructure/Logger/NullLogger/Logger.php';
+require_once __DIR__ . '/../src/Infrastructure/Logger/Factory.php';
 
 /** Вычисляет расскхождение массивов с доп проверкой индекса. Поддержка многомерных массивов
  * @param array $a1
@@ -36,14 +39,21 @@ class UnitTest
     private static function testDataProvider():array
     {
         $handlers = include __DIR__ . '/../config/request.handlers.php';
+
+        $loggerFactory = static function():LoggerInterface {return new Logger();};
+
         return [
             [
                 'testName'=>'Тестирование поиска книг по названию',
                 'in' => [
                     $handlers,
                     '/books?title=Мечтают ли андроиды об электроовцах?',
-                    function() {},
-                    static function () {return AppConfig::createFromArray(include __DIR__ . '/../config/dev/config.php');}
+                    'Factory::create',
+                    static function (){
+                        $config = include __DIR__ . '/../config/dev/config.php';
+                        $config['loggerType'] = 'echoLogger';
+                        return AppConfig::createFromArray($config);
+                    }
                 ],
                 'out' => [
                     'httpCode' => 200,
@@ -70,8 +80,7 @@ class UnitTest
                 'in' => [
                     $handlers,
                     '/books?title=Мечтают ли андроиды об электроовцах?',
-                    function () {
-                    },
+                    $loggerFactory,
                     static function (){
                         $config = include __DIR__ . '/../config/dev/config.php';
                         $config['pathToBooks'] = __DIR__ . '/../test/data/broken.books.json';
@@ -91,8 +100,7 @@ class UnitTest
                 'in' => [
                     $handlers,
                     '/books?title=Мечтают ли андроиды об электроовцах?',
-                    static function () {
-                    },
+                    $loggerFactory,
                     static function (){
                         return 'Ops!';
                     }
@@ -110,8 +118,7 @@ class UnitTest
                 'in' => [
                     $handlers,
                     '/books?title=Мечтают ли андроиды об электроовцах?',
-                    static function () {
-                    },
+                    $loggerFactory,
                     static function (){
                         $config = include __DIR__ . '/../config/dev/config.php';
                         $config['pathToBooks'] = __DIR__ . '/data/unknown.books.json';
@@ -131,8 +138,7 @@ class UnitTest
                 'in' => [
                     $handlers,
                     '/books?title=National Geographic Magazine',
-                    function () {
-                    },
+                    $loggerFactory,
                     static function (){
                         $config = include __DIR__ . '/../config/dev/config.php';
                         $config['pathToMagazines'] = __DIR__ . '/../test/data/broken.magazines.json';
@@ -154,8 +160,7 @@ class UnitTest
                 'in' => [
                     $handlers,
                     '/books?title=Мечтают ли андроиды об электроовцах?',
-                    static function () {
-                    },
+                    $loggerFactory,
                     static function (){
                         $config = include __DIR__ . '/../config/dev/config.php';
                         $config['pathToAuthor'] = __DIR__ . '/../test/data/broken.authors.json';
@@ -175,8 +180,7 @@ class UnitTest
                 'in' => [
                     $handlers,
                     '/books?title=Мечтают ли андроиды об электроовцах?',
-                    static function () {
-                    },
+                    $loggerFactory,
                     static function (){
                         $config = include __DIR__ . '/../config/dev/config.php';
                         $config['pathToAuthor'] = __DIR__ . '/data/unknown.authors.json';
@@ -196,8 +200,7 @@ class UnitTest
                 'in' => [
                     $handlers,
                     '/books?title=Мечтают ли андроиды об электроовцах?',
-                    static function () {
-                    },
+                    $loggerFactory,
                     static function (){
                         $config = include __DIR__ . '/../config/dev/config.php';
                         $config['pathToMagazines'] = __DIR__ . '/data/unknown.magazines.json';
@@ -210,6 +213,34 @@ class UnitTest
                         'status' => 'fail',
                         'message' => 'Некорректный путь до файла с данными'
                     ]
+                ]
+            ],
+            [
+                'testName'=>'Тестирование поиска книг по названию',
+                'in' => [
+                    $handlers,
+                    '/books?title=Мечтают ли андроиды об электроовцах?',
+                    $loggerFactory,
+                    static function () {return AppConfig::createFromArray(include __DIR__ . '/../config/dev/config.php');}
+                ],
+                'out' => [
+                    'httpCode' => 200,
+                    'result' => [
+                        [
+                            'id' => 10,
+                            'title' => 'Мечтают ли андроиды об электроовцах?',
+                            'year' => 1966,
+                            'title_for_printing' => 'Мечтают ли андроиды об электроовцах? . Дик Филип . 1966',
+                            'author' =>
+                                [
+                                    'id' => 5,
+                                    'name' => 'Филип',
+                                    'surname' => 'Дик',
+                                    'birthday' => '16.12.1928',
+                                    'country' => 'us',
+                                ],
+                        ]
+                    ],
                 ]
             ],
         ];

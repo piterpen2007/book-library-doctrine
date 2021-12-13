@@ -5,6 +5,56 @@
  */
 class AppConfig
 {
+    /**
+     * @var string Тип логера
+     */
+    private string $loggerType = 'nullLogger';
+
+    /** Возвращает тип логера
+     * @return string
+     */
+    public function getLoggerType(): string
+    {
+        return $this->loggerType;
+    }
+
+    /** Устанавливает тип логера
+     * @param string $loggerType
+     * @return AppConfig
+     */
+    private function setLoggerType(string $loggerType): AppConfig
+    {
+        $this->loggerType = $loggerType;
+        return $this;
+    }
+
+    /**
+     * @var string путь до файла логирования
+     */
+    private string $pathToLogFile =  __DIR__ . '/../../var/log/app.log';
+
+    /** Возвращает путь до файла с логами
+     * @return string
+     */
+    public function getPathToLogFile(): string
+    {
+        return $this->pathToLogFile;
+    }
+
+
+    /** Устанавливает путь до файла логов
+     *
+     * @param string $pathToLogFile путь до файла с логами
+     * @return AppConfig
+     * @throws Exception
+     */
+    private function setPathToLogFile(string $pathToLogFile): AppConfig
+    {
+        $this->validateFilePath($pathToLogFile);
+        $this->pathToLogFile = $pathToLogFile;
+        return $this;
+    }
+
     /** Путь до файла с данными о авторе
      * @var string
      */
@@ -98,6 +148,8 @@ class AppConfig
      * @uses AppConfig::setPathToBooks()
      * @uses AppConfig::setPathToAuthor()
      * @uses AppConfig::setPathToMagazines()
+     * @uses AppConfig::setPathToLogFile()
+     * @uses AppConfig::setLoggerType()
      */
     public static function createFromArray(array $config):self
     {

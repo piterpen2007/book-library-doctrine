@@ -2,17 +2,18 @@
 
 require_once __DIR__ . '/../Infrastructure/app.function.php';
 require_once __DIR__ . '/../Infrastructure/AppConfig.php';
+require_once __DIR__ . '/../Infrastructure/Logger/LoggerInterface.php';
 
 /** Функция поиска авторов
  * @param $request array - параметры которые передаёт пользователь
  * @param $appConfig - конфиг приложения
- * @logger callable - параметр инкапсулирующий логгирование
+ * @logger LoggerInterface - параметр инкапсулирующий логгирование
  * @return array - возвращает результат поиска по авторам
  */
-return static function (array $request, callable $logger, AppConfig $appConfig):array
+return static function (array $request, LoggerInterface $logger, AppConfig $appConfig):array
 {
     $authorsJson = loadData($appConfig->getPathToAuthor());
-    $logger('dispatch "authors" url');
+    $logger->log('dispatch "authors" url');
 
     $paramValidations = [
         'surname' => 'inccorrect surname author'
@@ -25,7 +26,7 @@ return static function (array $request, callable $logger, AppConfig $appConfig):
                 $foundAuthor[] = Author::createFromArray($currentAuthor);
             }
         }
-        $logger('found authors: ' . count($foundAuthor));
+        $logger->log('found authors: ' . count($foundAuthor));
         return [
             'httpCode' => 200,
             'result' => $foundAuthor
