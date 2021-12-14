@@ -1,13 +1,7 @@
 <?php
 
 namespace EfTech\BookLibrary\Entity;
-
-
 use EfTech\BookLibrary\Infrastructure\invalidDataStructureException;
-
-require_once __DIR__ . '/Author.php';
-require_once __DIR__ . '/AbstractTextDocument.php';
-require_once __DIR__ . '/../Infrastructure/invalidDataStructureException.php';
 
 final class Magazine extends AbstractTextDocument
 {

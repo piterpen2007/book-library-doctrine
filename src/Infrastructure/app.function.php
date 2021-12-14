@@ -4,10 +4,6 @@ use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
 use Throwable;
 use UnexpectedValueException;
 
-require_once __DIR__ . '/AppConfig.php';
-require_once __DIR__ . '/invalidDataStructureException.php';
-require_once __DIR__ . '/Logger/LoggerInterface.php';
-
 /**
  * @param string $sourceName - путь до файла
  * @return array - вывод содержимого файла в виде массива
@@ -96,7 +92,7 @@ function app (array $handler,string $requestUri , callable $loggerFactory, calla
             ];
             $logger->log($result['result']['message']);
         }
-    }catch (\EfTech\BookLibrary\Infrastructure\invalidDataStructureException $e) {
+    }catch (invalidDataStructureException $e) {
         $result = [
             'httpCode' => 503,
             'result' => [

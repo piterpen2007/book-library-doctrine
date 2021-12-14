@@ -5,8 +5,6 @@ use Exception;
 use EfTech\BookLibrary\Infrastructure\invalidDataStructureException;
 use JsonSerializable;
 
-require_once __DIR__ . '/../Infrastructure/invalidDataStructureException.php';
-
 /**
  * Автор
  */

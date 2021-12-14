@@ -1,7 +1,6 @@
 <?php
 namespace EfTech\BookLibrary\Infrastructure\Logger\EchoLogger;
 use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
-require_once __DIR__ . '/../LoggerInterface.php';
 
 /**
  *  Логирует в консоль с помощью echo

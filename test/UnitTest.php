@@ -1,15 +1,21 @@
 <?php
 
+require_once __DIR__ . '/../src/Infrastructure/app.function.php';
+require_once __DIR__ . '/../src/Infrastructure/Autoloader.php';
+
 use EfTech\BookLibrary\Infrastructure\AppConfig;
+use EfTech\BookLibrary\Infrastructure\Autoloader;
 use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
 use EfTech\BookLibrary\Infrastructure\Logger\NullLogger\Logger;
 use function EfTech\BookLibrary\Infrastructure\app;
 
-require_once __DIR__ . '/../src/Infrastructure/AppConfig.php';
-require_once __DIR__ . '/../src/Infrastructure/app.function.php';
-require_once __DIR__ . '/../src/Infrastructure/Logger/LoggerInterface.php';
-require_once __DIR__ . '/../src/Infrastructure/Logger/NullLogger/Logger.php';
-require_once __DIR__ . '/../src/Infrastructure/Logger/Factory.php';
+spl_autoload_register([
+    new Autoloader([
+        'EfTech\\BookLibrary\\' => __DIR__ . '/../src/',
+        'EfTech\\BookLibraryTest\\' => __DIR__
+    ]),
+    'autoload'
+]);
 
 /** Вычисляет расскхождение массивов с доп проверкой индекса. Поддержка многомерных массивов
  * @param array $a1

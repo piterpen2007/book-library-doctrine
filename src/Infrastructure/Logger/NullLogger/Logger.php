@@ -1,6 +1,5 @@
 <?php
 namespace EfTech\BookLibrary\Infrastructure\Logger\NullLogger;
-require_once __DIR__ . '/../LoggerInterface.php';
 
 use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
 

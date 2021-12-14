@@ -8,8 +8,7 @@ use function EfTech\BookLibrary\Infrastructure\loadData;
 use function EfTech\BookLibrary\Infrastructure\paramTypeValidation;
 
 require_once __DIR__ . '/../Infrastructure/app.function.php';
-require_once __DIR__ . '/../Infrastructure/AppConfig.php';
-require_once __DIR__ . '/../Infrastructure/Logger/LoggerInterface.php';
+
 
 /** Функция поиска авторов
  * @param $request array - параметры которые передаёт пользователь
