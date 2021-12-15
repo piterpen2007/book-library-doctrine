@@ -16,6 +16,7 @@ require_once __DIR__ . '/../Infrastructure/app.function.php';
 */
 return static function (array $request, LoggerInterface $logger, AppConfig $appConfig):array
 {
+    trigger_error('test notice', E_USER_NOTICE);
     $authorsJson = loadData($appConfig->getPathToAuthor());
     $booksJson   = loadData($appConfig->getPathToBooks());
     $magazinesJson = loadData($appConfig->getPathToMagazines());

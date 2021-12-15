@@ -1,7 +1,6 @@
 <?php
 
-namespace EfTech\BookLibrary\Infrastructure;
-use RuntimeException;
+namespace EfTech\BookLibrary\Exception;
 
 /**
  * Исключение выбрасывается в случае если данные имеют невалидную структуру

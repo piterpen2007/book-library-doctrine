@@ -1,8 +1,7 @@
 <?php
 
 namespace EfTech\BookLibrary\Entity;
-use Exception;
-use EfTech\BookLibrary\Infrastructure\invalidDataStructureException;
+use EfTech\BookLibrary\Exception;
 use JsonSerializable;
 
 /**
@@ -151,7 +150,7 @@ final class Author implements JsonSerializable
     /**
      * @param array $data
      * @return Author
-     * @throws Exception
+     * @throws \Exception
      */
     public static function createFromArray(array $data): Author
     {
@@ -167,7 +166,7 @@ final class Author implements JsonSerializable
 
         if (count($missingFields) > 0) {
             $errMsg = sprintf('Отсутствуют обязательные элементы: %s', implode(',', $missingFields));
-            throw new invalidDataStructureException($errMsg);
+            throw new Exception\invalidDataStructureException($errMsg);
         }
         return new Author($data['id'], $data['name'], $data['surname'], $data['birthday'], $data['country']);
     }

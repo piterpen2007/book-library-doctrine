@@ -3,19 +3,19 @@
 require_once __DIR__ . '/../src/Infrastructure/app.function.php';
 require_once __DIR__ . '/../src/Infrastructure/Autoloader.php';
 
+use EfTech\BookLibrary\Infrastructure\App;
 use EfTech\BookLibrary\Infrastructure\AppConfig;
 use EfTech\BookLibrary\Infrastructure\Autoloader;
 use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
 use EfTech\BookLibrary\Infrastructure\Logger\NullLogger\Logger;
-use function EfTech\BookLibrary\Infrastructure\app;
 
-spl_autoload_register([
+
+spl_autoload_register(
     new Autoloader([
         'EfTech\\BookLibrary\\' => __DIR__ . '/../src/',
         'EfTech\\BookLibraryTest\\' => __DIR__
-    ]),
-    'autoload'
-]);
+    ])
+);
 
 /** Вычисляет расскхождение массивов с доп проверкой индекса. Поддержка многомерных массивов
  * @param array $a1
@@ -58,10 +58,10 @@ class UnitTest
             [
                 'testName'=>'Тестирование поиска книг по названию',
                 'in' => [
-                    $handlers,
-                    '/books?title=Мечтают ли андроиды об электроовцах?',
-                    'EfTech\BookLibrary\Infrastructure\Logger\Factory::create',
-                    static function (){
+                    'handlers' => $handlers,
+                    'uri' => '/books?title=Мечтают ли андроиды об электроовцах?',
+                    'loggerFactory' => 'EfTech\BookLibrary\Infrastructure\Logger\Factory::create',
+                    'appConfigFactory' => static function (){
                         $config = include __DIR__ . '/../config/dev/config.php';
                         $config['loggerType'] = 'echoLogger';
                         return AppConfig::createFromArray($config);
@@ -90,10 +90,10 @@ class UnitTest
             [
                 'testName' => 'Тестирование ситуации когда данные о книгах не корректны. Нет поля year',
                 'in' => [
-                    $handlers,
-                    '/books?title=Мечтают ли андроиды об электроовцах?',
-                    $loggerFactory,
-                    static function (){
+                    'handlers' => $handlers,
+                    'uri' => '/books?title=Мечтают ли андроиды об электроовцах?',
+                    'loggerFactory' => $loggerFactory,
+                    'appConfigFactory' => static function (){
                         $config = include __DIR__ . '/../config/dev/config.php';
                         $config['pathToBooks'] = __DIR__ . '/../test/data/broken.books.json';
                         return AppConfig::createFromArray($config);
@@ -110,10 +110,10 @@ class UnitTest
             [
                 'testName' => 'Тестирование ситуации с некорректным  данными конфига приложения',
                 'in' => [
-                    $handlers,
-                    '/books?title=Мечтают ли андроиды об электроовцах?',
-                    $loggerFactory,
-                    static function (){
+                    'handlers' => $handlers,
+                    'uri' => '/books?title=Мечтают ли андроиды об электроовцах?',
+                    'loggerFactory' => $loggerFactory,
+                    'appConfigFactory' =>  static function (){
                         return 'Ops!';
                     }
                 ],
@@ -128,10 +128,10 @@ class UnitTest
             [
                 'testName' => 'Тестирование ситуации с некорректным путем до файла с книгами',
                 'in' => [
-                    $handlers,
-                    '/books?title=Мечтают ли андроиды об электроовцах?',
-                    $loggerFactory,
-                    static function (){
+                    'handlers' => $handlers,
+                    'uri' => '/books?title=Мечтают ли андроиды об электроовцах?',
+                    'loggerFactory' => $loggerFactory,
+                    'appConfigFactory' => static function (){
                         $config = include __DIR__ . '/../config/dev/config.php';
                         $config['pathToBooks'] = __DIR__ . '/data/unknown.books.json';
                         return AppConfig::createFromArray($config);
@@ -148,10 +148,10 @@ class UnitTest
             [
                 'testName' => 'Тестирование ситуации когда данные о журналах некорректны. Нет поля id',
                 'in' => [
-                    $handlers,
-                    '/books?title=National Geographic Magazine',
-                    $loggerFactory,
-                    static function (){
+                    'handlers' => $handlers,
+                    'uri' =>'/books?title=National Geographic Magazine',
+                    'loggerFactory' => $loggerFactory,
+                    'appConfigFactory' => static function (){
                         $config = include __DIR__ . '/../config/dev/config.php';
                         $config['pathToMagazines'] = __DIR__ . '/../test/data/broken.magazines.json';
                         return AppConfig::createFromArray($config);
@@ -170,10 +170,10 @@ class UnitTest
             [
                 'testName' => 'Тестирование ситуации когда данные в авторах некорректны. Нет поля birthday',
                 'in' => [
-                    $handlers,
-                    '/books?title=Мечтают ли андроиды об электроовцах?',
-                    $loggerFactory,
-                    static function (){
+                    'handlers' =>  $handlers,
+                    'uri' => '/books?title=Мечтают ли андроиды об электроовцах?',
+                    'loggerFactory' => $loggerFactory,
+                    'appConfigFactory' => static function (){
                         $config = include __DIR__ . '/../config/dev/config.php';
                         $config['pathToAuthor'] = __DIR__ . '/../test/data/broken.authors.json';
                         return AppConfig::createFromArray($config);
@@ -190,10 +190,10 @@ class UnitTest
             [
                 'testName' => 'Тестирование ситуации с некорректным путем до файла о авторе',
                 'in' => [
-                    $handlers,
-                    '/books?title=Мечтают ли андроиды об электроовцах?',
-                    $loggerFactory,
-                    static function (){
+                    'handlers' =>  $handlers,
+                    'uri' => '/books?title=Мечтают ли андроиды об электроовцах?',
+                    'loggerFactory' => $loggerFactory,
+                    'appConfigFactory' => static function (){
                         $config = include __DIR__ . '/../config/dev/config.php';
                         $config['pathToAuthor'] = __DIR__ . '/data/unknown.authors.json';
                         return AppConfig::createFromArray($config);
@@ -210,10 +210,10 @@ class UnitTest
             [
                 'testName' => 'Тестирование ситуации с некорректным путем до файла до журналов',
                 'in' => [
-                    $handlers,
-                    '/books?title=Мечтают ли андроиды об электроовцах?',
-                    $loggerFactory,
-                    static function (){
+                    'handlers' => $handlers,
+                    'uri' =>  '/books?title=Мечтают ли андроиды об электроовцах?',
+                    'loggerFactory' => $loggerFactory,
+                    'appConfigFactory' => static function (){
                         $config = include __DIR__ . '/../config/dev/config.php';
                         $config['pathToMagazines'] = __DIR__ . '/data/unknown.magazines.json';
                         return AppConfig::createFromArray($config);
@@ -230,10 +230,10 @@ class UnitTest
             [
                 'testName'=>'Тестирование поиска книг по названию',
                 'in' => [
-                    $handlers,
-                    '/books?title=Мечтают ли андроиды об электроовцах?',
-                    $loggerFactory,
-                    static function () {return AppConfig::createFromArray(include __DIR__ . '/../config/dev/config.php');}
+                    'handlers' => $handlers,
+                    'uri' => '/books?title=Мечтают ли андроиды об электроовцах?',
+                    'loggerFactory' => $loggerFactory,
+                    'appConfigFactory' => static function () {return AppConfig::createFromArray(include __DIR__ . '/../config/dev/config.php');}
                 ],
                 'out' => [
                     'httpCode' => 200,
@@ -267,8 +267,12 @@ class UnitTest
         foreach (static::testDataProvider() as $testItem) {
             echo "-----{$testItem['testName']}-----\n";
             //Arrange и Act
-            $appResult = app(...$testItem['in']);
 
+            $appResult = (new App(
+                $testItem['in']['handlers'],
+                $testItem['in']['loggerFactory'],
+                $testItem['in']['appConfigFactory']
+            ))->dispath($testItem['in']['uri']);
             //Assert
             if ($appResult['httpCode'] === $testItem['out']['httpCode']) {
                 echo "    OK --- код ответа\n";

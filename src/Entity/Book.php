@@ -1,7 +1,7 @@
 <?php
 
 namespace EfTech\BookLibrary\Entity;
-use EfTech\BookLibrary\Infrastructure\invalidDataStructureException;
+use EfTech\BookLibrary\Exception;
 
 final class Book extends AbstractTextDocument
 {
@@ -72,7 +72,7 @@ final class Book extends AbstractTextDocument
 
         if (count($missingFields) > 0) {
             $errMsg = sprintf('Отсутствуют обязательные элементы: %s', implode(',', $missingFields));
-            throw new invalidDataStructureException($errMsg);
+            throw new Exception\invalidDataStructureException($errMsg);
         }
 
 

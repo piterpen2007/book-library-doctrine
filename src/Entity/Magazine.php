@@ -1,7 +1,7 @@
 <?php
 
 namespace EfTech\BookLibrary\Entity;
-use EfTech\BookLibrary\Infrastructure\invalidDataStructureException;
+use EfTech\BookLibrary\Exception;
 
 final class Magazine extends AbstractTextDocument
 {
@@ -95,7 +95,7 @@ final class Magazine extends AbstractTextDocument
 
         if (count($missingFields) > 0) {
             $errMsg = sprintf('Отсутствуют обязательные элементы: %s', implode(',', $missingFields));
-            throw new invalidDataStructureException($errMsg);
+            throw new Exception\invalidDataStructureException($errMsg);
         }
 
         return new Magazine($data['id'], $data['title'], $data['year'], $data['author'], $data['number']);
