@@ -279,7 +279,7 @@ class UnitTest
             } else {
                 echo "    FAIL - код ответа. Ожидалось: {$testItem['out']['httpCode']}. Актуальное значение: {$appResult['httpCode']}\n";
             }
-            $actualResult = json_decode(json_encode($appResult['result']), true);
+            $actualResult =  json_decode(json_encode($appResult['result']), true);
             $unnecessaryElements = array_diff_assoc_recursive($actualResult, $testItem['out']['result']);
             $missingElements =  array_diff_assoc_recursive($testItem['out']['result'], $actualResult);
 

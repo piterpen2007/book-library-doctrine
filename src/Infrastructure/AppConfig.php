@@ -1,7 +1,7 @@
 <?php
 
 namespace EfTech\BookLibrary\Infrastructure;
-use Exception;
+use EfTech\BookLibrary\Exception;
 
 /**
  *  Конфиг приложения
@@ -12,6 +12,26 @@ class AppConfig
      * @var string Тип логера
      */
     private string $loggerType = 'nullLogger';
+    /** Скрывает сообщения о ошибках
+     * @var bool
+     */
+    private bool $hideErrorMsg;
+
+    /** Возвращает флаг, который указывает что нужно скрывать сообщения о ощибках
+     * @return bool
+     */
+    public function isHideErrorMsg(): bool
+    {
+        return $this->hideErrorMsg;
+    }
+
+    /** Устанавливает флаг указывающий что нужно скрывать сообщение о ошибках
+     * @param bool $hideErrorMsg
+     */
+    private function setHideErrorMsg(bool $hideErrorMsg): void
+    {
+        $this->hideErrorMsg = $hideErrorMsg;
+    }
 
     /** Возвращает тип логера
      * @return string
@@ -23,7 +43,6 @@ class AppConfig
 
     /** Устанавливает тип логера
      * @param string $loggerType
-     * @return AppConfig
      */
     private function setLoggerType(string $loggerType): AppConfig
     {
@@ -49,7 +68,6 @@ class AppConfig
      *
      * @param string $pathToLogFile путь до файла с логами
      * @return AppConfig
-     * @throws Exception
      */
     private function setPathToLogFile(string $pathToLogFile): AppConfig
     {
@@ -82,8 +100,6 @@ class AppConfig
     /**
      * @param string $pathToAuthor
      * @return AppConfig
-     *
-     * @throws Exception
      */
     private function setPathToAuthor(string $pathToAuthor): AppConfig
     {
@@ -103,7 +119,6 @@ class AppConfig
     /**
      * @param string $pathToBooks
      * @return AppConfig
-     * @throws Exception
      */
     private function setPathToBooks(string $pathToBooks): AppConfig
     {
@@ -124,7 +139,6 @@ class AppConfig
      *
      * @param string $pathToMagazines
      * @return AppConfig
-     * @throws Exception
      */
     private function setPathToMagazines(string $pathToMagazines): AppConfig
     {
@@ -136,12 +150,11 @@ class AppConfig
     /**
      * @param string $path
      * @return void
-     * @throws Exception
      */
     private function validateFilePath(string $path): void
     {
         if (false === file_exists($path)) {
-            throw new Exception('Некорректный путь до файла с данными');
+            throw new Exception\RuntimeException('Некорректный путь до файла с данными');
         }
     }
 
@@ -153,6 +166,7 @@ class AppConfig
      * @uses AppConfig::setPathToMagazines()
      * @uses AppConfig::setPathToLogFile()
      * @uses AppConfig::setLoggerType()
+     * @uses AppConfig::setHideErrorMsg()
      */
     public static function createFromArray(array $config): self
     {

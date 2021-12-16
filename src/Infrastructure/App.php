@@ -31,6 +31,16 @@ final class App
      */
     private ?LoggerInterface $logger = null;
 
+    /** Инициация обработки ошибок
+     *
+     */
+    private function initErrorHandling():void
+    {
+        set_error_handler(static function(int $errNom, string $errStr){
+            throw new Exception\RuntimeException($errStr);
+        });
+    }
+
     /**
      * @return LoggerInterface
      */
@@ -57,6 +67,7 @@ final class App
         $this->handlers = $handler;
         $this->loggerFactory = $loggerFactory;
         $this->appConfigFactory = $appConfigFactory;
+        $this->initErrorHandling();
     }
 
     /**
@@ -88,6 +99,7 @@ final class App
 
     public function dispath(string $requestUri):array
     {
+        $appConfig = null;
         try {
             $appConfig = $this->getAppConfig();
             $logger = $this->getLogger();
@@ -117,12 +129,18 @@ final class App
                 ]
             ];
         } catch (Throwable $e) {
+            $errMsg = $appConfig instanceof AppConfig
+                && false === $appConfig->isHideErrorMsg() ? $e->getMessage() : 'system error';
+            try {
+                $this->getLogger()->log($e->getMessage());
+                $this->logger->log($e->getMessage());
+            } catch (Throwable $e) {}
 
             $result = [
                 'httpCode' => 500,
                 'result' => [
                     'status' => 'fail',
-                    'message' => $e->getMessage()
+                    'message' => $errMsg
                 ]
             ];
         }
