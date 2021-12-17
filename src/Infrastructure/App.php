@@ -79,9 +79,14 @@ final class App
     private function getAppConfig(): AppConfig
     {
         if (null === $this->appConfig) {
-            $appConfig = call_user_func($this->appConfigFactory);
+            try {
+                $appConfig = call_user_func($this->appConfigFactory);
+            } catch (Throwable $e) {
+                throw new Exception\ErrorCreateAppConfigException($e->getMessage(),$e->getCode(),$e);
+            }
+
             if (!($appConfig instanceof AppConfig)) {
-                throw new UnexpectedValueException('incorrect application config');
+                throw new Exception\ErrorCreateAppConfigException('incorrect application config');
             }
             $this->appConfig = $appConfig;
         }
