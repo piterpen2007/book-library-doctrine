@@ -1,6 +1,9 @@
 <?php
 
 namespace EfTech\BookLibrary\Infrastructure;
+use EfTech\BookLibrary\Infrastructure\http\httpResponse;
+use EfTech\BookLibrary\Infrastructure\http\ServerRequest;
+use EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory;
 use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
 use Throwable;
 use UnexpectedValueException;
@@ -97,54 +100,48 @@ final class App
         return $requestParams;
     }
 
-    public function dispath(string $requestUri):array
+    /** Обработчик запроса
+     * @param ServerRequest $serverRequest - объект серверного http запроса
+     * @return httpResponse - реез ответ
+     */
+    public function dispath(ServerRequest $serverRequest):httpResponse
     {
         $appConfig = null;
         try {
             $appConfig = $this->getAppConfig();
             $logger = $this->getLogger();
 
-            $logger->log('Url request received' . $requestUri);
-            $urlPath = parse_url($requestUri, PHP_URL_PATH);
-            if(array_key_exists($urlPath,$this->handlers)) {
+            $urlPath = $serverRequest->getUri()->getPath();
+            $logger->log('Url request received' . $urlPath);
 
-                $requestParams = $this->extractQueryParams($requestUri);
-                $result = call_user_func($this->handlers[$urlPath], $requestParams , $logger , $appConfig);
+            if(array_key_exists($urlPath,$this->handlers)) {
+                $httpResponse = call_user_func($this->handlers[$urlPath], $serverRequest , $logger , $appConfig);
             } else {
-                $result = [
-                    'httpCode' => 404,
-                    'result' => [
-                        'status' => 'fail',
-                        'message' => 'unsupported request'
-                    ]
-                ];
+                $httpResponse = ServerResponseFactory::createJsonResponse(
+                    404,
+                    ['status' => 'fail', 'message' => 'unsupported request']
+                );
             }
 
         } catch (Exception\invalidDataStructureException $e) {
-            $result = [
-                'httpCode' => 503,
-                'result' => [
-                    'status' => 'fail',
-                    'message' => $e->getMessage()
-                ]
-            ];
+            $httpResponse = ServerResponseFactory::createJsonResponse(
+                503,
+                ['status' => 'fail', 'message' => $e->getMessage()]
+            );
         } catch (Throwable $e) {
-            $errMsg = $appConfig instanceof AppConfig
-                && false === $appConfig->isHideErrorMsg() ? $e->getMessage() : 'system error';
+            $errMsg = ($appConfig instanceof AppConfig && !$appConfig->isHideErrorMsg())
+                || $e instanceof Exception\ErrorCreateAppConfigException
+                ? $e->getMessage()
+                : 'system error';
             try {
                 $this->getLogger()->log($e->getMessage());
-                $this->logger->log($e->getMessage());
             } catch (Throwable $e) {}
-
-            $result = [
-                'httpCode' => 500,
-                'result' => [
-                    'status' => 'fail',
-                    'message' => $errMsg
-                ]
-            ];
+                $httpResponse = ServerResponseFactory::createJsonResponse(
+                    500,
+                    ['status' => 'fail', 'message' => $errMsg]
+                );
         }
-        return $result;
+        return $httpResponse;
     }
 
 

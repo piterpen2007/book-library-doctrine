@@ -6,43 +6,20 @@ require_once __DIR__ . '/../src/Infrastructure/Autoloader.php';
 use EfTech\BookLibrary\Infrastructure\App;
 use EfTech\BookLibrary\Infrastructure\AppConfig;
 use EfTech\BookLibrary\Infrastructure\Autoloader;
+use EfTech\BookLibrary\Infrastructure\http\ServerRequest;
 use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
 use EfTech\BookLibrary\Infrastructure\Logger\NullLogger\Logger;
+use EfTech\BookLibrary\Infrastructure\Uri\Uri;
+use EfTech\BookLibraryTest\TestUtils;
 
 
 spl_autoload_register(
     new Autoloader([
         'EfTech\\BookLibrary\\' => __DIR__ . '/../src/',
-        'EfTech\\BookLibraryTest\\' => __DIR__
+        'EfTech\\BookLibraryTest\\' => __DIR__ . '/../test/'
     ])
 );
 
-/** Вычисляет расскхождение массивов с доп проверкой индекса. Поддержка многомерных массивов
- * @param array $a1
- * @param array $a2
- * @return array
- */
-function array_diff_assoc_recursive(array $a1,array $a2):array
-{
-    $result = [];
-    foreach ($a1 as $k1 => $v1) {
-        if(false === array_key_exists($k1, $a2)){
-            $result[$k1] = $v1;
-            continue;
-        }
-        if(is_iterable($v1) && is_iterable($a2[$k1])) {
-            $resultCheck = array_diff_assoc_recursive($v1, $a2[$k1]);
-            if (count($resultCheck) > 0 ) {
-                $result[$k1] = $resultCheck;
-            }
-            continue;
-        }
-        if ($v1 !== $a2[$k1]) {
-            $result[$k1] = $v1;
-        }
-    }
-    return $result;
-}
 /**
  *  Тестирование приложения
  */
@@ -266,30 +243,43 @@ class UnitTest
     {
         foreach (static::testDataProvider() as $testItem) {
             echo "-----{$testItem['testName']}-----\n";
+
+            $httpRequest = new ServerRequest(
+                'GET',
+                '1.1',
+                $testItem['in']['uri'],
+                Uri::createFromString($testItem['in']['uri']),
+                ['Content-Type' => 'application/json'],
+                null
+            );
             //Arrange и Act
 
-            $appResult = (new App(
+            $httpResponse = (new App(
                 $testItem['in']['handlers'],
                 $testItem['in']['loggerFactory'],
                 $testItem['in']['appConfigFactory']
-            ))->dispath($testItem['in']['uri']);
+            ))->dispath($httpRequest);
+
+
             //Assert
-            if ($appResult['httpCode'] === $testItem['out']['httpCode']) {
+            if ($httpResponse->getStatusCode() === $testItem['out']['httpCode']) {
                 echo "    OK --- код ответа\n";
             } else {
-                echo "    FAIL - код ответа. Ожидалось: {$testItem['out']['httpCode']}. Актуальное значение: {$appResult['httpCode']}\n";
+                echo "    FAIL - код ответа. Ожидалось: {$testItem['out']['httpCode']}. Актуальное значение: {$httpResponse->getStatusCode()}\n";
             }
-            $actualResult =  json_decode(json_encode($appResult['result']), true);
-            $unnecessaryElements = array_diff_assoc_recursive($actualResult, $testItem['out']['result']);
-            $missingElements =  array_diff_assoc_recursive($testItem['out']['result'], $actualResult);
+
+            $actualResult =  json_decode($httpResponse->getBody(), true, 512 , JSON_THROW_ON_ERROR);
+
+            $unnecessaryElements = TestUtils::arrayDiffAssocRecursive($actualResult, $testItem['out']['result']);
+            $missingElements =  TestUtils::arrayDiffAssocRecursive($testItem['out']['result'], $actualResult);
 
             $errMsg = '';
 
             if (count($unnecessaryElements) > 0) {
-                $errMsg .= sprintf("         Есть лишние элементы %s\n", json_encode($unnecessaryElements,JSON_UNESCAPED_UNICODE));
+                $errMsg .= sprintf("         Есть лишние элементы %s\n", json_encode($unnecessaryElements,JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE));
             }
             if (count($missingElements) > 0) {
-                $errMsg .= sprintf("         Есть лишние недостающие элементы %s\n", json_encode($missingElements,JSON_UNESCAPED_UNICODE));
+                $errMsg .= sprintf("         Есть лишние недостающие элементы %s\n", json_encode($missingElements,JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE));
             }
 
             if ('' === $errMsg) {

@@ -1,5 +1,6 @@
 <?php
 namespace EfTech\BookLibrary\Infrastructure;
+use EfTech\BookLibrary\Infrastructure\http\httpResponse;
 use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
 use Throwable;
 use UnexpectedValueException;
@@ -11,19 +12,19 @@ use UnexpectedValueException;
 function loadData (string $sourceName):array
 {
     $content = file_get_contents($sourceName);
-    return json_decode($content, true);
+    return json_decode($content, true,512 , JSON_THROW_ON_ERROR);
 }
 
-
-/**
- * @param array $data - данные, которые хотим отобразить
- * @param int $httpCode - http code
+/** Отображает результат клиенту
+ * @param httpResponse $response
  */
-function render(array $data, int $httpCode)
+function render(httpResponse $response):void
 {
-    header('Content-Type: application/json');
-    http_response_code($httpCode);
-    echo json_encode($data);
+    foreach ($response->getHeaders() as $headerName => $headerValue) {
+        header("$headerName: $headerValue");
+    }
+    http_response_code($response->getStatusCode());
+    echo $response->getBody();
     exit();
 }
 

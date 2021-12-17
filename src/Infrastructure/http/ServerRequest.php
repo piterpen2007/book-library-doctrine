@@ -20,6 +20,7 @@ class ServerRequest extends httpRequest
         if(null === $this->queryParams) {
             $queryParams = [];
             parse_str($this->getUri()->getQuery(),$queryParams);
+            $this->queryParams = $queryParams;
         }
 
         return  $this->queryParams;

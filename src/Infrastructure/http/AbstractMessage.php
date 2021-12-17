@@ -35,7 +35,7 @@ class AbstractMessage
     /** Возвращает версию http протокола
      * @return string
      */
-    private function getProtocolVersion(): string
+    public function getProtocolVersion(): string
     {
         return $this->protocolVersion;
     }
@@ -43,7 +43,7 @@ class AbstractMessage
     /** возвращает заголовки
      * @return array
      */
-    private function getHeaders(): array
+    public function getHeaders(): array
     {
         return $this->headers;
     }
@@ -51,7 +51,7 @@ class AbstractMessage
     /** возвращает тело сообщения
      * @return string|null
      */
-    private function getBody(): ?string
+    public function getBody(): ?string
     {
         return $this->body;
     }

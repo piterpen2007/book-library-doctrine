@@ -22,6 +22,7 @@ class httpRequest extends AbstractMessage
      */
     private Uri $uri;
 
+
     /**
      * @param array $headers Заголовки
      * @param string $protocolVersion Версия http протокола
