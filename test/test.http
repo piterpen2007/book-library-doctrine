@@ -26,7 +26,7 @@ GET http://book-library-fedyancev.ru:8083/books?title[]=Мечтают ли ан
             client.assert(response.status === 500, 'Проверяю код ответа. Фактическое знаение: ' + response.status);
             client.assert(response.contentType.mimeType === "application/json", 'Проверяю application/json. Фактическое знаение: ' + response.contentType.mimeType);
             client.assert(response.body['status'] === "fail", "Некорректный статус");
-            client.assert(response.body['message'] === "inccorrect title book", "Некорректное сообщение");
+            client.assert(response.body['message'] === "incorrect book title", "Некорректное сообщение");
      })
  %}
 
@@ -38,7 +38,7 @@ GET http://book-library-fedyancev.ru:8083/books?author_surname[]=Дик
             client.assert(response.status === 500, 'Проверяю код ответа. Фактическое знаение: ' + response.status);
             client.assert(response.contentType.mimeType === "application/json", 'Проверяю application/json. Фактическое знаение: ' + response.contentType.mimeType);
             client.assert(response.body['status'] === "fail", "Некорректный статус");
-            client.assert(response.body['message'] === "inccorrect author surname", "Некорректное сообщение");
+            client.assert(response.body['message'] === "incorrect author surname", "Некорректное сообщение");
      })
  %}
 
@@ -112,7 +112,7 @@ GET http://book-library-fedyancev.ru:8083/authors?surname[]=Дик
             client.assert(response.status === 500, 'Проверяю код ответа. Фактическое знаение: ' + response.status);
             client.assert(response.contentType.mimeType === "application/json", 'Проверяю application/json. Фактическое знаение: ' + response.contentType.mimeType);
             client.assert(response.body['status'] === "fail", "Некорректный статус");
-            client.assert(response.body['message'] === "inccorrect surname author", "Некорректное сообщение");
+            client.assert(response.body['message'] === "incorrect author surname", "Некорректное сообщение");
      })
  %}
 

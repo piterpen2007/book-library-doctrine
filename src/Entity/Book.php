@@ -72,7 +72,7 @@ final class Book extends AbstractTextDocument
 
         if (count($missingFields) > 0) {
             $errMsg = sprintf('Отсутствуют обязательные элементы: %s', implode(',', $missingFields));
-            throw new Exception\invalidDataStructureException($errMsg);
+            throw new Exception\InvalidDataStructureException($errMsg);
         }
 
 

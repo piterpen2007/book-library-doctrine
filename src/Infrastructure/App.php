@@ -1,6 +1,7 @@
 <?php
 
 namespace EfTech\BookLibrary\Infrastructure;
+use EfTech\BookLibrary\Exception\RuntimeException;
 use EfTech\BookLibrary\Infrastructure\http\httpResponse;
 use EfTech\BookLibrary\Infrastructure\http\ServerRequest;
 use EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory;
@@ -8,6 +9,7 @@ use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
 use Throwable;
 use UnexpectedValueException;
 use EfTech\BookLibrary\Exception;
+use EfTech\BookLibrary\Infrastructure\View\RenderInterface;
 /**
  * Ядро приложения
  */
@@ -34,13 +36,23 @@ final class App
      */
     private ?LoggerInterface $logger = null;
 
+    /** Компонент отвечающий за рендеринг
+     * @var RenderInterface|null
+     */
+    private ?RenderInterface $render = null;
+
+    /** Фабрика для создания компонента отвечающего за рендеринг результатов
+     * @var callable
+     */
+    private $renderFactory;
+
     /** Инициация обработки ошибок
      *
      */
     private function initErrorHandling():void
     {
         set_error_handler(static function(int $errNom, string $errStr){
-            throw new Exception\RuntimeException($errStr);
+            throw new RuntimeException($errStr);
         });
     }
 
@@ -65,13 +77,31 @@ final class App
      * @param callable $loggerFactory - Фабрика для создания логгеров
      * @param callable $appConfigFactory - Фабрика для создания конфига приложения
      */
-    public function __construct(array $handler, callable $loggerFactory, callable $appConfigFactory)
+    public function __construct(array $handler, callable $loggerFactory, callable $appConfigFactory,callable $renderFactory)
     {
         $this->handlers = $handler;
         $this->loggerFactory = $loggerFactory;
+        $this->renderFactory = $renderFactory;
         $this->appConfigFactory = $appConfigFactory;
         $this->initErrorHandling();
     }
+
+    /**
+     * @return RenderInterface
+     */
+    private function getRender(): RenderInterface
+    {
+        if (null === $this->render) {
+            $renderFactory = $this->renderFactory;
+            $render = $renderFactory();
+            if (!($render instanceof RenderInterface)) {
+                throw new Exception\UnexpectedValueException('incorrect render');
+            }
+            $this->render = $render;
+        }
+        return $this->render;
+    }
+
 
     /**
      * @return AppConfig
@@ -93,18 +123,6 @@ final class App
         return $this->appConfig;
     }
 
-    /** Извлекает параметры запроса из URL
-     * @param string $requestUri - данные запроса uri
-     * @return array - параметры запроса
-     */
-    private function extractQueryParams(string $requestUri):array
-    {
-        $query = parse_url($requestUri, PHP_URL_QUERY);
-        $requestParams = [];
-        parse_str($query,$requestParams );
-        return $requestParams;
-    }
-
     /** Обработчик запроса
      * @param ServerRequest $serverRequest - объект серверного http запроса
      * @return httpResponse - реез ответ
@@ -121,6 +139,9 @@ final class App
 
             if(array_key_exists($urlPath,$this->handlers)) {
                 $httpResponse = call_user_func($this->handlers[$urlPath], $serverRequest , $logger , $appConfig);
+                if (!($httpResponse instanceof httpResponse)) {
+                    throw new Exception\UnexpectedValueException('Контроллер вернул некорректный результат');
+                }
             } else {
                 $httpResponse = ServerResponseFactory::createJsonResponse(
                     404,
@@ -146,6 +167,7 @@ final class App
                     ['status' => 'fail', 'message' => $errMsg]
                 );
         }
+        $this->getRender()->render($httpResponse);
         return $httpResponse;
     }
 

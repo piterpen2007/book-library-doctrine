@@ -1,6 +1,4 @@
 <?php
-
-require_once __DIR__ . '/../src/Infrastructure/app.function.php';
 require_once __DIR__ . '/../src/Infrastructure/Autoloader.php';
 
 use EfTech\BookLibrary\Infrastructure\App;
@@ -257,7 +255,10 @@ class UnitTest
             $httpResponse = (new App(
                 $testItem['in']['handlers'],
                 $testItem['in']['loggerFactory'],
-                $testItem['in']['appConfigFactory']
+                $testItem['in']['appConfigFactory'],
+                static function():\EfTech\BookLibrary\Infrastructure\View\RenderInterface {
+                  return new \EfTech\BookLibrary\Infrastructure\View\NullRender();
+                },
             ))->dispath($httpRequest);
 
 
