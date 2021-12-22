@@ -7,10 +7,6 @@ use EfTech\BookLibrary\Infrastructure\http\ServerRequest;
 use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
 
 return [
-    '/books' => static function(ServerRequest $serverRequest,LoggerInterface $logger, AppConfig $appConfig) {
-        return (new FindBooks($logger,$appConfig))($serverRequest);
-    },
-    '/authors' => static function(ServerRequest $serverRequest,LoggerInterface $logger, AppConfig $appConfig) {
-        return (new FindAuthors($logger,$appConfig))($serverRequest);
-    },
+    '/books' => FindBooks::class,
+    '/authors' => FindAuthors::class
 ];

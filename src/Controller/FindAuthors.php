@@ -4,12 +4,15 @@ namespace EfTech\BookLibrary\Controller;
 
 
 use EfTech\BookLibrary\Entity\Author;
+use EfTech\BookLibrary\Infrastructure\App;
 use EfTech\BookLibrary\Infrastructure\AppConfig;
 use EfTech\BookLibrary\Infrastructure\Controller\ControllerInterface;
 use EfTech\BookLibrary\Infrastructure\DataLoader\JsonDataLoader;
+use EfTech\BookLibrary\Infrastructure\DI\ServiceLocator;
 use EfTech\BookLibrary\Infrastructure\http\HttpResponse;
 use EfTech\BookLibrary\Infrastructure\http\ServerRequest;
 use EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory;
+use EfTech\BookLibrary\Infrastructure\Logger\FileLogger\Logger;
 use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
 use EfTech\BookLibrary\Infrastructure\Validator\Assert;
 use Exception;
@@ -28,17 +31,18 @@ final class FindAuthors implements ControllerInterface
     /** Конфиг приложения
      * @var AppConfig
      */
-    private AppConfig $appConfig;
+    private ?AppConfig $appConfig;
 
     /**
-     * @param LoggerInterface $logger
-     * @param AppConfig $appConfig
+     * @param ServiceLocator $sl
      */
-    public function __construct(LoggerInterface $logger, AppConfig $appConfig)
+    public function __construct(ServiceLocator $sl)
     {
-        $this->logger = $logger;
-        $this->appConfig = $appConfig;
+        $this->logger = $sl->get(LoggerInterface::class);
+        $this->appConfig = $sl->get(AppConfig::class);
     }
+
+
     /** Загружает данные о авторах
      * @return array
      * @throws JsonException
