@@ -4,10 +4,12 @@ require_once __DIR__ . '/../src/Infrastructure/Autoloader.php';
 use EfTech\BookLibrary\Infrastructure\App;
 use EfTech\BookLibrary\Infrastructure\AppConfig;
 use EfTech\BookLibrary\Infrastructure\Autoloader;
+use EfTech\BookLibrary\Infrastructure\DI\Container;
 use EfTech\BookLibrary\Infrastructure\http\ServerRequest;
 use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
-use EfTech\BookLibrary\Infrastructure\Logger\NullLogger\Logger;
 use EfTech\BookLibrary\Infrastructure\Uri\Uri;
+use EfTech\BookLibrary\Infrastructure\View\NullRender;
+use EfTech\BookLibrary\Infrastructure\View\RenderInterface;
 use EfTech\BookLibraryTest\TestUtils;
 
 
@@ -25,54 +27,58 @@ class UnitTest
 {
     private static function testDataProvider():array
     {
-        $handlers = include __DIR__ . '/../config/request.handlers.php';
+        $diConfig = require __DIR__ . '/../config/dev/di.php';
+        $diConfig['services'][LoggerInterface::class] = [
+            'class' => EfTech\BookLibrary\Infrastructure\Logger\NullLogger\Logger::class
+        ];
+        $diConfig['services'][RenderInterface::class] = [
+            'class' => NullRender::class
+        ];
 
-        $loggerFactory = static function():LoggerInterface {return new Logger();};
 
         return [
-            [
-                'testName'=>'Тестирование поиска книг по названию',
-                'in' => [
-                    'handlers' => $handlers,
-                    'uri' => '/books?title=Мечтают ли андроиды об электроовцах?',
-                    'loggerFactory' => 'EfTech\BookLibrary\Infrastructure\Logger\Factory::create',
-                    'appConfigFactory' => static function (){
-                        $config = include __DIR__ . '/../config/dev/config.php';
-                        $config['loggerType'] = 'echoLogger';
-                        return AppConfig::createFromArray($config);
-                    }
-                ],
-                'out' => [
-                    'httpCode' => 200,
-                    'result' => [
-                        [
-                        'id' => 10,
-                        'title' => 'Мечтают ли андроиды об электроовцах?',
-                        'year' => 1966,
-                        'title_for_printing' => 'Мечтают ли андроиды об электроовцах? . Дик Филип . 1966',
-                        'author' =>
-                            [
-                                'id' => 5,
-                                'name' => 'Филип',
-                                'surname' => 'Дик',
-                                'birthday' => '16.12.1928',
-                                'country' => 'us',
-                            ],
-                        ]
-                    ],
-                ]
-            ],
+//            [
+//                'testName'=>'Тестирование поиска книг по названию',
+//                'in' => [
+//                    'handlers' => $handlers,
+//                    'uri' => '/books?title=Мечтают ли андроиды об электроовцах?',
+//                    'loggerFactory' => 'EfTech\BookLibrary\Infrastructure\Logger\Factory::create',
+//                    'appConfigFactory' => static function (){
+//                        $config = include __DIR__ . '/../config/dev/config.php';
+//                        $config['loggerType'] = 'echoLogger';
+//                        return AppConfig::createFromArray($config);
+//                    }
+//                ],
+//                'out' => [
+//                    'httpCode' => 200,
+//                    'result' => [
+//                        [
+//                        'id' => 10,
+//                        'title' => 'Мечтают ли андроиды об электроовцах?',
+//                        'year' => 1966,
+//                        'title_for_printing' => 'Мечтают ли андроиды об электроовцах? . Дик Филип . 1966',
+//                        'author' =>
+//                            [
+//                                'id' => 5,
+//                                'name' => 'Филип',
+//                                'surname' => 'Дик',
+//                                'birthday' => '16.12.1928',
+//                                'country' => 'us',
+//                            ],
+//                        ]
+//                    ],
+//                ]
+//            ],
             [
                 'testName' => 'Тестирование ситуации когда данные о книгах не корректны. Нет поля year',
                 'in' => [
-                    'handlers' => $handlers,
                     'uri' => '/books?title=Мечтают ли андроиды об электроовцах?',
-                    'loggerFactory' => $loggerFactory,
-                    'appConfigFactory' => static function (){
+                    'diConfig' => (static function($diConfig) {
                         $config = include __DIR__ . '/../config/dev/config.php';
-                        $config['pathToBooks'] = __DIR__ . '/../test/data/broken.books.json';
-                        return AppConfig::createFromArray($config);
-                    }
+                        $config['pathToBooks'] = __DIR__ . '/data/broken.books.json';
+                        $diConfig['instances']['appConfig'] = $config;
+                        return $diConfig;
+                    })($diConfig)
                 ],
                 'out' => [
                     'httpCode' => 503,
@@ -85,12 +91,14 @@ class UnitTest
             [
                 'testName' => 'Тестирование ситуации с некорректным  данными конфига приложения',
                 'in' => [
-                    'handlers' => $handlers,
                     'uri' => '/books?title=Мечтают ли андроиды об электроовцах?',
-                    'loggerFactory' => $loggerFactory,
-                    'appConfigFactory' =>  static function (){
-                        return 'Ops!';
-                    }
+                    'diConfig' => (static function($diConfig) {
+                        $diConfig['factories'][AppConfig::class] = static function () {
+                            return 'Ops!';
+                        };
+                        return $diConfig;
+                    })($diConfig)
+
                 ],
                 'out' => [
                     'httpCode' => 500,
@@ -103,14 +111,13 @@ class UnitTest
             [
                 'testName' => 'Тестирование ситуации с некорректным путем до файла с книгами',
                 'in' => [
-                    'handlers' => $handlers,
                     'uri' => '/books?title=Мечтают ли андроиды об электроовцах?',
-                    'loggerFactory' => $loggerFactory,
-                    'appConfigFactory' => static function (){
+                    'diConfig' => (static function($diConfig) {
                         $config = include __DIR__ . '/../config/dev/config.php';
                         $config['pathToBooks'] = __DIR__ . '/data/unknown.books.json';
-                        return AppConfig::createFromArray($config);
-    }
+                        $diConfig['instances']['appConfig'] = $config;
+                        return $diConfig;
+                    })($diConfig)
                 ],
                 'out' => [
                     'httpCode' => 500,
@@ -123,14 +130,13 @@ class UnitTest
             [
                 'testName' => 'Тестирование ситуации когда данные о журналах некорректны. Нет поля id',
                 'in' => [
-                    'handlers' => $handlers,
                     'uri' =>'/books?title=National Geographic Magazine',
-                    'loggerFactory' => $loggerFactory,
-                    'appConfigFactory' => static function (){
+                    'diConfig' => (static function($diConfig) {
                         $config = include __DIR__ . '/../config/dev/config.php';
-                        $config['pathToMagazines'] = __DIR__ . '/../test/data/broken.magazines.json';
-                        return AppConfig::createFromArray($config);
-                    }
+                        $config['pathToMagazines'] = __DIR__ . '/data/broken.magazines.json';
+                        $diConfig['instances']['appConfig'] = $config;
+                        return $diConfig;
+                    })($diConfig)
                 ],
                 'out' => [
                     'httpCode' => 503,
@@ -145,14 +151,13 @@ class UnitTest
             [
                 'testName' => 'Тестирование ситуации когда данные в авторах некорректны. Нет поля birthday',
                 'in' => [
-                    'handlers' =>  $handlers,
                     'uri' => '/books?title=Мечтают ли андроиды об электроовцах?',
-                    'loggerFactory' => $loggerFactory,
-                    'appConfigFactory' => static function (){
+                    'diConfig' => (static function($diConfig) {
                         $config = include __DIR__ . '/../config/dev/config.php';
-                        $config['pathToAuthor'] = __DIR__ . '/../test/data/broken.authors.json';
-                        return AppConfig::createFromArray($config);
-                    }
+                        $config['pathToAuthor'] = __DIR__ . '/data/broken.authors.json';
+                        $diConfig['instances']['appConfig'] = $config;
+                        return $diConfig;
+                    })($diConfig)
                 ],
                 'out' => [
                     'httpCode' => 503,
@@ -165,14 +170,13 @@ class UnitTest
             [
                 'testName' => 'Тестирование ситуации с некорректным путем до файла о авторе',
                 'in' => [
-                    'handlers' =>  $handlers,
                     'uri' => '/books?title=Мечтают ли андроиды об электроовцах?',
-                    'loggerFactory' => $loggerFactory,
-                    'appConfigFactory' => static function (){
+                    'diConfig' => (static function($diConfig) {
                         $config = include __DIR__ . '/../config/dev/config.php';
                         $config['pathToAuthor'] = __DIR__ . '/data/unknown.authors.json';
-                        return AppConfig::createFromArray($config);
-                    }
+                        $diConfig['instances']['appConfig'] = $config;
+                        return $diConfig;
+                    })($diConfig)
                 ],
                 'out' => [
                     'httpCode' => 500,
@@ -185,14 +189,14 @@ class UnitTest
             [
                 'testName' => 'Тестирование ситуации с некорректным путем до файла до журналов',
                 'in' => [
-                    'handlers' => $handlers,
                     'uri' =>  '/books?title=Мечтают ли андроиды об электроовцах?',
-                    'loggerFactory' => $loggerFactory,
-                    'appConfigFactory' => static function (){
+                    'diConfig' => (static function($diConfig) {
                         $config = include __DIR__ . '/../config/dev/config.php';
                         $config['pathToMagazines'] = __DIR__ . '/data/unknown.magazines.json';
-                        return AppConfig::createFromArray($config);
-                    }
+                        $diConfig['instances']['appConfig'] = $config;
+                        return $diConfig;
+                    })($diConfig)
+
                 ],
                 'out' => [
                     'httpCode' => 500,
@@ -205,10 +209,9 @@ class UnitTest
             [
                 'testName'=>'Тестирование поиска книг по названию',
                 'in' => [
-                    'handlers' => $handlers,
                     'uri' => '/books?title=Мечтают ли андроиды об электроовцах?',
-                    'loggerFactory' => $loggerFactory,
-                    'appConfigFactory' => static function () {return AppConfig::createFromArray(include __DIR__ . '/../config/dev/config.php');}
+                    'diConfig' => $diConfig
+
                 ],
                 'out' => [
                     'httpCode' => 200,
@@ -251,14 +254,13 @@ class UnitTest
                 null
             );
             //Arrange и Act
-
+            $diConfig = $testItem['in']['diConfig'];
             $httpResponse = (new App(
-                $testItem['in']['handlers'],
-                $testItem['in']['loggerFactory'],
-                $testItem['in']['appConfigFactory'],
-                static function():\EfTech\BookLibrary\Infrastructure\View\RenderInterface {
-                  return new \EfTech\BookLibrary\Infrastructure\View\NullRender();
-                },
+                static function(Container $di):array {return $di->get('handlers');},
+                static function(Container $di):LoggerInterface {return $di->get(LoggerInterface::class);},
+                static function(Container $di):AppConfig {return $di->get(AppConfig::class);},
+                static function(Container $di):RenderInterface {return $di->get(RenderInterface::class);},
+                static function() use($diConfig) :Container {return Container::createFromArray($diConfig);}
             ))->dispath($httpRequest);
 
 

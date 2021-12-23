@@ -4,7 +4,7 @@ namespace EfTech\BookLibrary\Infrastructure\DI;
 
 use EfTech\BookLibrary\Exception\RuntimeException;
 
-class ServiceLocator
+class ServiceLocator implements ContainerInterface
 {
     /** Инстансы зарегистрированных сервисов
      * - ключ это имя сервиса(совпадает с именем класса или интерфейса)

@@ -9,7 +9,6 @@ use EfTech\BookLibrary\Entity\Magazine;
 use EfTech\BookLibrary\Infrastructure\AppConfig;
 use EfTech\BookLibrary\Infrastructure\Controller\ControllerInterface;
 use EfTech\BookLibrary\Infrastructure\DataLoader\JsonDataLoader;
-use EfTech\BookLibrary\Infrastructure\DI\ServiceLocator;
 use EfTech\BookLibrary\Infrastructure\http\HttpResponse;
 use EfTech\BookLibrary\Infrastructure\http\ServerRequest;
 use EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory;
@@ -35,13 +34,15 @@ class FindBooks implements ControllerInterface
     private AppConfig $appConfig;
 
     /**
-     * @param ServiceLocator $sl
+     * @param AppConfig $appConfig
+     * @param LoggerInterface $logger
      */
-    public function __construct(ServiceLocator $sl)
+    public function __construct(AppConfig $appConfig, LoggerInterface $logger)
     {
-        $this->logger = $sl->get(LoggerInterface::class);
-        $this->appConfig = $sl->get(AppConfig::class);
+        $this->logger = $logger;
+        $this->appConfig = $appConfig;
     }
+
 
     /** Загрузка данных о текстовых документах
      * @return array

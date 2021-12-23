@@ -7,7 +7,11 @@ require_once __DIR__ . '/../../src/Infrastructure/Autoloader.php';
 use EfTech\BookLibrary\Controller\FindAuthors;
 use EfTech\BookLibrary\Infrastructure\AppConfig;
 use EfTech\BookLibrary\Infrastructure\Autoloader;
+use EfTech\BookLibrary\Infrastructure\DI\Container;
+use EfTech\BookLibrary\Infrastructure\DI\ServiceLocator;
+use EfTech\BookLibrary\Infrastructure\DI\ServiceManager;
 use EfTech\BookLibrary\Infrastructure\http\ServerRequest;
+use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
 use EfTech\BookLibrary\Infrastructure\Logger\NullLogger\Logger;
 use EfTech\BookLibrary\Infrastructure\Uri\Uri;
 use EfTech\BookLibraryTest\TestUtils;
@@ -40,8 +44,22 @@ class FindAuthorsTest
             ['Content-Type'=> 'application/json'],
             null
         );
+        $diContainer = new Container(
+            [
+                LoggerInterface::class => new Logger(),
+                AppConfig::class => AppConfig::createFromArray(require __DIR__ . '/../../config/dev/config.php')
+            ],
+            [
+                FindAuthors::class => [
+                    'args' => [
+                        'appConfig' => AppConfig::class,
+                        'logger' => LoggerInterface::class
+                    ]
+                ]
+            ]
+        );
 
-        $findAuthors = new FindAuthors(new Logger(), AppConfig::createFromArray(require __DIR__ . '/../../config/dev/config.php'));
+        $findAuthors = $diContainer->get(FindAuthors::class);
         $httpResponse = $findAuthors($httpRequest);
         //Assert
         if ($httpResponse->getStatusCode() === 200) {
