@@ -35,7 +35,7 @@ class ContainerTest
             'services' => [
                 FindAuthors::class => [
                     'args' => [
-                        'appConfig' => AppConfig::class,
+                        'pathToAuthor' => 'pathToAuthor',
                         'logger' => LoggerInterface::class
                     ]
                 ],
@@ -56,6 +56,11 @@ class ContainerTest
                 AppConfig::class => static function(ContainerInterface $c): AppConfig {
                     $appConfig = $c->get('appConfig');
                     return AppConfig::createFromArray($appConfig);
+                },
+                'pathToAuthor' => static function(ContainerInterface $c):string {
+                    /** @var AppConfig $appConfig */
+                    $appConfig = $c->get(AppConfig::class);
+                    return $appConfig->getPathToAuthor();
                 }
 
             ]

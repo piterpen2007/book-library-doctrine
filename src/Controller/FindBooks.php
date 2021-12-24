@@ -6,7 +6,6 @@ use EfTech\BookLibrary\Entity\AbstractTextDocument;
 use EfTech\BookLibrary\Entity\Author;
 use EfTech\BookLibrary\Entity\Book;
 use EfTech\BookLibrary\Entity\Magazine;
-use EfTech\BookLibrary\Infrastructure\AppConfig;
 use EfTech\BookLibrary\Infrastructure\Controller\ControllerInterface;
 use EfTech\BookLibrary\Infrastructure\DataLoader\JsonDataLoader;
 use EfTech\BookLibrary\Infrastructure\http\HttpResponse;
@@ -24,23 +23,39 @@ use JsonException;
  */
 class FindBooks implements ControllerInterface
 {
+    /**
+     * @var string путь до файла с авторами
+     */
+    private string $pathToAuthor;
+    /**
+     * @var string путь до файла с журналами
+     */
+    private string $pathToMagazines;
+    /**
+     * @var string путь до файла с книгами
+     */
+    private string $pathToBooks;
     /** Логгер
      * @var LoggerInterface
      */
     private LoggerInterface $logger;
-    /** Конфиг приложения
-     * @var AppConfig
-     */
-    private AppConfig $appConfig;
 
     /**
-     * @param AppConfig $appConfig
      * @param LoggerInterface $logger
+     * @param string $pathToBooks
+     * @param string $pathToMagazines
+     * @param string $pathToAuthor
      */
-    public function __construct(AppConfig $appConfig, LoggerInterface $logger)
-    {
+    public function __construct(
+        LoggerInterface $logger,
+        string $pathToBooks,
+        string $pathToMagazines,
+        string $pathToAuthor
+    ) {
+        $this->pathToAuthor = $pathToAuthor;
+        $this->pathToMagazines = $pathToMagazines;
+        $this->pathToBooks = $pathToBooks;
         $this->logger = $logger;
-        $this->appConfig = $appConfig;
     }
 
 
@@ -51,8 +66,8 @@ class FindBooks implements ControllerInterface
     private function LoadTextDocumentData():array
     {
         $loader = new JsonDataLoader();
-        $books = $loader->loadData($this->appConfig->getPathToBooks());
-        $magazines = $loader->loadData($this->appConfig->getPathToMagazines());
+        $books = $loader->loadData($this->pathToBooks);
+        $magazines = $loader->loadData($this->pathToMagazines);
         return array_merge($books, $magazines);
     }
 
@@ -64,7 +79,7 @@ class FindBooks implements ControllerInterface
     private function loadAuthorEntity():array
     {
         $loader = new JsonDataLoader();
-        $authors = $loader->loadData($this->appConfig->getPathToAuthor());
+        $authors = $loader->loadData($this->pathToAuthor);
 
         $authorIdToInfo = [];
 

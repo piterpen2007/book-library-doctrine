@@ -2,13 +2,14 @@
 
 namespace EfTech\BookLibrary\Infrastructure;
 use EfTech\BookLibrary\Exception\RuntimeException;
-use EfTech\BookLibrary\Infrastructure\Controller\ControllerInterface;
+
 use EfTech\BookLibrary\Infrastructure\DI\ContainerInterface;
-use EfTech\BookLibrary\Infrastructure\DI\ServiceLocator;
 use EfTech\BookLibrary\Infrastructure\http\httpResponse;
 use EfTech\BookLibrary\Infrastructure\http\ServerRequest;
 use EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory;
 use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
+use EfTech\BookLibrary\Infrastructure\Router\DefaultRouter;
+use EfTech\BookLibrary\Infrastructure\Router\RouterInterface;
 use Throwable;
 use EfTech\BookLibrary\Exception;
 use EfTech\BookLibrary\Infrastructure\View\RenderInterface;
@@ -17,10 +18,6 @@ use EfTech\BookLibrary\Infrastructure\View\RenderInterface;
  */
 final class App
 {
-    /**
-     * @var array|null Обработчики запросов
-     */
-    private ?array $handlers = null;
 
     /** Конфиг приложения
      * @var AppConfig|null
@@ -41,20 +38,20 @@ final class App
     private ?ContainerInterface $container = null;
 
     /**
-     * @param callable $handlersFactory Фабрика реализующая логику создания обработчика запроса
+     * @param callable $routerFactory Фабрика реализующая логику создания роутера
      * @param callable $loggerFactory Фабрика реализующая логику создания логгеров
      * @param callable $appConfigFactory  Фабрика реализующая логику создания конфига приложения
      * @param callable $renderFactory Фабрика реализующая логику создания рендера
      * @param callable $diContainerFactory Фабрика реализующая логику создания di контейнера
      */
     public function __construct(
-        callable $handlersFactory,
+        callable $routerFactory,
         callable $loggerFactory,
         callable $appConfigFactory,
         callable $renderFactory,
         callable $diContainerFactory
     ) {
-        $this->handlersFactory = $handlersFactory;
+        $this->routerFactory = $routerFactory;
         $this->loggerFactory = $loggerFactory;
         $this->appConfigFactory = $appConfigFactory;
         $this->renderFactory = $renderFactory;
@@ -62,15 +59,15 @@ final class App
         $this->initErrorHandling();
     }
 
-    /** Возвращает обработчики запросов
-     * @return array|null
+    /** Возвращает роутер
+     * @return RouterInterface
      */
-    private function getHandlers(): array
+    private function getRouter(): RouterInterface
     {
-        if (null === $this->handlers) {
-            $this->handlers = ($this->handlersFactory)($this->getContainer());
+        if (null === $this->router) {
+            $this->router = ($this->routerFactory)($this->getContainer());
         }
-        return $this->handlers;
+        return $this->router;
     }
 
     /**
@@ -118,26 +115,15 @@ final class App
     }
 
 
+    /** Компанент отвечающий за роутинг запросов
+     * @var RouterInterface|null
+     */
+    private ?RouterInterface $router = null;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    /** Фабрика реализующая роутер
+     * @var callable
+     */
+    private $routerFactory;
 
 
 
@@ -150,11 +136,6 @@ final class App
             throw new RuntimeException($errStr);
         });
     }
-
-    /** Фабрика реализующая логику создания обработчика запроса
-     * @var callable
-     */
-    private $handlersFactory;
     /** Фабрика реализующая логику создания логгеров
      * @var callable
      */
@@ -172,20 +153,6 @@ final class App
      */
     private $diContainerFactory;
 
-
-    private function getController(string $urlPath):callable
-    {
-        $handlers = $this->handlers;
-        if(is_callable($handlers[$urlPath])) {
-            $controller = $handlers[$urlPath];
-        } elseif (is_string($handlers[$urlPath]) &&
-            is_subclass_of($handlers[$urlPath], ControllerInterface::class, true)) {
-            $controller = $this->getContainer()->get($handlers[$urlPath]);
-        } else {
-            throw new RuntimeException("Для url '$urlPath' зарегистрирован некорректный обработчик");
-        }
-        return $controller;
-    }
     /** Обработчик запроса
      * @param ServerRequest $serverRequest - объект серверного http запроса
      * @return httpResponse - реез ответ
@@ -199,12 +166,9 @@ final class App
 
             $urlPath = $serverRequest->getUri()->getPath();
             $logger->log('Url request received' . $urlPath);
-
-            if(array_key_exists($urlPath,$this->getHandlers())) {
-
-                $controller = $this->getController($urlPath);
-                $httpResponse = $controller($serverRequest);
-
+            $dispatcher = $this->getRouter()->getDispatcher($serverRequest);
+            if(is_callable($dispatcher)) {
+                $httpResponse = $dispatcher($serverRequest);
                 if (!($httpResponse instanceof httpResponse)) {
                     throw new Exception\UnexpectedValueException('Контроллер вернул некорректный результат');
                 }

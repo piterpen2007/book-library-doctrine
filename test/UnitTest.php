@@ -7,6 +7,8 @@ use EfTech\BookLibrary\Infrastructure\Autoloader;
 use EfTech\BookLibrary\Infrastructure\DI\Container;
 use EfTech\BookLibrary\Infrastructure\http\ServerRequest;
 use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
+use EfTech\BookLibrary\Infrastructure\Router\DefaultRouter;
+use EfTech\BookLibrary\Infrastructure\Router\RouterInterface;
 use EfTech\BookLibrary\Infrastructure\Uri\Uri;
 use EfTech\BookLibrary\Infrastructure\View\NullRender;
 use EfTech\BookLibrary\Infrastructure\View\RenderInterface;
@@ -104,7 +106,7 @@ class UnitTest
                     'httpCode' => 500,
                     'result' => [
                         'status' => 'fail',
-                        'message' => 'incorrect application config'
+                        'message' => 'system error'
                     ]
                 ]
             ],
@@ -256,7 +258,7 @@ class UnitTest
             //Arrange и Act
             $diConfig = $testItem['in']['diConfig'];
             $httpResponse = (new App(
-                static function(Container $di):array {return $di->get('handlers');},
+                static function(Container $di): RouterInterface {return $di->get(RouterInterface::class);},
                 static function(Container $di):LoggerInterface {return $di->get(LoggerInterface::class);},
                 static function(Container $di):AppConfig {return $di->get(AppConfig::class);},
                 static function(Container $di):RenderInterface {return $di->get(RenderInterface::class);},

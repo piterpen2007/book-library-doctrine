@@ -4,14 +4,11 @@ namespace EfTech\BookLibrary\Controller;
 
 
 use EfTech\BookLibrary\Entity\Author;
-use EfTech\BookLibrary\Infrastructure\App;
-use EfTech\BookLibrary\Infrastructure\AppConfig;
 use EfTech\BookLibrary\Infrastructure\Controller\ControllerInterface;
 use EfTech\BookLibrary\Infrastructure\DataLoader\JsonDataLoader;
 use EfTech\BookLibrary\Infrastructure\http\HttpResponse;
 use EfTech\BookLibrary\Infrastructure\http\ServerRequest;
 use EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory;
-use EfTech\BookLibrary\Infrastructure\Logger\FileLogger\Logger;
 use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
 use EfTech\BookLibrary\Infrastructure\Validator\Assert;
 use Exception;
@@ -23,23 +20,21 @@ use JsonException;
  */
 final class FindAuthors implements ControllerInterface
 {
+    private string $pathToAuthor;
     /** Логгер
      * @var LoggerInterface
      */
     private LoggerInterface $logger;
-    /** Конфиг приложения
-     * @var AppConfig
-     */
-    private ?AppConfig $appConfig;
 
     /**
-     * @param AppConfig|null $appConfig
+     * @param string $pathToAuthor
      * @param LoggerInterface $logger
      */
-    public function __construct(?AppConfig $appConfig, LoggerInterface $logger)
+    public function __construct(string $pathToAuthor, LoggerInterface $logger)
     {
+
+        $this->pathToAuthor = $pathToAuthor;
         $this->logger = $logger;
-        $this->appConfig = $appConfig;
     }
 
 
@@ -49,8 +44,7 @@ final class FindAuthors implements ControllerInterface
      */
     private function loadData():array
     {
-        $loader = new JsonDataLoader();
-        return $loader->loadData($this->appConfig->getPathToAuthor());
+        return (new JsonDataLoader())->loadData($this->pathToAuthor);
     }
 
     /** Алгоритм поиска авторов
