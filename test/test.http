@@ -133,10 +133,61 @@ GET http://book-library-fedyancev.ru:8083/books?title=Логос
  %}
 
 
+### Тестирование получения печатного изданияя по ID
+GET http://book-library-fedyancev.ru:8083/books/17
+
+> {%
+   client.test('Тестирование получения печатного изданияя по ID', function () {
+   client.assert(response.status === 200, 'Проверяю код ответа. Фактическое знаение: ' + response.status);
+   client.assert(response.contentType.mimeType === "application/json", 'Проверяю application/json. Фактическое знаение: ' + response.contentType.mimeType);
+   client.assert(response.body['id'] === 17, "id журнала не корректен");
+   client.assert(response.body['title'] === "Логос", "название журнала не корректно");
+   client.assert(response.body['year'] === 2020, "год журнала не корректен");
+   client.assert(response.body['author'] == null, "присутствует информация о авторе");
+   client.assert(response.body['number'] === 1, "номер не корректен");
+ });
+ %}
 
 
 
+### Тестирование ситуации когда указан не существующий id
+GET http://book-library-fedyancev.ru:8083/books/0
 
+> {%
+     client.test("Тестирование ситуации когда указан не существующий id", function () {
+            client.assert(response.status === 404, 'Проверяю код ответа. Фактическое знаение: ' + response.status);
+            client.assert(response.contentType.mimeType === "application/json", 'Проверяю application/json. Фактическое знаение: ' + response.contentType.mimeType);
+            client.assert(response.body['status'] === "fail", "Некорректный статус");
+            client.assert(response.body['message'] === "entity not found", "Некорректное сообщение");
+     })
+ %}
+
+### Тестирование получения автора по ID
+GET http://book-library-fedyancev.ru:8083/authors/1
+
+> {%
+  client.test("### Тестирование получения автора по ID", function () {
+      client.assert(response.status === 200, 'Проверяю код ответа. Фактическое знаение: ' + response.status);
+      client.assert(response.contentType.mimeType === "application/json", 'Проверяю application/json. Фактическое знаение: ' + response.contentType.mimeType);
+      client.assert(response.body['id'] === 1, "id автора не корректен");
+      client.assert(response.body['name'] === "Чак", "имя не корректен");
+      client.assert(response.body['surname'] === "Паланик", "фамилия не корректен");
+      client.assert(response.body['birthday'] === "21.02.1962", "Дата рождения автора не корректен");
+      client.assert(response.body['country'] === "us", "страна не корректен");
+  })
+%}
+
+### Тестирование ситуации когда указан не существующий id автора
+GET http://book-library-fedyancev.ru:8083/authors/0
+
+> {%
+     client.test("Тестирование ситуации когда указан не существующий id автора", function () {
+            client.assert(response.status === 404, 'Проверяю код ответа. Фактическое знаение: ' + response.status);
+            client.assert(response.contentType.mimeType === "application/json", 'Проверяю application/json. Фактическое знаение: ' + response.contentType.mimeType);
+            client.assert(response.body['status'] === "fail", "Некорректный статус");
+            client.assert(response.body['message'] === "entity not found", "Некорректное сообщение");
+     })
+ %}
 
 
 

@@ -21,7 +21,7 @@ use JsonException;
  * Контроллер поиска книг
  *
  */
-class FindBooks implements ControllerInterface
+class GetBooksCollectionController implements ControllerInterface
 {
     /**
      * @var string путь до файла с авторами
@@ -100,8 +100,9 @@ class FindBooks implements ControllerInterface
         $paramTypeValidation = [
             'author_surname' => "incorrect author surname",
             'title' => 'incorrect book title',
+            'id' => 'incorrect book id'
         ];
-        $queryParams = $request->getQueryParams();
+        $queryParams = array_merge($request->getQueryParams(),$request->getAttributes());
         return Assert::arrayElementsIsString($paramTypeValidation,$queryParams);
     }
 
@@ -127,18 +128,21 @@ class FindBooks implements ControllerInterface
         ServerRequest $serverRequest
     ):array
     {
-        $requestParams = $serverRequest->getQueryParams();
+        $searchCriteria = array_merge($serverRequest->getQueryParams(),$serverRequest->getAttributes());
         $foundTextDocument = [];
         foreach ($textDocuments as $textDocument) {
-            if (array_key_exists("author_surname", $requestParams)) {
+            if (array_key_exists("author_surname", $searchCriteria)) {
                 $bookMeetSearchCriteria = null !== $textDocument['author_id']
                     && $authorIdToInfo[$textDocument["author_id"]]->getSurname()
-                    === $requestParams["author_surname"];
+                    === $searchCriteria["author_surname"];
             } else {
                 $bookMeetSearchCriteria = true;
             }
-            if ($bookMeetSearchCriteria && array_key_exists("title", $requestParams)) {
-                $bookMeetSearchCriteria = $requestParams["title"] === $textDocument["title"];
+            if ($bookMeetSearchCriteria && array_key_exists('id',$searchCriteria)) {
+                $bookMeetSearchCriteria = $searchCriteria['id'] === (string)$textDocument['id'];
+            }
+            if ($bookMeetSearchCriteria && array_key_exists("title", $searchCriteria)) {
+                $bookMeetSearchCriteria = $searchCriteria["title"] === $textDocument["title"];
             }
 
             if ($bookMeetSearchCriteria) {
@@ -162,11 +166,17 @@ class FindBooks implements ControllerInterface
         $this->logger->log("Ветка books");
         $resultOfParamValidation = $this->validateQueryParams($request);
 
+
         if (null === $resultOfParamValidation) {
-            $httpCode = 200;
             $textDocuments = $this->LoadTextDocumentData();
             $authorIdToEntity = $this->loadAuthorEntity();
-            $result = $this->searchTextDocument($textDocuments, $authorIdToEntity , $request);
+
+            $foundTextDocument = $this->searchTextDocument($textDocuments, $authorIdToEntity , $request);
+
+            $result = $this->buildResult($foundTextDocument);
+            $httpCode = $this->buildHttpCode($foundTextDocument);
+
+
         } else {
             $httpCode = 500;
             $result=[
@@ -176,6 +186,24 @@ class FindBooks implements ControllerInterface
         }
         return ServerResponseFactory::createJsonResponse($httpCode,$result);
 
+    }
+
+    /** Подготавливает данные для ответа
+     * @param array $foundTextDocument
+     * @return array|AbstractTextDocument
+     */
+    protected function buildResult(array $foundTextDocument)
+    {
+        return $foundTextDocument;
+    }
+
+    /** Подготавливает http code
+     * @param array $foundTextDocument
+     * @return int
+     */
+    protected function buildHttpCode(array $foundTextDocument):int
+    {
+        return 200;
     }
 
 

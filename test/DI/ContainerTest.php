@@ -2,7 +2,7 @@
 
 namespace EfTech\BookLibraryTest\Infrastructure\DI;
 
-use EfTech\BookLibrary\Controller\FindAuthors;
+use EfTech\BookLibrary\Controller\GetAuthorsCollectionController;
 use EfTech\BookLibrary\Infrastructure\AppConfig;
 use EfTech\BookLibrary\Infrastructure\Autoloader;
 use EfTech\BookLibrary\Infrastructure\DI\Container;
@@ -33,7 +33,7 @@ class ContainerTest
                 'appConfig' =>require __DIR__ . '/../../config/dev/config.php'
             ],
             'services' => [
-                FindAuthors::class => [
+                GetAuthorsCollectionController::class => [
                     'args' => [
                         'pathToAuthor' => 'pathToAuthor',
                         'logger' => LoggerInterface::class
@@ -67,10 +67,10 @@ class ContainerTest
         ];
         $di = Container::createFromArray($diConfig);
         //Act
-        $controller = $di->get(FindAuthors::class);
+        $controller = $di->get(GetAuthorsCollectionController::class);
 
         //Assert
-        if ($controller instanceof FindAuthors) {
+        if ($controller instanceof GetAuthorsCollectionController) {
             echo "     ОК - di контейнер отработал корректно";
         } else {
             echo "     FAIL - di контейнер отработал корректно";

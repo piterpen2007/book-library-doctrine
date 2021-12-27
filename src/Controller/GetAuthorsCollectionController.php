@@ -18,7 +18,7 @@ use JsonException;
 /** Контроллер поиска авторов
  *
  */
-final class FindAuthors implements ControllerInterface
+class GetAuthorsCollectionController implements ControllerInterface
 {
     private string $pathToAuthor;
     /** Логгер
@@ -56,9 +56,18 @@ final class FindAuthors implements ControllerInterface
     private function searchForAuthorsInData(array $authors,ServerRequest $serverRequest):array
     {
         $findAuthors = [];
-        $requestParams =$serverRequest->getQueryParams();
+        $searchCriteria = array_merge($serverRequest->getQueryParams(),$serverRequest->getAttributes());
         foreach ($authors as $currentAuthor) {
-            if (array_key_exists("surname", $requestParams) && $requestParams['surname'] === $currentAuthor['surname']) {
+            if (array_key_exists("surname", $searchCriteria)) {
+                $authorMeetSearchCriteria = $searchCriteria['surname'] === $currentAuthor['surname'];
+            } else {
+                $authorMeetSearchCriteria = true;
+            }
+            if ($authorMeetSearchCriteria && array_key_exists('id', $searchCriteria)) {
+                $authorMeetSearchCriteria = $searchCriteria['id'] === (string)$currentAuthor['id'];
+            }
+
+            if ($authorMeetSearchCriteria) {
                 $findAuthors[] = Author::createFromArray($currentAuthor);
             }
         }
@@ -74,10 +83,12 @@ final class FindAuthors implements ControllerInterface
     {
         $paramsValidation = [
             'surname' => 'incorrect author surname',
+            'id' => 'incorrect author id'
         ];
-        $queryParams = $serverRequest->getQueryParams();
 
-        return Assert::arrayElementsIsString($paramsValidation,$queryParams);
+        $params = array_merge($serverRequest->getQueryParams(),$serverRequest->getAttributes());
+
+        return Assert::arrayElementsIsString($paramsValidation,$params);
     }
 
     /**
@@ -93,12 +104,12 @@ final class FindAuthors implements ControllerInterface
         $resultOfParamValidation = $this->validateQueryParams($request);
 
         if (null === $resultOfParamValidation) {
-            $httpCode = 200;
             $authors = $this->loadData();
-            $result = $this->searchForAuthorsInData($authors,$request);
+            $foundAuthors = $this->searchForAuthorsInData($authors,$request);
+            $httpCode = $this->buildHttpCode($foundAuthors);
+            $result = $this->buildResult($foundAuthors);
         } else {
             $httpCode = 500;
-
             $result=[
                 'status' => 'fail',
                 'message' => $resultOfParamValidation
@@ -106,6 +117,24 @@ final class FindAuthors implements ControllerInterface
         }
         return ServerResponseFactory::createJsonResponse($httpCode,$result);
 
+    }
+
+    /** Определяет http code
+     * @param array $foundAuthors
+     * @return int
+     */
+    protected function buildHttpCode(array $foundAuthors):int
+    {
+        return 200;
+    }
+
+    /** Подготавливает данные для ответа
+     * @param array $foundAuthors
+     * @return array|Author
+     */
+    protected function buildResult(array $foundAuthors)
+    {
+        return $foundAuthors;
     }
 
 }

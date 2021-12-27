@@ -1,7 +1,7 @@
 <?php
 
 use EfTech\BookLibrary;
-use EfTech\BookLibrary\Controller\FindAuthors;
+use EfTech\BookLibrary\Controller\GetAuthorsCollectionController;
 use EfTech\BookLibrary\Infrastructure\AppConfig;
 use EfTech\BookLibrary\Infrastructure\DI\ContainerInterface;
 use EfTech\BookLibrary\Infrastructure\Logger\FileLogger\Logger;
@@ -11,14 +11,17 @@ use EfTech\BookLibrary\Infrastructure\Router\ControllerFactory;
 use EfTech\BookLibrary\Infrastructure\Router\DefaultRouter;
 use EfTech\BookLibrary\Infrastructure\Router\RegExpRouter;
 use EfTech\BookLibrary\Infrastructure\Router\RouterInterface;
+use EfTech\BookLibrary\Infrastructure\Router\UniversalRouter;
 
 return [
     'instances' => [
         'handlers' => require __DIR__ . '/../request.handlers.php',
-        'appConfig' => require __DIR__ . '/config.php'
+        'regExpHandlers' => require __DIR__ . '/../regExp.handlers.php',
+        'appConfig' => require __DIR__ . '/config.php',
+        'controllerNs' => 'EfTech\\BookLibrary\\Controller'
     ],
     'services' => [
-        BookLibrary\Controller\FindBooks::class => [
+        BookLibrary\Controller\GetBooksCollectionController::class => [
             'args' => [
                 'logger' => LoggerInterface::class,
                 'pathToBooks' => 'pathToBooks',
@@ -26,7 +29,21 @@ return [
                 'pathToAuthor' => 'pathToAuthor'
             ]
         ],
-        FindAuthors::class => [
+        BookLibrary\Controller\GetBooksController::class => [
+            'args' => [
+                'logger' => LoggerInterface::class,
+                'pathToBooks' => 'pathToBooks',
+                'pathToMagazines' => 'pathToMagazines',
+                'pathToAuthor' => 'pathToAuthor'
+            ]
+        ],
+        BookLibrary\Controller\GetAuthorsController::class => [
+            'args' => [
+                'pathToAuthor' => 'pathToAuthor',
+                'logger' => LoggerInterface::class
+            ]
+        ],
+        GetAuthorsCollectionController::class => [
             'args' => [
                 'pathToAuthor' => 'pathToAuthor',
                 'logger' => LoggerInterface::class
@@ -45,7 +62,14 @@ return [
             'class' => ChainRouters::class,
             'args' => [
                 RegExpRouter::class,
-                DefaultRouter::class
+                DefaultRouter::class,
+                UniversalRouter::class
+            ]
+        ],
+        UniversalRouter::class => [
+            'args' => [
+                'ControllerFactory' => ControllerFactory::class,
+                'controllerNs' => 'controllerNs'
             ]
         ],
         DefaultRouter::class => [
@@ -61,7 +85,8 @@ return [
         ],
         RegExpRouter::class => [
             'args' => [
-
+                'handlers' => 'regExpHandlers',
+                'controllerFactory' => ControllerFactory::class
             ]
         ]
     ],

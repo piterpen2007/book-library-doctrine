@@ -1,10 +1,10 @@
 <?php
 
-use EfTech\BookLibrary\Controller\FindAuthors;
-use EfTech\BookLibrary\Controller\FindBooks;
+use EfTech\BookLibrary\Controller\GetAuthorsCollectionController;
+use EfTech\BookLibrary\Controller\GetBooksCollectionController;
 
 
 return [
-    '/books' => FindBooks::class,
-    '/authors' => FindAuthors::class
+    '/books' => GetBooksCollectionController::class,
+    '/authors' => GetAuthorsCollectionController::class
 ];

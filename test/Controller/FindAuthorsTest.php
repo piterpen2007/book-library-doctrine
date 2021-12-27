@@ -4,7 +4,7 @@ namespace EfTech\BookLibraryTest\Infrastructure\Controller;
 
 require_once __DIR__ . '/../../src/Infrastructure/Autoloader.php';
 
-use EfTech\BookLibrary\Controller\FindAuthors;
+use EfTech\BookLibrary\Controller\GetAuthorsCollectionController;
 use EfTech\BookLibrary\Infrastructure\AppConfig;
 use EfTech\BookLibrary\Infrastructure\Autoloader;
 use EfTech\BookLibrary\Infrastructure\DI\Container;
@@ -49,7 +49,7 @@ class FindAuthorsTest
                 'pathToAuthor' => $appConfig->getPathToAuthor()
             ],
             [
-                FindAuthors::class => [
+                GetAuthorsCollectionController::class => [
                     'args' => [
                         'pathToAuthor' => 'pathToAuthor',
                         'logger' => LoggerInterface::class
@@ -58,7 +58,7 @@ class FindAuthorsTest
             ]
         );
 
-        $findAuthors = $diContainer->get(FindAuthors::class);
+        $findAuthors = $diContainer->get(GetAuthorsCollectionController::class);
         $httpResponse = $findAuthors($httpRequest);
         //Assert
         if ($httpResponse->getStatusCode() === 200) {

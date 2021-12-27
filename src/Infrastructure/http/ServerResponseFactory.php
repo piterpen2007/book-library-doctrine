@@ -19,10 +19,10 @@ class ServerResponseFactory
 
     /** Создаёт http ответ с данными
      * @param int $code
-     * @param array $data
+     * @param $data
      * @return httpResponse
      */
-    public static function createJsonResponse(int $code, array $data):httpResponse
+    public static function createJsonResponse(int $code, $data):httpResponse
     {
         try {
 
