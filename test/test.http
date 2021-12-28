@@ -190,7 +190,8 @@ GET http://book-library-fedyancev.ru:8083/authors/0
  %}
 
 
-
+### Тестирование получения автора по ID
+GET http://book-library-fedyancev.ru:8083/authors
 
 
 

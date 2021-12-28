@@ -6,6 +6,8 @@ use EfTech\BookLibrary\Entity\AbstractTextDocument;
 use EfTech\BookLibrary\Entity\Author;
 use EfTech\BookLibrary\Entity\Book;
 use EfTech\BookLibrary\Entity\Magazine;
+use EfTech\BookLibrary\Exception\DomainException;
+use EfTech\BookLibrary\Exception\InvalidDataStructureException;
 use EfTech\BookLibrary\Infrastructure\Controller\ControllerInterface;
 use EfTech\BookLibrary\Infrastructure\DataLoader\JsonDataLoader;
 use EfTech\BookLibrary\Infrastructure\http\HttpResponse;
@@ -13,6 +15,9 @@ use EfTech\BookLibrary\Infrastructure\http\ServerRequest;
 use EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory;
 use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
 use EfTech\BookLibrary\Infrastructure\Validator\Assert;
+use EfTech\BookLibrary\ValueObject\Currency;
+use EfTech\BookLibrary\ValueObject\Money;
+use EfTech\BookLibrary\ValueObject\PurchasePrice;
 use Exception;
 use JsonException;
 
@@ -114,7 +119,7 @@ class GetBooksCollectionController implements ControllerInterface
     private function textDocumentFactory(array $textDocument,array $authorIdToInfo):AbstractTextDocument
     {
         $textDocument['author'] = null === $textDocument['author_id'] ? null : $authorIdToInfo[$textDocument['author_id']];
-
+        $textDocument['purchasePrices'] = $this->createPurchasePrices($textDocument);
         if (array_key_exists('number', $textDocument)) {
             $textDocumentObj = Magazine::createFromArray($textDocument);
         } else {
@@ -204,6 +209,64 @@ class GetBooksCollectionController implements ControllerInterface
     protected function buildHttpCode(array $foundTextDocument):int
     {
         return 200;
+    }
+
+    /** Создает коллекцию объектов значений - "закупочная цена"
+     * @param array $textDocument
+     */
+    private function createPurchasePrices(array $textDocument):array
+    {
+        if(false === array_key_exists('purchase_price',$textDocument)) {
+            throw new InvalidDataStructureException('Нет данных о закупочной цене');
+        }
+        if(false === is_array($textDocument['purchase_price'])) {
+            throw new InvalidDataStructureException('Данные о закупочных ценах имею не верный формат');
+        }
+        $purchasePrices = [];
+        foreach ($textDocument['purchase_price'] as $purchasePriceData) {
+            $purchasePrices[] = $this->createPurchasePrice($purchasePriceData);
+        }
+        return $purchasePrices;
+    }
+
+    /** Создаёт объект - значения закупочная цена
+     * @param $purchasePriceData
+     */
+    private function createPurchasePrice($purchasePriceData):PurchasePrice
+    {
+        if (false === is_array($purchasePriceData)) {
+            throw new InvalidDataStructureException('Данные о закупочной цене имею не верный формат');
+        }
+        if (false === array_key_exists('date',$purchasePriceData)) {
+            throw new InvalidDataStructureException('Отсутствуют данные о времени закупки');
+        }
+        if (false === is_string($purchasePriceData['date'])) {
+            throw new InvalidDataStructureException('Данные о времени закупки имеют не верный формат');
+        }
+        if (false === array_key_exists('price',$purchasePriceData)) {
+            throw new InvalidDataStructureException('Отсутствуют данные о цене закупки');
+        }
+        if (false === is_int($purchasePriceData['price'])) {
+            throw new InvalidDataStructureException('Данные о цене закупки имеют не верный формат');
+        }
+        if (false === array_key_exists('currency',$purchasePriceData)) {
+            throw new InvalidDataStructureException('Отсутствуют данные о валюте закупки');
+        }
+        if (false === is_string($purchasePriceData['currency'])) {
+            throw new InvalidDataStructureException('Данные о валюте имеют не верный формат');
+        }
+        $currencyName = 'RUB' === $purchasePriceData['currency'] ? 'рубль' : 'неизвестно';
+        return new PurchasePrice(
+            \DateTimeImmutable::createFromFormat('Y-m-d H:i:s',$purchasePriceData['date']),
+            new Money(
+                $purchasePriceData['price'],
+                new Currency(
+                    $purchasePriceData['currency'],
+                    $currencyName
+                )
+            )
+        );
+
     }
 
 

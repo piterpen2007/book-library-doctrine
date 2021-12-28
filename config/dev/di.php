@@ -1,8 +1,12 @@
 <?php
 
 use EfTech\BookLibrary;
+use EfTech\BookLibrary\ConsoleCommand\FindAuthors;
+use EfTech\BookLibrary\ConsoleCommand\FindBooks;
 use EfTech\BookLibrary\Controller\GetAuthorsCollectionController;
 use EfTech\BookLibrary\Infrastructure\AppConfig;
+use EfTech\BookLibrary\Infrastructure\Console\Output\EchoOutput;
+use EfTech\BookLibrary\Infrastructure\Console\Output\OutputInterface;
 use EfTech\BookLibrary\Infrastructure\DI\ContainerInterface;
 use EfTech\BookLibrary\Infrastructure\Logger\FileLogger\Logger;
 use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
@@ -21,6 +25,22 @@ return [
         'controllerNs' => 'EfTech\\BookLibrary\\Controller'
     ],
     'services' => [
+        OutputInterface::class => [
+            'class' => EchoOutput::class,
+            'args' => [
+
+            ]
+        ],
+        FindAuthors::class => [
+          'args' => [
+              'output' => OutputInterface::class
+          ]
+        ],
+        FindBooks::class => [
+            'args' => [
+                'output' => OutputInterface::class
+            ]
+        ],
         BookLibrary\Controller\GetBooksCollectionController::class => [
             'args' => [
                 'logger' => LoggerInterface::class,

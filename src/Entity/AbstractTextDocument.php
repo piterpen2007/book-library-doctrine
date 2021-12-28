@@ -1,6 +1,8 @@
 <?php
 namespace EfTech\BookLibrary\Entity;
 
+use EfTech\BookLibrary\Exception\DomainException;
+use EfTech\BookLibrary\ValueObject\PurchasePrice;
 use JsonSerializable;
 
 abstract class AbstractTextDocument implements JsonSerializable
@@ -17,6 +19,10 @@ abstract class AbstractTextDocument implements JsonSerializable
      * @var int Год выпуска книги
      */
     private int $year;
+    /** Данные о закупочных ценах
+     * @var PurchasePrice[]
+     */
+    private array $purchasePrices;
 
     /** Конструктор класса
      *
@@ -24,12 +30,28 @@ abstract class AbstractTextDocument implements JsonSerializable
      * @param string $title - Заголовок книги
      * @param int $year - Год выпуска книги
      */
-    public function __construct(int $id, string $title, int $year)
+    public function __construct(int $id, string $title, int $year, array $purchasePrices)
     {
         $this->id = $id;
         $this->title = $title;
         $this->year = $year;
+
+        foreach ($purchasePrices as $purchasePrice) {
+            if (!$purchasePrice instanceof PurchasePrice) {
+                throw new DomainException('Некорректный формат данных по закупочной цене');
+            }
+        }
+        $this->purchasePrices = $purchasePrices;
     }
+
+    /** Возвращает данные о закупочных ценах
+     * @return PurchasePrice[]
+     */
+    public function getPurchasePrices(): array
+    {
+        return $this->purchasePrices;
+    }
+
 
 
     /** Устанавливает id текстового документа
