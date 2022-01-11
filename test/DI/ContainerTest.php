@@ -2,13 +2,11 @@
 
 namespace EfTech\BookLibraryTest\Infrastructure\DI;
 
-use EfTech\BookLibrary\Controller\FindAuthors;
+use EfTech\BookLibrary\Controller\GetAuthorsCollectionController;
 use EfTech\BookLibrary\Infrastructure\AppConfig;
 use EfTech\BookLibrary\Infrastructure\Autoloader;
 use EfTech\BookLibrary\Infrastructure\DI\Container;
-use EfTech\BookLibrary\Infrastructure\DI\ContainerInterface;
-use EfTech\BookLibrary\Infrastructure\Logger\FileLogger\Logger;
-use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
+use EfTech\BookLibrary\Service\SearchAuthorsService\SearchAuthorsService;
 
 
 require_once __DIR__ . '/../../src/Infrastructure/Autoloader.php';
@@ -28,49 +26,60 @@ class ContainerTest
     {
         echo "------------------Тестирование получения сервиса---------------\n";
         //Arrange
+        //Arrange
         $diConfig = [
-            'instances'=> [
-                'appConfig' =>require __DIR__ . '/../../config/dev/config.php'
+            'instances' => [
+                'appConfig' => require __DIR__ . '/../../config/dev/config.php',
             ],
             'services' => [
-                FindAuthors::class => [
+                \EfTech\BookLibrary\Infrastructure\DataLoader\DataLoaderInterface::class => [
+                    'class' => \EfTech\BookLibrary\Infrastructure\DataLoader\JsonDataLoader::class
+                ],
+                \EfTech\BookLibrary\Controller\GetAuthorsCollectionController::class => [
                     'args' => [
-                        'pathToAuthor' => 'pathToAuthor',
-                        'logger' => LoggerInterface::class
+                        'logger' => \EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface::class,
+                        'searchAuthorsService' => SearchAuthorsService::class,
+                        ]
+                ],
+                SearchAuthorsService::class => [
+                    'args' => [
+                        'logger' => \EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface::class,
+                        'pathToAuthors' => 'pathToAuthors',
+                        'dataLoader' => \EfTech\BookLibrary\Infrastructure\DataLoader\DataLoaderInterface::class
                     ]
                 ],
-                LoggerInterface::class => [
-                    'class' => Logger::class,
+                \EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface::class => [
+                    'class' => \EfTech\BookLibrary\Infrastructure\Logger\FileLogger\Logger::class,
                     'args' => [
                         'pathToFile' => 'pathToLogFile'
                     ]
-                ]
-
+                ],
             ],
             'factories' => [
-                'pathToLogFile' => static function(ContainerInterface $c):string {
-                    /** @var AppConfig $appConfig */
-                   $appConfig = $c->get(AppConfig::class);
-                   return $appConfig->getPathToLogFile();
-                },
-                AppConfig::class => static function(ContainerInterface $c): AppConfig {
-                    $appConfig = $c->get('appConfig');
-                    return AppConfig::createFromArray($appConfig);
-                },
-                'pathToAuthor' => static function(ContainerInterface $c):string {
+                'pathToLogFile' => static function(Container $c) {
                     /** @var AppConfig $appConfig */
                     $appConfig = $c->get(AppConfig::class);
+                    return $appConfig->getPathToLogFile();
+                    },
+                \EfTech\BookLibrary\Infrastructure\AppConfig::class => static function(Container $c) {
+            $appConfig = $c->get('appConfig');
+            return AppConfig::createFromArray($appConfig);
+            },
+                'pathToAuthors' => static function(Container $c) {
+            /** @var AppConfig $appConfig */
+                    $appConfig = $c->get(AppConfig::class);
                     return $appConfig->getPathToAuthor();
-                }
+                    },
+                ],
+            ];
 
-            ]
-        ];
+
         $di = Container::createFromArray($diConfig);
         //Act
-        $controller = $di->get(FindAuthors::class);
+        $controller = $di->get(GetAuthorsCollectionController::class);
 
         //Assert
-        if ($controller instanceof FindAuthors) {
+        if ($controller instanceof GetAuthorsCollectionController) {
             echo "     ОК - di контейнер отработал корректно";
         } else {
             echo "     FAIL - di контейнер отработал корректно";

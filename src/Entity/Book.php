@@ -16,9 +16,9 @@ final class Book extends AbstractTextDocument
      * @param int $year
      * @param Author $author
      */
-    public function __construct(int $id, string $title, int $year, Author $author)
+    public function __construct(int $id, string $title, int $year, Author $author,array $purchasePrices)
     {
-        parent::__construct($id, $title, $year);
+        parent::__construct($id, $title, $year, $purchasePrices);
         $this->author = $author;
     }
 
@@ -51,12 +51,6 @@ final class Book extends AbstractTextDocument
         return "{$this->getTitle()} . {$this->getAuthor()->getSurname()} {$this->getAuthor()->getName()} . {$this->getYear()}";
     }
 
-    public function jsonSerialize(): array
-    {
-        $jsonData = parent::jsonSerialize();
-        $jsonData['author'] = $this->author;
-        return $jsonData;
-    }
 
     public static function createFromArray(array $data): Book
     {
@@ -64,7 +58,8 @@ final class Book extends AbstractTextDocument
             'id',
             'title',
             'year',
-            'author'
+            'author',
+            'purchasePrices'
         ];
 
 
@@ -76,6 +71,6 @@ final class Book extends AbstractTextDocument
         }
 
 
-        return new Book($data['id'], $data['title'], $data['year'], $data['author']);
+        return new Book($data['id'], $data['title'], $data['year'], $data['author'], $data['purchasePrices']);
     }
 }

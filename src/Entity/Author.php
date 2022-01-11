@@ -7,7 +7,7 @@ use JsonSerializable;
 /**
  * Автор
  */
-final class Author implements JsonSerializable
+final class Author
 {
     /**
      * @var int id автора
@@ -136,16 +136,6 @@ final class Author implements JsonSerializable
         return $this;
     }
 
-    public function jsonSerialize():array
-    {
-        return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'surname' => $this->surname,
-            'birthday' => $this->birthday,
-            'country' => $this->country
-        ];
-    }
 
     /**
      * @param array $data

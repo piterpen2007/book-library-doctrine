@@ -11,7 +11,7 @@ class JsonDataLoader implements DataLoaderInterface
      * @return array
      * @throws \JsonException
      */
-    function loadData (string $sourceName):array
+    public function loadData (string $sourceName):array
     {
         $content = file_get_contents($sourceName);
         return json_decode($content, true,512 , JSON_THROW_ON_ERROR);

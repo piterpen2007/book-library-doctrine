@@ -1,8 +1,14 @@
 <?php
 
 use EfTech\BookLibrary;
-use EfTech\BookLibrary\Controller\FindAuthors;
+use EfTech\BookLibrary\ConsoleCommand\FindAuthors;
+use EfTech\BookLibrary\ConsoleCommand\FindBooks;
+use EfTech\BookLibrary\Controller\GetAuthorsCollectionController;
 use EfTech\BookLibrary\Infrastructure\AppConfig;
+use EfTech\BookLibrary\Infrastructure\Console\Output\EchoOutput;
+use EfTech\BookLibrary\Infrastructure\Console\Output\OutputInterface;
+use EfTech\BookLibrary\Infrastructure\DataLoader\DataLoaderInterface;
+use EfTech\BookLibrary\Infrastructure\DataLoader\JsonDataLoader;
 use EfTech\BookLibrary\Infrastructure\DI\ContainerInterface;
 use EfTech\BookLibrary\Infrastructure\Logger\FileLogger\Logger;
 use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
@@ -11,27 +17,96 @@ use EfTech\BookLibrary\Infrastructure\Router\ControllerFactory;
 use EfTech\BookLibrary\Infrastructure\Router\DefaultRouter;
 use EfTech\BookLibrary\Infrastructure\Router\RegExpRouter;
 use EfTech\BookLibrary\Infrastructure\Router\RouterInterface;
+use EfTech\BookLibrary\Infrastructure\Router\UniversalRouter;
+use EfTech\BookLibrary\Service\SearchAuthorsService\SearchAuthorsService;
+use EfTech\BookLibrary\Service\SearchTextDocumentService\SearchTextDocumentService;
 
 return [
     'instances' => [
         'handlers' => require __DIR__ . '/../request.handlers.php',
-        'appConfig' => require __DIR__ . '/config.php'
+        'regExpHandlers' => require __DIR__ . '/../regExp.handlers.php',
+        'appConfig' => require __DIR__ . '/config.php',
+        'controllerNs' => 'EfTech\\BookLibrary\\Controller'
     ],
     'services' => [
-        BookLibrary\Controller\FindBooks::class => [
+        SearchAuthorsService::class => [
             'args' => [
-                'logger' => LoggerInterface::class,
+                'logger' => \EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface::class,
+                'pathToAuthor' => 'pathToAuthor',
+                'dataLoader' => \EfTech\BookLibrary\Infrastructure\DataLoader\DataLoaderInterface::class
+            ]
+        ],
+        \EfTech\BookLibrary\Controller\GetAuthorsCollectionController::class => [
+            'args' => [
+                'logger' => \EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface::class,
+                'searchAuthorsService' => SearchAuthorsService::class,
+            ]
+        ],
+        \EfTech\BookLibrary\Controller\GetAuthorsController::class => [
+            'args' => [
+                'logger' => \EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface::class,
+                'searchAuthorsService' => SearchAuthorsService::class,
+            ]
+        ],
+
+
+        DataLoaderInterface::class => [
+            'class' => JsonDataLoader::class
+        ],
+        SearchTextDocumentService::class => [
+            'args' => [
+                'logger' => \EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface::class,
                 'pathToBooks' => 'pathToBooks',
                 'pathToMagazines' => 'pathToMagazines',
-                'pathToAuthor' => 'pathToAuthor'
+                'pathToAuthor' => 'pathToAuthor',
+                'dataLoader' => \EfTech\BookLibrary\Infrastructure\DataLoader\DataLoaderInterface::class
+            ]
+        ],
+        OutputInterface::class => [
+            'class' => EchoOutput::class,
+            'args' => [
+
             ]
         ],
         FindAuthors::class => [
             'args' => [
-                'pathToAuthor' => 'pathToAuthor',
-                'logger' => LoggerInterface::class
+                'output' => OutputInterface::class,
+                'SearchAuthorsService' => SearchAuthorsService::class,
+            ]
+
+        ],
+        FindBooks::class => [
+            'args' => [
+                'output' => OutputInterface::class,
+                'searchTextDocumentService' => SearchTextDocumentService::class,
             ]
         ],
+        BookLibrary\Controller\GetBooksCollectionController::class => [
+            'args' => [
+                'logger' => LoggerInterface::class,
+                'searchTextDocumentService' => SearchTextDocumentService::class,
+            ]
+
+        ],
+        BookLibrary\Controller\GetBooksController::class => [
+            'args' => [
+                'logger' => LoggerInterface::class,
+                'searchTextDocumentService' => SearchTextDocumentService::class,
+            ]
+
+        ],
+       // BookLibrary\Controller\GetAuthorsController::class => [
+        //    'args' => [
+        //        'pathToAuthor' => 'pathToAuthor',
+        //        'logger' => LoggerInterface::class
+        //    ]
+       // ],
+       // GetAuthorsCollectionController::class => [
+        //    'args' => [
+        //        'pathToAuthor' => 'pathToAuthor',
+        //        'logger' => LoggerInterface::class
+        //    ]
+        //],
         LoggerInterface::class => [
             'class' => Logger::class,
             'args' => [
@@ -45,7 +120,14 @@ return [
             'class' => ChainRouters::class,
             'args' => [
                 RegExpRouter::class,
-                DefaultRouter::class
+                DefaultRouter::class,
+                UniversalRouter::class
+            ]
+        ],
+        UniversalRouter::class => [
+            'args' => [
+                'ControllerFactory' => ControllerFactory::class,
+                'controllerNs' => 'controllerNs'
             ]
         ],
         DefaultRouter::class => [
@@ -61,14 +143,12 @@ return [
         ],
         RegExpRouter::class => [
             'args' => [
-
+                'handlers' => 'regExpHandlers',
+                'controllerFactory' => ControllerFactory::class
             ]
         ]
     ],
-
-
-
-    'factories'=>[
+'factories'=>[
         ContainerInterface::class => static function(ContainerInterface $c):ContainerInterface {
             return $c;
         },

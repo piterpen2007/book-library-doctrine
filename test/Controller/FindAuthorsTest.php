@@ -4,7 +4,7 @@ namespace EfTech\BookLibraryTest\Infrastructure\Controller;
 
 require_once __DIR__ . '/../../src/Infrastructure/Autoloader.php';
 
-use EfTech\BookLibrary\Controller\FindAuthors;
+use EfTech\BookLibrary\Controller\GetAuthorsCollectionController;
 use EfTech\BookLibrary\Infrastructure\AppConfig;
 use EfTech\BookLibrary\Infrastructure\Autoloader;
 use EfTech\BookLibrary\Infrastructure\DI\Container;
@@ -12,6 +12,7 @@ use EfTech\BookLibrary\Infrastructure\http\ServerRequest;
 use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
 use EfTech\BookLibrary\Infrastructure\Logger\NullLogger\Logger;
 use EfTech\BookLibrary\Infrastructure\Uri\Uri;
+use EfTech\BookLibrary\Service\SearchAuthorsService\SearchAuthorsService;
 use EfTech\BookLibraryTest\TestUtils;
 
 
@@ -46,19 +47,29 @@ class FindAuthorsTest
         $diContainer = new Container(
             [
                 LoggerInterface::class => new Logger(),
-                'pathToAuthor' => $appConfig->getPathToAuthor()
+                'pathToAuthors' => $appConfig->getPathToAuthor()
             ],
             [
-                FindAuthors::class => [
+                GetAuthorsCollectionController::class => [
                     'args' => [
-                        'pathToAuthor' => 'pathToAuthor',
-                        'logger' => LoggerInterface::class
+                        'logger' => LoggerInterface::class,
+                        'searchAuthorsService' => SearchAuthorsService::class
                     ]
+                ],
+                SearchAuthorsService::class => [
+                    'args' => [
+                        'logger' => \EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface::class,
+                        'pathToAuthors' => 'pathToAuthors',
+                        'dataLoader' => \EfTech\BookLibrary\Infrastructure\DataLoader\DataLoaderInterface::class
+                    ]
+                ],
+                \EfTech\BookLibrary\Infrastructure\DataLoader\DataLoaderInterface::class => [
+                    'class' => \EfTech\BookLibrary\Infrastructure\DataLoader\JsonDataLoader::class
+                ],
                 ]
-            ]
         );
 
-        $findAuthors = $diContainer->get(FindAuthors::class);
+        $findAuthors = $diContainer->get(GetAuthorsCollectionController::class);
         $httpResponse = $findAuthors($httpRequest);
         //Assert
         if ($httpResponse->getStatusCode() === 200) {

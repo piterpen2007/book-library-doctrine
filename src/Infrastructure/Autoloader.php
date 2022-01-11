@@ -50,9 +50,9 @@ final class Autoloader
         if (null !== $pathToFile && file_exists($pathToFile) && false === is_dir($pathToFile)) {
             require_once $pathToFile;
         }
-        //else {
-        //    $b =0;
-        //}
+        else {
+            $b =0;
+        }
     }
 }
 
