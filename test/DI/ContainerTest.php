@@ -6,7 +6,7 @@ use EfTech\BookLibrary\Controller\GetAuthorsCollectionController;
 use EfTech\BookLibrary\Infrastructure\AppConfig;
 use EfTech\BookLibrary\Infrastructure\Autoloader;
 use EfTech\BookLibrary\Infrastructure\DI\Container;
-use EfTech\BookLibrary\Service\SearchAuthorsService\SearchAuthorsService;
+use EfTech\BookLibrary\Service\SearchAuthorsService;
 
 
 require_once __DIR__ . '/../../src/Infrastructure/Autoloader.php';

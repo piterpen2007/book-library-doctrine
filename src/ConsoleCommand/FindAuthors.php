@@ -6,7 +6,7 @@ use EfTech\BookLibrary\Infrastructure\Console\CommandInterface;
 use EfTech\BookLibrary\Infrastructure\Console\Output\OutputInterface;
 use EfTech\BookLibrary\Service\SearchAuthorsService\AuthorDto;
 use EfTech\BookLibrary\Service\SearchAuthorsService\SearchAuthorsCriteria;
-use EfTech\BookLibrary\Service\SearchAuthorsService\SearchAuthorsService;
+use EfTech\BookLibrary\Service\SearchAuthorsService;
 use JsonException;
 
 /**

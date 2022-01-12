@@ -9,7 +9,7 @@ use EfTech\BookLibrary\Infrastructure\http\ServerRequest;
 use EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory;
 use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
 use EfTech\BookLibrary\Infrastructure\Validator\Assert;
-use EfTech\BookLibrary\Service\SearchTextDocumentService\SearchTextDocumentService;
+use EfTech\BookLibrary\Service\SearchTextDocumentService;
 use EfTech\BookLibrary\Service\SearchTextDocumentService\SearchTextDocumentServiceCriteria;
 use EfTech\BookLibrary\Service\SearchTextDocumentService\TextDocumentDto;
 use Exception;

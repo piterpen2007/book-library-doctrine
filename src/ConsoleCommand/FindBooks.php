@@ -4,7 +4,7 @@ namespace EfTech\BookLibrary\ConsoleCommand;
 
 use EfTech\BookLibrary\Infrastructure\Console\CommandInterface;
 use EfTech\BookLibrary\Infrastructure\Console\Output\OutputInterface;
-use EfTech\BookLibrary\Service\SearchTextDocumentService\SearchTextDocumentService;
+use EfTech\BookLibrary\Service\SearchTextDocumentService;
 use EfTech\BookLibrary\Service\SearchTextDocumentService\SearchTextDocumentServiceCriteria;
 use EfTech\BookLibrary\Service\SearchTextDocumentService\TextDocumentDto;
 use JsonException;

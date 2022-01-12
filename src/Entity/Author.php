@@ -140,7 +140,6 @@ final class Author
     /**
      * @param array $data
      * @return Author
-     * @throws \Exception
      */
     public static function createFromArray(array $data): Author
     {

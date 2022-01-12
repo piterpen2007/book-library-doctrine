@@ -1,6 +1,6 @@
 <?php
 
-namespace EfTech\BookLibrary\Service\SearchTextDocumentService;
+namespace EfTech\BookLibrary\Service;
 use EfTech\BookLibrary\Entity\AbstractTextDocument;
 use EfTech\BookLibrary\Entity\Author;
 use EfTech\BookLibrary\Entity\Book;
@@ -9,6 +9,9 @@ use EfTech\BookLibrary\Exception\InvalidDataStructureException;
 use EfTech\BookLibrary\Exception\RuntimeException;
 use EfTech\BookLibrary\Infrastructure\DataLoader\DataLoaderInterface;
 use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
+use EfTech\BookLibrary\Service\SearchTextDocumentService\AuthorDto;
+use EfTech\BookLibrary\Service\SearchTextDocumentService\SearchTextDocumentServiceCriteria;
+use EfTech\BookLibrary\Service\SearchTextDocumentService\TextDocumentDto;
 use EfTech\BookLibrary\ValueObject\Currency;
 use EfTech\BookLibrary\ValueObject\Money;
 use EfTech\BookLibrary\ValueObject\PurchasePrice;
@@ -94,7 +97,6 @@ class SearchTextDocumentService
      *
      *
      * @return Author[]
-     * @throws Exception
      */
     private function loadAuthorEntity():array
     {

@@ -12,7 +12,7 @@ use EfTech\BookLibrary\Infrastructure\http\ServerRequest;
 use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
 use EfTech\BookLibrary\Infrastructure\Logger\NullLogger\Logger;
 use EfTech\BookLibrary\Infrastructure\Uri\Uri;
-use EfTech\BookLibrary\Service\SearchAuthorsService\SearchAuthorsService;
+use EfTech\BookLibrary\Service\SearchAuthorsService;
 use EfTech\BookLibraryTest\TestUtils;
 
 

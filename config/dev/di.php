@@ -18,8 +18,8 @@ use EfTech\BookLibrary\Infrastructure\Router\DefaultRouter;
 use EfTech\BookLibrary\Infrastructure\Router\RegExpRouter;
 use EfTech\BookLibrary\Infrastructure\Router\RouterInterface;
 use EfTech\BookLibrary\Infrastructure\Router\UniversalRouter;
-use EfTech\BookLibrary\Service\SearchAuthorsService\SearchAuthorsService;
-use EfTech\BookLibrary\Service\SearchTextDocumentService\SearchTextDocumentService;
+use EfTech\BookLibrary\Service\SearchAuthorsService;
+use EfTech\BookLibrary\Service\SearchTextDocumentService;
 
 return [
     'instances' => [

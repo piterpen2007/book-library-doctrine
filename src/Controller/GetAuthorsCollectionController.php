@@ -12,7 +12,7 @@ use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
 use EfTech\BookLibrary\Infrastructure\Validator\Assert;
 use EfTech\BookLibrary\Service\SearchAuthorsService\AuthorDto;
 use EfTech\BookLibrary\Service\SearchAuthorsService\SearchAuthorsCriteria;
-use EfTech\BookLibrary\Service\SearchAuthorsService\SearchAuthorsService;
+use EfTech\BookLibrary\Service\SearchAuthorsService;
 use Exception;
 use JsonException;
 
