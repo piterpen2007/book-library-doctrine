@@ -4,6 +4,7 @@
     "title": "Бойцовский клуб",
     "year": 1996,
     "author_id": 1,
+    "status" : "inStock",
     "purchase_price" : []
   },
   {
@@ -11,6 +12,7 @@
     "title": "Снафф",
     "year": 2008,
     "author_id": 1,
+    "status" : "inStock",
     "purchase_price" : []
   },
   {
@@ -18,6 +20,7 @@
     "title": "Проклятые",
     "year": 2011,
     "author_id": 1,
+    "status" : "inStock",
     "purchase_price" : []
   },
   {
@@ -25,6 +28,7 @@
     "title": "Никто из ниоткуда. Сценарий, стихи, рассказы",
     "year": 2006,
     "author_id": 2,
+    "status" : "inStock",
     "purchase_price" : []
   },
   {
@@ -32,6 +36,7 @@
     "title": "Скованные одной цепью. Стихи",
     "year": 1990,
     "author_id": 2,
+    "status" : "inStock",
     "purchase_price" : []
   },
   {
@@ -39,6 +44,7 @@
     "title": "Glamorama",
     "year": 1998,
     "author_id": 3,
+    "status" : "inStock",
     "purchase_price" : []
   },
   {
@@ -46,6 +52,7 @@
     "title": "The Rules of Attraction",
     "year": 1987,
     "author_id": 3,
+    "status" : "inStock",
     "purchase_price" : []
   },
   {
@@ -53,6 +60,7 @@
     "title": "Крейцерова соната",
     "year": 1891,
     "author_id": 4,
+    "status" : "inStock",
     "purchase_price" : []
   },
   {
@@ -60,6 +68,7 @@
     "title": "Карма",
     "year": 1894,
     "author_id": 4,
+    "status" : "inStock",
     "purchase_price" : []
   },
   {
@@ -67,6 +76,7 @@
     "title": "Мечтают ли андроиды об электроовцах?",
     "year": 1966,
     "author_id": 5,
+    "status" : "inStock",
     "purchase_price" : []
   },
   {
@@ -74,6 +84,7 @@
     "title": "S.N.U.F.F.",
     "year": 2011,
     "author_id": 6,
+    "status" : "inStock",
     "purchase_price" : [
       {
         "date": "2021-07-27 15:14:00",
@@ -87,6 +98,7 @@
     "title": "iPhuck 10",
     "year": 2017,
     "author_id": 6,
+    "status" : "inStock",
     "purchase_price" : []
   },
   {
@@ -94,6 +106,7 @@
     "title": "Чапаев и Пустота",
     "year": 1996,
     "author_id": 6,
+    "status" : "inStock",
     "purchase_price" : []
   }
 ]

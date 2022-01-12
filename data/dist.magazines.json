@@ -4,6 +4,7 @@
     "title": "Esquire",
     "year": 2020,
     "author_id": null,
+    "status" : "inStock",
     "number": 1,
     "purchase_price" : [
       {
@@ -18,6 +19,7 @@
     "title": "Esquire",
     "year": 2020,
     "author_id": null,
+    "status" : "inStock",
     "number": 2,
     "purchase_price" : []
   },
@@ -26,6 +28,7 @@
     "title": "GQ",
     "year": 2020,
     "author_id": null,
+    "status" : "inStock",
     "number": 1,
     "purchase_price" : []
   },
@@ -34,6 +37,7 @@
     "title": "Логос",
     "year": 2020,
     "author_id": null,
+    "status" : "inStock",
     "number": 1,
     "purchase_price" : []
   },
@@ -42,6 +46,7 @@
     "title": "National Geographic Magazine",
     "year": 2020,
     "author_id": null,
+    "status" : "inStock",
     "number": 7,
     "purchase_price" : []
   },
@@ -50,6 +55,7 @@
     "title": "Rolling Stone",
     "year": 2017,
     "author_id": null,
+    "status" : "inStock",
     "number": 4,
     "purchase_price" : []
   }
