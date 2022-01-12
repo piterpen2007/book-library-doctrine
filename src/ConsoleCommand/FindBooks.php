@@ -21,7 +21,7 @@ final class FindBooks implements CommandInterface
      *
      * @var OutputInterface
      */
-    private $output;
+    private OutputInterface $output;
     /**
      *
      *
@@ -67,7 +67,7 @@ final class FindBooks implements CommandInterface
         $textDocumentsDto = $this->searchTextDocumentService->search((
             new SearchTextDocumentServiceCriteria())
             ->setAuthorSurname($params['author_surname'] ?? null)
-            ->setId($params['id'] ?? null)
+            ->setId(isset($params['id']) ? (int)$params['id'] : null)
             ->setTitle($params['title'] ?? null)
         );
         $jsonData = $this->buildJsonData($textDocumentsDto);

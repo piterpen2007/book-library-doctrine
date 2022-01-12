@@ -3,6 +3,7 @@
 namespace EfTech\BookLibrary\Service;
 
 use EfTech\BookLibrary\Entity\Author;
+use EfTech\BookLibrary\Entity\AuthorRepositoryInterface;
 use EfTech\BookLibrary\Infrastructure\DataLoader\DataLoaderInterface;
 use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
 use EfTech\BookLibrary\Service\SearchAuthorsService\AuthorDto;
@@ -17,47 +18,26 @@ use JsonException;
  */
 class SearchAuthorsService
 {
-    /**
-     *
-     *
-     * @var DataLoaderInterface
-     */
-    private DataLoaderInterface $dataLoader;
+
+    private AuthorRepositoryInterface $authorRepository;
     /**
      *
      *
      * @var LoggerInterface
      */
     private LoggerInterface $logger;
-    /**
-     *
-     *
-     * @var string
-     */
-    private string $pathToAuthors;
+
 
     /**
-     * @param DataLoaderInterface $dataLoader
      * @param LoggerInterface $logger
      * @param string $pathToAuthors
+     * @param DataLoaderInterface $dataLoader
+     * @param AuthorRepositoryInterface $authorRepository
      */
-    public function __construct(LoggerInterface $logger ,string $pathToAuthors, DataLoaderInterface $dataLoader)
+    public function __construct(LoggerInterface $logger , AuthorRepositoryInterface $authorRepository)
     {
-        $this->dataLoader = $dataLoader;
         $this->logger = $logger;
-        $this->pathToAuthors = $pathToAuthors;
-    }
-
-    /**
-     *
-     *
-     * @return array
-     * @throws JsonException
-     */
-
-    private function loadData():array
-    {
-        return $this->dataLoader->loadData($this->pathToAuthors);
+        $this->authorRepository = $authorRepository;
     }
 
     /**
@@ -67,7 +47,8 @@ class SearchAuthorsService
      */
     public function search(SearchAuthorsCriteria $searchCriteria):array
     {
-        $entitiesCollection = $this->searchEntity($searchCriteria);
+        $criteria = $this->searchCriteriaToArray($searchCriteria);
+        $entitiesCollection = $this->authorRepository->findBy($criteria);
         $dtoCollection = [];
         foreach ($entitiesCollection as $entity) {
             $dtoCollection[] = $this->createDto($entity);
@@ -91,32 +72,19 @@ class SearchAuthorsService
         );
     }
 
-
     /**
      * @param SearchAuthorsCriteria $searchCriteria
      * @return array
-     * @throws JsonException
-     * @throws Exception
      */
-    private function searchEntity(SearchAuthorsCriteria $searchCriteria):array
+    private function searchCriteriaToArray(SearchAuthorsCriteria $searchCriteria):array
     {
-        $authors = $this->loadData();
-        $foundAuthors = [];
-        foreach ($authors as $author) {
-            if (null !== $searchCriteria->getSurname()) {
-                $authorMeetsSearchCriteria = $searchCriteria->getSurname() === $author['surname'];
-            } else {
-                $authorMeetsSearchCriteria = true;
-            }
-            if ($authorMeetsSearchCriteria && null !== $searchCriteria->getId()) {
-                $authorMeetsSearchCriteria = $searchCriteria->getId() === (string)$author['id'];
-            }
-            if ($authorMeetsSearchCriteria) {
-                $authorObj = Author::createFromArray($author);
-                $foundAuthors[] = $authorObj;
-            }
-        }
-        $this->logger->log( 'found authors:' . count($foundAuthors));
-        return $foundAuthors;
+        $criteriaForRepository = [
+            'id' => $searchCriteria->getId(),
+            'surname' => $searchCriteria->getSurname()
+        ];
+
+        return array_filter($criteriaForRepository, static function($v):bool {return null !== $v;});
     }
+
+
 }

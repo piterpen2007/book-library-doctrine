@@ -18,9 +18,9 @@ final class SearchTextDocumentServiceCriteria
     /**
      * id
      *
-     * @var string|null
+     * @var int|null
      */
-    private ?string $id;
+    private ?int $id;
     /**
      *
      *
@@ -43,11 +43,11 @@ final class SearchTextDocumentServiceCriteria
     /**
      * id
      *
-     * @param string|null $id
+     * @param int|null $id
      *
      * @return SearchTextDocumentServiceCriteria
      */
-    public function setId(?string $id):
+    public function setId(?int $id):
     SearchTextDocumentServiceCriteria
     {
         $this->id = $id;
@@ -69,9 +69,9 @@ final class SearchTextDocumentServiceCriteria
     /**
      * id
      *
-     * @return string|null
+     * @return int|null
      */
-    public function getId(): ?string
+    public function getId(): ?int
     {
         return $this->id;
     }

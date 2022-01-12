@@ -2,10 +2,12 @@
 namespace EfTech\BookLibrary\Entity;
 
 use EfTech\BookLibrary\Exception\DomainException;
+use EfTech\BookLibrary\Exception\RuntimeException;
 use EfTech\BookLibrary\ValueObject\PurchasePrice;
 
 abstract class AbstractTextDocument
 {
+    public const STATUS_ARCHIVE = 'archive';
     /**
      * @var int id книги
      */
@@ -22,14 +24,19 @@ abstract class AbstractTextDocument
      * @var PurchasePrice[]
      */
     private array $purchasePrices;
+    /** Статус текстовго документа
+     * @var string
+     */
+    private string $status;
 
     /** Конструктор класса
      *
+     * @param string $status
      * @param int $id - id книги
      * @param string $title - Заголовок книги
      * @param int $year - Год выпуска книги
      */
-    public function __construct(int $id, string $title, int $year, array $purchasePrices)
+    public function __construct(int $id, string $title, int $year, array $purchasePrices, string $status)
     {
         $this->id = $id;
         $this->title = $title;
@@ -41,7 +48,23 @@ abstract class AbstractTextDocument
             }
         }
         $this->purchasePrices = $purchasePrices;
+        $this->status = $status;
     }
+
+    /** Перенос документа в архив
+     * @return $this
+     */
+    public function moveToArchive():self
+    {
+        if ('archive' === $this->status) {
+            throw new RuntimeException(
+              "Текстовый документ с id {$this->getId()} уже находится в архиве"
+            );
+        }
+        $this->status = self::STATUS_ARCHIVE;
+        return $this;
+    }
+
 
     /** Возвращает данные о закупочных ценах
      * @return PurchasePrice[]
@@ -109,6 +132,26 @@ abstract class AbstractTextDocument
         $this->year = $year;
         return $this;
     }
+
+    /**
+     * @param string $status
+     * @return AbstractTextDocument
+     */
+    public function setStatus(string $status): AbstractTextDocument
+    {
+        $this->status = $status;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+
 
     /** Возвращает заголовок для печати
      * @return string

@@ -3,6 +3,7 @@
   "id": 10,
   "title": "Мечтают ли андроиды об электроовцах?",
   "author_id": 5,
+    "status" : "inStock",
   "purchase_price" : []
 }
 ]

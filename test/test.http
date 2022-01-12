@@ -193,8 +193,17 @@ GET http://book-library-fedyancev.ru:8083/authors/0
 ### Тестирование получения автора по ID
 GET http://book-library-fedyancev.ru:8083/authors
 
+### Отправка книг в архив
+PUT http://book-library-fedyancev.ru:8083/books/6/moveToArchive
 
-
-
+> {%
+   client.test('Отправка книг в архив', function () {
+   client.assert(response.status === 200, 'Проверяю код ответа. Фактическое знаение: ' + response.status);
+   client.assert(response.contentType.mimeType === "application/json", 'Проверяю application/json. Фактическое знаение: ' + response.contentType.mimeType);
+   client.assert(response.body['id'] === 6, "id журнала не корректен");
+   client.assert(response.body['status'] === "archive", "статус книги не корректен");
+   client.assert(response.body['title_for_printing'] === 'Glamorama . Эллис Брет . 1998', "название книги не корректно");
+ });
+ %}
 
 

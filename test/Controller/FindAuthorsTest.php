@@ -5,6 +5,7 @@ namespace EfTech\BookLibraryTest\Infrastructure\Controller;
 require_once __DIR__ . '/../../src/Infrastructure/Autoloader.php';
 
 use EfTech\BookLibrary\Controller\GetAuthorsCollectionController;
+use EfTech\BookLibrary\Entity\AuthorRepositoryInterface;
 use EfTech\BookLibrary\Infrastructure\AppConfig;
 use EfTech\BookLibrary\Infrastructure\Autoloader;
 use EfTech\BookLibrary\Infrastructure\DI\Container;
@@ -12,6 +13,7 @@ use EfTech\BookLibrary\Infrastructure\http\ServerRequest;
 use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
 use EfTech\BookLibrary\Infrastructure\Logger\NullLogger\Logger;
 use EfTech\BookLibrary\Infrastructure\Uri\Uri;
+use EfTech\BookLibrary\Repository\AuthorJsonFileRepository;
 use EfTech\BookLibrary\Service\SearchAuthorsService;
 use EfTech\BookLibraryTest\TestUtils;
 
@@ -53,18 +55,25 @@ class FindAuthorsTest
                 GetAuthorsCollectionController::class => [
                     'args' => [
                         'logger' => LoggerInterface::class,
-                        'searchAuthorsService' => SearchAuthorsService::class
+                        'searchAuthorsService' => SearchAuthorsService::class,
                     ]
                 ],
                 SearchAuthorsService::class => [
                     'args' => [
                         'logger' => \EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface::class,
-                        'pathToAuthors' => 'pathToAuthors',
-                        'dataLoader' => \EfTech\BookLibrary\Infrastructure\DataLoader\DataLoaderInterface::class
+                        'authorRepository' => AuthorRepositoryInterface::class
                     ]
                 ],
                 \EfTech\BookLibrary\Infrastructure\DataLoader\DataLoaderInterface::class => [
                     'class' => \EfTech\BookLibrary\Infrastructure\DataLoader\JsonDataLoader::class
+                ],
+                AuthorRepositoryInterface::class => [
+                    'class' => AuthorJsonFileRepository::class,
+                    'args' => [
+                        'pathToAuthors' => 'pathToAuthors',
+                        'dataLoader' => \EfTech\BookLibrary\Infrastructure\DataLoader\DataLoaderInterface::class
+                    ]
+
                 ],
                 ]
         );

@@ -3,7 +3,7 @@
 use EfTech\BookLibrary;
 use EfTech\BookLibrary\ConsoleCommand\FindAuthors;
 use EfTech\BookLibrary\ConsoleCommand\FindBooks;
-use EfTech\BookLibrary\Controller\GetAuthorsCollectionController;
+use EfTech\BookLibrary\Controller\UpdateMoveToArchiveBooksController;
 use EfTech\BookLibrary\Infrastructure\AppConfig;
 use EfTech\BookLibrary\Infrastructure\Console\Output\EchoOutput;
 use EfTech\BookLibrary\Infrastructure\Console\Output\OutputInterface;
@@ -18,6 +18,7 @@ use EfTech\BookLibrary\Infrastructure\Router\DefaultRouter;
 use EfTech\BookLibrary\Infrastructure\Router\RegExpRouter;
 use EfTech\BookLibrary\Infrastructure\Router\RouterInterface;
 use EfTech\BookLibrary\Infrastructure\Router\UniversalRouter;
+use EfTech\BookLibrary\Repository\TextDocumentJsonFileRepository;
 use EfTech\BookLibrary\Service\SearchAuthorsService;
 use EfTech\BookLibrary\Service\SearchTextDocumentService;
 
@@ -29,11 +30,38 @@ return [
         'controllerNs' => 'EfTech\\BookLibrary\\Controller'
     ],
     'services' => [
+        BookLibrary\Entity\AuthorRepositoryInterface::class => [
+            'class' => BookLibrary\Repository\AuthorJsonFileRepository::class,
+            'args' => [
+                'pathToAuthor' => 'pathToAuthor',
+                'dataLoader' => \EfTech\BookLibrary\Infrastructure\DataLoader\DataLoaderInterface::class
+            ]
+
+        ],
+        BookLibrary\Entity\TextDocumentRepositoryInterface::class => [
+            'class' => TextDocumentJsonFileRepository::class,
+            'args' => [
+                'pathToBooks' => 'pathToBooks',
+                'pathToMagazines' => 'pathToMagazines',
+                'pathToAuthor' => 'pathToAuthor',
+                'dataLoader' => \EfTech\BookLibrary\Infrastructure\DataLoader\DataLoaderInterface::class
+            ]
+        ],
+        UpdateMoveToArchiveBooksController::class => [
+            'args' => [
+                'archivingTextDocumentService' => BookLibrary\Service\ArchivingTextDocumentService::class
+
+            ]
+        ],
+        BookLibrary\Service\ArchivingTextDocumentService::class => [
+            'args' => [
+                'textDocumentRepository' => BookLibrary\Entity\TextDocumentRepositoryInterface::class
+            ]
+        ],
         SearchAuthorsService::class => [
             'args' => [
                 'logger' => \EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface::class,
-                'pathToAuthor' => 'pathToAuthor',
-                'dataLoader' => \EfTech\BookLibrary\Infrastructure\DataLoader\DataLoaderInterface::class
+                'authorRepository' => BookLibrary\Entity\AuthorRepositoryInterface::class
             ]
         ],
         \EfTech\BookLibrary\Controller\GetAuthorsCollectionController::class => [
@@ -56,10 +84,7 @@ return [
         SearchTextDocumentService::class => [
             'args' => [
                 'logger' => \EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface::class,
-                'pathToBooks' => 'pathToBooks',
-                'pathToMagazines' => 'pathToMagazines',
-                'pathToAuthor' => 'pathToAuthor',
-                'dataLoader' => \EfTech\BookLibrary\Infrastructure\DataLoader\DataLoaderInterface::class
+                'searchDocumentRepository' => BookLibrary\Entity\TextDocumentRepositoryInterface::class
             ]
         ],
         OutputInterface::class => [

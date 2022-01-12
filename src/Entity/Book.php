@@ -16,9 +16,9 @@ final class Book extends AbstractTextDocument
      * @param int $year
      * @param Author $author
      */
-    public function __construct(int $id, string $title, int $year, Author $author,array $purchasePrices)
+    public function __construct(int $id, string $title, int $year, Author $author,array $purchasePrices,string $status)
     {
-        parent::__construct($id, $title, $year, $purchasePrices);
+        parent::__construct($id, $title, $year, $purchasePrices,$status);
         $this->author = $author;
     }
 
@@ -59,7 +59,8 @@ final class Book extends AbstractTextDocument
             'title',
             'year',
             'author',
-            'purchasePrices'
+            'purchasePrices',
+            'status'
         ];
 
 
@@ -71,6 +72,13 @@ final class Book extends AbstractTextDocument
         }
 
 
-        return new Book($data['id'], $data['title'], $data['year'], $data['author'], $data['purchasePrices']);
+        return new Book(
+            $data['id'],
+            $data['title'],
+            $data['year'],
+            $data['author'],
+            $data['purchasePrices'],
+            $data['status']
+        );
     }
 }

@@ -21,9 +21,9 @@ final class Magazine extends AbstractTextDocument
      * @param Author|null $author
      * @param int $number
      */
-    public function __construct(int $id, string $title, int $year, ?Author $author, int $number,array $purchasePrices)
+    public function __construct(int $id, string $title, int $year, ?Author $author, int $number,array $purchasePrices,string $status)
     {
-        parent::__construct($id, $title, $year,$purchasePrices);
+        parent::__construct($id, $title, $year, $purchasePrices,$status);
         $this->number = $number;
         $this->author = $author;
     }
@@ -82,7 +82,8 @@ final class Magazine extends AbstractTextDocument
             'year',
             'number',
             'author',
-            'purchasePrices'
+            'purchasePrices',
+            'status'
         ];
 
         $missingFields = array_diff($requiredFields, array_keys($data));
@@ -92,7 +93,15 @@ final class Magazine extends AbstractTextDocument
             throw new Exception\invalidDataStructureException($errMsg);
         }
 
-        return new Magazine($data['id'], $data['title'], $data['year'], $data['author'], $data['number'], $data['purchasePrices']);
+        return new Magazine(
+            $data['id'],
+            $data['title'],
+            $data['year'],
+            $data['author'],
+            $data['number'],
+            $data['purchasePrices'],
+            $data['status']
+        );
     }
 
 

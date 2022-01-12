@@ -74,7 +74,7 @@ class GetAuthorsCollectionController implements ControllerInterface
             $params = array_merge($request->getQueryParams(), $request->getAttributes());
             $foundAuthors = $this->searchAuthorsService->search(
                 (new SearchAuthorsCriteria())
-                    ->setId($params['id'] ?? null)
+                    ->setId(isset($params['id']) ? (int)$params['id'] : null)
                     ->setSurname($params['surname'] ?? null)
             );
 

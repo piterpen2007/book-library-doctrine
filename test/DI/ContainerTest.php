@@ -3,9 +3,11 @@
 namespace EfTech\BookLibraryTest\Infrastructure\DI;
 
 use EfTech\BookLibrary\Controller\GetAuthorsCollectionController;
+use EfTech\BookLibrary\Entity\AuthorRepositoryInterface;
 use EfTech\BookLibrary\Infrastructure\AppConfig;
 use EfTech\BookLibrary\Infrastructure\Autoloader;
 use EfTech\BookLibrary\Infrastructure\DI\Container;
+use EfTech\BookLibrary\Repository\AuthorJsonFileRepository;
 use EfTech\BookLibrary\Service\SearchAuthorsService;
 
 
@@ -41,11 +43,18 @@ class ContainerTest
                         'searchAuthorsService' => SearchAuthorsService::class,
                         ]
                 ],
+                AuthorRepositoryInterface::class => [
+                    'class' => AuthorJsonFileRepository::class,
+                    'args' => [
+                        'pathToAuthors' => 'pathToAuthors',
+                        'dataLoader' => \EfTech\BookLibrary\Infrastructure\DataLoader\DataLoaderInterface::class
+                    ]
+
+                ],
                 SearchAuthorsService::class => [
                     'args' => [
                         'logger' => \EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface::class,
-                        'pathToAuthors' => 'pathToAuthors',
-                        'dataLoader' => \EfTech\BookLibrary\Infrastructure\DataLoader\DataLoaderInterface::class
+                        'authorRepository' => AuthorRepositoryInterface::class
                     ]
                 ],
                 \EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface::class => [

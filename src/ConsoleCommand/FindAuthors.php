@@ -69,7 +69,7 @@ final class FindAuthors implements CommandInterface
         $dtoCollection = $this->searchAuthorsService->search(
             (new SearchAuthorsCriteria())
                 ->setSurname($params['surname'] ?? null)
-                ->setId($params['id'] ?? null)
+                ->setId(isset($params['id']) ? (int)$params['id'] : null)
         );
         $jsonData = $this->buildJsonData($dtoCollection);
         $this->output->print(json_encode($jsonData,

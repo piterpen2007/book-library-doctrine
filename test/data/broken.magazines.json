@@ -3,6 +3,7 @@
     "title": "National Geographic Magazine",
     "year": 2020,
     "author_id": null,
+    "status" : "inStock",
     "number": 7,
     "purchase_price" : []
   }

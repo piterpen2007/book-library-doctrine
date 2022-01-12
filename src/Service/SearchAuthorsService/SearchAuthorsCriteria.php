@@ -17,9 +17,9 @@ final class SearchAuthorsCriteria
     /**
      * id
      *
-     * @var string|null
+     * @var int|null
      */
-    private ?string $id;
+    private ?int $id;
     /**
      *
      *
@@ -32,9 +32,9 @@ final class SearchAuthorsCriteria
     /**
      * id
      *
-     * @return string|null
+     * @return int|null
      */
-    public function getId(): ?string
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -53,11 +53,11 @@ final class SearchAuthorsCriteria
     /**
      * id
      *
-     * @param string|null $id
+     * @param int|null $id
      *
      * @return SearchAuthorsCriteria
      */
-    public function setId(?string $id): SearchAuthorsCriteria
+    public function setId(?int $id): SearchAuthorsCriteria
     {
         $this->id = $id;
         return $this;
