@@ -8,7 +8,6 @@ use EfTech\BookLibrary\Infrastructure\http\httpResponse;
 use EfTech\BookLibrary\Infrastructure\http\ServerRequest;
 use EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory;
 use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
-use EfTech\BookLibrary\Infrastructure\Router\DefaultRouter;
 use EfTech\BookLibrary\Infrastructure\Router\RouterInterface;
 use Throwable;
 use EfTech\BookLibrary\Exception;
@@ -132,7 +131,7 @@ final class App
      */
     private function initErrorHandling():void
     {
-        set_error_handler(static function(int $errNom, string $errStr){
+        set_error_handler(static function(int $errNom, string $errStr , $errFile, $errLine){
             throw new RuntimeException($errStr);
         });
     }

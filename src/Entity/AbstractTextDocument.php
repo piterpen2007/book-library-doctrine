@@ -8,6 +8,7 @@ use EfTech\BookLibrary\ValueObject\PurchasePrice;
 abstract class AbstractTextDocument
 {
     public const STATUS_ARCHIVE = 'archive';
+    public const STATUS_IN_STOCK = 'inStock';
     /**
      * @var int id книги
      */

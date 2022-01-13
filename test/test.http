@@ -206,4 +206,47 @@ PUT http://book-library-fedyancev.ru:8083/books/6/moveToArchive
  });
  %}
 
+### Регистрация новой книги
+POST http://book-library-fedyancev.ru:8083/books/register
+Content-Type: application/json
+
+{
+  "title" : "Текстовой документ",
+  "year": 2021,
+  "author_id" : 1
+}
+
+> {%
+   client.test('Тестирование регистрации новой книги', function () {
+   client.assert(response.status === 201, 'Проверяю код ответа. Фактическое знаение: ' + response.status);
+   client.assert(response.contentType.mimeType === "application/json", 'Проверяю application/json. Фактическое знаение: ' + response.contentType.mimeType);
+   client.assert(response.body.hasOwnProperty('id'), "Отсутствует id книги");
+   client.assert(response.body['status'] === "inStock", "статус книги не корректен");
+   client.assert(response.body['title_for_printing'] === 'Текстовой документ . Паланик Чак . 2021', "название книги не корректно");
+ });
+ %}
+
+
+### Регистрация нового журнала
+POST http://book-library-fedyancev.ru:8083/magazines/register
+Content-Type: application/json
+
+{
+  "title" : "Новый журнал",
+  "year": 2021,
+  "author_id" : null,
+  "number": 10
+}
+
+> {%
+   client.test('Тестирование регистрации нового журнала', function () {
+   client.assert(response.status === 201, 'Проверяю код ответа. Фактическое знаение: ' + response.status);
+   client.assert(response.contentType.mimeType === "application/json", 'Проверяю application/json. Фактическое знаение: ' + response.contentType.mimeType);
+   client.assert(response.body.hasOwnProperty('id'), "Отсутствует id журнала");
+   client.assert(response.body['status'] === "inStock", "статус журнала не корректен");
+   client.assert(response.body['title_for_printing'] === 'Новый журнал . 2021 . Номер:  10', "название книги не корректно");
+ });
+ %}
+
+
 

@@ -11,14 +11,16 @@ use EfTech\BookLibrary\Entity\TextDocumentRepositoryInterface;
 use EfTech\BookLibrary\Exception\InvalidDataStructureException;
 use EfTech\BookLibrary\Exception\RuntimeException;
 use EfTech\BookLibrary\Infrastructure\DataLoader\DataLoaderInterface;
-use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
-use EfTech\BookLibrary\Service\SearchTextDocumentService\SearchTextDocumentServiceCriteria;
 use EfTech\BookLibrary\ValueObject\Currency;
 use EfTech\BookLibrary\ValueObject\Money;
 use EfTech\BookLibrary\ValueObject\PurchasePrice;
 
 class TextDocumentJsonFileRepository implements TextDocumentRepositoryInterface
 {
+    /** Текущее значение идентификатора текстового документа
+     * @var int
+     */
+    private int $currentId;
     /**
      *
      *
@@ -108,17 +110,44 @@ class TextDocumentJsonFileRepository implements TextDocumentRepositoryInterface
             $this->magazinesData= $this->dataLoader->loadData($this->pathToMagazines);
 
             $this->bookIdToIndex = array_combine(
-                array_map(static function(array $v) {return $v['id'];}, $this->booksData),
+                array_map(
+                    [$this,'extractTextDocument'],
+                    $this->booksData
+                ),
                 array_keys($this->booksData)
             );
             $this->magazineIdToIndex = array_combine(
-                array_map(static function(array $v) {return $v['id'];}, $this->magazinesData),
+                array_map(
+                    [$this,'extractTextDocument'],
+                    $this->magazinesData
+                ),
                 array_keys($this->magazinesData)
             );
 
             $this->textDocumentData = array_merge($this->booksData,$this->magazinesData);
+            $this->currentId = max(
+                array_map(
+                    static function (array $v) {return $v['id'];},
+                    $this->textDocumentData
+                )
+            );
         }
         return $this->textDocumentData;
+    }
+
+    private function extractTextDocument($v):int
+    {
+        if (false === is_array($v)) {
+            throw new InvalidDataStructureException('Данные о текстовом документе должны быть массивом');
+        }
+        if (false === array_key_exists('id',$v)) {
+            throw new InvalidDataStructureException('Нету id текстового документа');
+        }
+        if (false === is_int($v['id'])) {
+            throw new InvalidDataStructureException('id текстового документа должен быть целым числом');
+        }
+        return $v['id'];
+
     }
 
     /**
@@ -338,4 +367,37 @@ class TextDocumentJsonFileRepository implements TextDocumentRepositoryInterface
 
         ];
     }
+
+    public function nextId(): int
+    {
+        $this->loadTextDocumentData();
+        $this->currentId = $this->currentId + 1;
+
+        return $this->currentId;
+    }
+
+    public function add(AbstractTextDocument $entity): AbstractTextDocument
+    {
+        $this->loadTextDocumentData();
+        if($entity instanceof Book) {
+            $item = $this->buildJsonDataForBook($entity);
+            $this->booksData[] = $item;
+            $data = $this->booksData;
+            $this->bookIdToIndex[$entity->getId()] = array_key_last($this->booksData);
+            $file = $this->pathToBooks;
+        } elseif ($entity instanceof Magazine) {
+            $item = $this->buildJsonDataForMagazine($entity);
+            $this->magazinesData[] = $item;
+            $data = $this->magazinesData;
+            $this->magazineIdToIndex[$entity->getId()] = array_key_last($this->magazinesData);
+            $file = $this->pathToMagazines;
+        } else {
+            throw new RuntimeException('Текстовой документ данного типа не может быть добавлен');
+        }
+        $jsonStr = json_encode($data, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        file_put_contents($file, $jsonStr);
+        return $entity;
+    }
+
+
 }

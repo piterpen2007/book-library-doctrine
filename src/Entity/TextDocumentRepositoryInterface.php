@@ -18,5 +18,11 @@ interface TextDocumentRepositoryInterface
      * @return AbstractTextDocument
      */
     public function save(AbstractTextDocument $entity):AbstractTextDocument;
+    public function nextId():int;
 
+    /** Добавляет новую сущность
+     * @param AbstractTextDocument $entity
+     * @return AbstractTextDocument
+     */
+    public function add(AbstractTextDocument $entity):AbstractTextDocument;
 }

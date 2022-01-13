@@ -7,7 +7,6 @@ use EfTech\BookLibrary\Infrastructure\Autoloader;
 use EfTech\BookLibrary\Infrastructure\DI\Container;
 use EfTech\BookLibrary\Infrastructure\http\ServerRequest;
 use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
-use EfTech\BookLibrary\Infrastructure\Router\DefaultRouter;
 use EfTech\BookLibrary\Infrastructure\Router\RouterInterface;
 use EfTech\BookLibrary\Infrastructure\Uri\Uri;
 use EfTech\BookLibrary\Infrastructure\View\NullRender;
@@ -144,7 +143,7 @@ class UnitTest
                     'httpCode' => 503,
                     'result' => [
                         'status' => 'fail',
-                        'message' => 'Отсутствуют обязательные элементы: id'
+                        'message' => 'Нету id текстового документа'
                     ]
                 ]
             ,

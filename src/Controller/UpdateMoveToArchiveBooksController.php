@@ -9,7 +9,6 @@ use EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory;
 use EfTech\BookLibrary\Service\ArchiveTextDocumentService\ArchivingResultDto;
 use EfTech\BookLibrary\Service\ArchiveTextDocumentService\Exception\TextDocumentNotFoundException;
 use EfTech\BookLibrary\Service\ArchivingTextDocumentService;
-use http\Params;
 use Throwable;
 
 class UpdateMoveToArchiveBooksController implements \EfTech\BookLibrary\Infrastructure\Controller\ControllerInterface

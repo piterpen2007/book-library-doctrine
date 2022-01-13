@@ -19,6 +19,7 @@ use EfTech\BookLibrary\Infrastructure\Router\RegExpRouter;
 use EfTech\BookLibrary\Infrastructure\Router\RouterInterface;
 use EfTech\BookLibrary\Infrastructure\Router\UniversalRouter;
 use EfTech\BookLibrary\Repository\TextDocumentJsonFileRepository;
+use EfTech\BookLibrary\Service\ArrivalNewTextDocumentService;
 use EfTech\BookLibrary\Service\SearchAuthorsService;
 use EfTech\BookLibrary\Service\SearchTextDocumentService;
 
@@ -30,6 +31,24 @@ return [
         'controllerNs' => 'EfTech\\BookLibrary\\Controller'
     ],
     'services' => [
+        BookLibrary\Controller\CreateRegisterMagazinesController::class => [
+            'args' => [
+                'arrivalNewTextDocumentService' => ArrivalNewTextDocumentService::class
+
+            ]
+        ],
+        BookLibrary\Controller\CreateRegisterBooksController::class => [
+            'args' => [
+                'arrivalNewTextDocumentService' => ArrivalNewTextDocumentService::class
+
+            ]
+        ],
+        ArrivalNewTextDocumentService::class => [
+            'args' => [
+                'textDocumentRepository' => BookLibrary\Entity\TextDocumentRepositoryInterface::class,
+                'authorRepositoryInterface' => BookLibrary\Entity\AuthorRepositoryInterface::class
+            ]
+        ],
         BookLibrary\Entity\AuthorRepositoryInterface::class => [
             'class' => BookLibrary\Repository\AuthorJsonFileRepository::class,
             'args' => [
