@@ -42,4 +42,13 @@ class ServerResponseFactory
         return new httpResponse('1.1', ['Content-Type' => 'application/json'],$body, $code  ,$phrases);
     }
 
+    public static function createHtmlResponse(int $code,string $html):httpResponse
+    {
+        try {
+
+        } catch (Throwable $e) {
+
+        }
+    }
+
 }
