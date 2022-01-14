@@ -1,0 +1,139 @@
+<?php
+use EfTech\BookLibrary;
+/**
+ * @var BookLibrary\Service\SearchTextDocumentService\TextDocumentDto[] $textDocuments;
+ * @var BookLibrary\Service\SearchAuthorsService\AuthorDto[] $authors
+ * @var array $formValidationResults
+ */
+?>
+<style>
+   form label {
+        width: 100pt;
+        display: block;
+    }
+
+</style>
+
+<h1 style="text-align: center">Book Page</h1>
+
+<div>
+    <h2>Добавить книгу</h2>
+    <form method="post">
+        <input type="hidden" value="book" name="type">
+        <div>
+            <label for="book_title">Название</label>
+            <input type="text" name="title" id="book_title">
+            <?php if (isset($formValidationResults['book']['title'])): ?>
+            <ul>
+                <?php foreach ($formValidationResults['book']['title'] as $err): ?>
+                <li><?php print $err ?></li>
+                        <?php endforeach; ?>
+            </ul>
+            <?php endif; ?>
+        </div>
+        <div>
+            <label for="year_title">Год книги</label>
+            <input type="text" name="year" id="year_title">
+            <?php if (isset($formValidationResults['book']['year'])): ?>
+                <ul>
+                    <?php foreach ($formValidationResults['book']['year'] as $err): ?>
+                        <li><?php print $err ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php endif; ?>
+        </div>
+        <div>
+            <label for="book_author_id">Автор</label>
+            <select name="author_id" id="book_author_id">
+                <?php foreach ($authors as $index => $author): ?>
+                <option value="<?php echo $author->getId() ?>" ><?php echo $author->getSurname() ?> <?php echo $author->getName() ?>  </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+        <div>
+            <input type="submit" value="Добавить"/>
+        </div>
+
+    </form>
+</div>
+
+
+<div>
+<h2>Добавить журнал</h2>
+<form method="post">
+    <input type="hidden" value="magazine" name="type">
+    <div>
+        <label for="magazine_title">Название</label>
+        <input type="text" name="title" id="magazine_title">
+        <?php if (isset($formValidationResults['magazine']['title'])): ?>
+            <ul>
+                <?php foreach ($formValidationResults['magazine']['title'] as $err): ?>
+                    <li><?php print $err ?></li>
+                <?php endforeach; ?>
+            </ul>
+        <?php endif; ?>
+    </div>
+    <div>
+        <label for="year_title">Год книги</label>
+        <input type="text" name="year" id="year_title">
+        <?php if (isset($formValidationResults['magazine']['year'])): ?>
+            <ul>
+                <?php foreach ($formValidationResults['magazine']['year'] as $err): ?>
+                    <li><?php print $err ?></li>
+                <?php endforeach; ?>
+            </ul>
+        <?php endif; ?>
+    </div>
+    <div>
+        <label for="magazine_author_id">Автор</label>
+        <select name="author_id" id="magazine_author_id">
+            <option value="null">Отсутствует</option>
+            <?php foreach ($authors as $index => $author): ?>
+                <option value="<?php echo $author->getId() ?>" ><?php echo $author->getSurname() ?> <?php echo $author->getName() ?>  </option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+    <div>
+        <label for="number_title">Номер журнала</label>
+        <input type="text" name="number" id="number_title">
+        <?php if (isset($formValidationResults['magazine']['number'])): ?>
+            <ul>
+                <?php foreach ($formValidationResults['magazine']['number'] as $err): ?>
+                    <li><?php print $err ?></li>
+                <?php endforeach; ?>
+            </ul>
+        <?php endif; ?>
+    </div>
+    <div>
+        <input type="submit" value="Добавить"/>
+    </div>
+
+</form>
+</div>
+
+
+<table style="text-align: center; margin: auto;">
+    <thead>
+        <tr>
+            <th> № </th>
+            <th> Название </th>
+            <th> Тип </th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($textDocuments as $index => $textDocument): ?>
+            <tr>
+                <td><?php print $index ?> </td>
+                <td><?php print $textDocument->getTitleForPrinting()?> </td>
+                <td>
+                    <?php if('magazine' === $textDocument->getType()): ?>
+                    Журнал
+                    <?php elseif ('book' === $textDocument->getType()): ?>
+                    Книга
+                    <?php endif; ?>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+

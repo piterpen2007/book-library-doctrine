@@ -13,13 +13,13 @@ final class SearchAuthorsCriteria
      *
      * @var string|null
      */
-    private ?string $surname;
+    private ?string $surname = null;
     /**
      * id
      *
      * @var int|null
      */
-    private ?int $id;
+    private ?int $id = null;
     /**
      *
      *

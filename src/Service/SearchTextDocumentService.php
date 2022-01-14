@@ -102,7 +102,6 @@ class SearchTextDocumentService
      *
      * @param SearchTextDocumentServiceCriteria $searchCriteria
      * @return TextDocumentDto[]
-     * @throws JsonException
      */
     public function search(SearchTextDocumentServiceCriteria $searchCriteria):array
     {

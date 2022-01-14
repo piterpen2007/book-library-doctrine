@@ -394,6 +394,7 @@ class TextDocumentJsonFileRepository implements TextDocumentRepositoryInterface
         } else {
             throw new RuntimeException('Текстовой документ данного типа не может быть добавлен');
         }
+        $this->textDocumentData[] = $item;
         $jsonStr = json_encode($data, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         file_put_contents($file, $jsonStr);
         return $entity;

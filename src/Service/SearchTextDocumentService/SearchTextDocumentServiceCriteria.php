@@ -14,19 +14,19 @@ final class SearchTextDocumentServiceCriteria
      *
      * @var string|null
      */
-    private ?string $authorSurname;
+    private ?string $authorSurname = null;
     /**
      * id
      *
      * @var int|null
      */
-    private ?int $id;
+    private ?int $id = null;
     /**
      *
      *
      * @var string|null
      */
-    private ?string $title;
+    private ?string $title = null;
     /**
      *
      *
