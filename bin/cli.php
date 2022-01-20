@@ -1,13 +1,13 @@
 #!/usr/nin/env_php
 <?php
 
-use EfTech\BookLibrary\Infrastructure\Autoloader;
+use EfTech\BookLibrary\Infrastructure\Autoloader\Autoloader;
 use EfTech\BookLibrary\Infrastructure\Console\AppConsole;
 use EfTech\BookLibrary\Infrastructure\Console\Output\OutputInterface;
 use EfTech\BookLibrary\Infrastructure\DI\Container;
 use EfTech\BookLibrary\Infrastructure\DI\ContainerInterface;
 
-require_once __DIR__ . '/../src/Infrastructure/Autoloader.php';
+require_once __DIR__ . '/../src/Infrastructure/Autoloader/Autoloader.php';
 
 spl_autoload_register(new Autoloader([
         'EfTech\\BookLibrary\\' => __DIR__ . '/../src/',

@@ -1,8 +1,9 @@
 <?php
 
-namespace EfTech\BookLibrary\Infrastructure;
+namespace EfTech\BookLibrary\Infrastructure\HttpApplication;
 use EfTech\BookLibrary\Exception\RuntimeException;
 
+use EfTech\BookLibrary\Infrastructure\AppConfig;
 use EfTech\BookLibrary\Infrastructure\DI\ContainerInterface;
 use EfTech\BookLibrary\Infrastructure\http\httpResponse;
 use EfTech\BookLibrary\Infrastructure\http\ServerRequest;

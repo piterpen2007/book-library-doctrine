@@ -1,6 +1,6 @@
 <?php
 
-namespace EfTech\BookLibrary\Infrastructure;
+namespace EfTech\BookLibrary\Infrastructure\Autoloader;
 /**
  *  Автозагрузчик классов
  */

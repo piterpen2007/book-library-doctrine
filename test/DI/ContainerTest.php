@@ -5,7 +5,7 @@ namespace EfTech\BookLibraryTest\Infrastructure\DI;
 use EfTech\BookLibrary\Controller\GetAuthorsCollectionController;
 use EfTech\BookLibrary\Entity\AuthorRepositoryInterface;
 use EfTech\BookLibrary\Infrastructure\AppConfig;
-use EfTech\BookLibrary\Infrastructure\Autoloader;
+use EfTech\BookLibrary\Infrastructure\Autoloader\Autoloader;
 use EfTech\BookLibrary\Infrastructure\DI\Container;
 use EfTech\BookLibrary\Infrastructure\Logger\Adapter\NullAdapter;
 use EfTech\BookLibrary\Infrastructure\Logger\AdapterInterface;
@@ -14,7 +14,7 @@ use EfTech\BookLibrary\Repository\AuthorJsonFileRepository;
 use EfTech\BookLibrary\Service\SearchAuthorsService;
 
 
-require_once __DIR__ . '/../../src/Infrastructure/Autoloader.php';
+require_once __DIR__ . '/../../src/Infrastructure/Autoloader/Autoloader.php';
 
 spl_autoload_register(
     new Autoloader([
