@@ -164,7 +164,7 @@ final class App
             $logger = $this->getLogger();
 
             $urlPath = $serverRequest->getUri()->getPath();
-            $logger->log('Url request received' . $urlPath);
+            $logger->info('Url request received' . $urlPath);
             $dispatcher = $this->getRouter()->getDispatcher($serverRequest);
             if(is_callable($dispatcher)) {
                 $httpResponse = $dispatcher($serverRequest);
@@ -220,7 +220,7 @@ final class App
     private function silentLog(string $msg):void
     {
         try {
-            $this->logger->log($msg);
+            $this->logger->error($msg);
         } catch (Throwable $e) {
 
         }

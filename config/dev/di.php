@@ -3,14 +3,17 @@
 use EfTech\BookLibrary;
 use EfTech\BookLibrary\ConsoleCommand\FindAuthors;
 use EfTech\BookLibrary\ConsoleCommand\FindBooks;
+use EfTech\BookLibrary\ConsoleCommand\HashStr;
 use EfTech\BookLibrary\Controller\UpdateMoveToArchiveBooksController;
 use EfTech\BookLibrary\Infrastructure\AppConfig;
+use EfTech\BookLibrary\Infrastructure\Auth\HttpAuthProvider;
+use EfTech\BookLibrary\Infrastructure\Auth\UserDataStorageInterface;
 use EfTech\BookLibrary\Infrastructure\Console\Output\EchoOutput;
 use EfTech\BookLibrary\Infrastructure\Console\Output\OutputInterface;
 use EfTech\BookLibrary\Infrastructure\DataLoader\DataLoaderInterface;
 use EfTech\BookLibrary\Infrastructure\DataLoader\JsonDataLoader;
 use EfTech\BookLibrary\Infrastructure\DI\ContainerInterface;
-use EfTech\BookLibrary\Infrastructure\Logger\FileLogger\Logger;
+use EfTech\BookLibrary\Infrastructure\Logger\AdapterInterface;
 use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
 use EfTech\BookLibrary\Infrastructure\Router\ChainRouters;
 use EfTech\BookLibrary\Infrastructure\Router\ControllerFactory;
@@ -18,9 +21,13 @@ use EfTech\BookLibrary\Infrastructure\Router\DefaultRouter;
 use EfTech\BookLibrary\Infrastructure\Router\RegExpRouter;
 use EfTech\BookLibrary\Infrastructure\Router\RouterInterface;
 use EfTech\BookLibrary\Infrastructure\Router\UniversalRouter;
+use EfTech\BookLibrary\Infrastructure\Session\SessionInterface;
+use EfTech\BookLibrary\Infrastructure\Session\SessionNative;
+use EfTech\BookLibrary\Infrastructure\Uri\Uri;
 use EfTech\BookLibrary\Infrastructure\ViewTemplate\PhtmlTemplate;
 use EfTech\BookLibrary\Infrastructure\ViewTemplate\ViewTemplateInterface;
 use EfTech\BookLibrary\Repository\TextDocumentJsonFileRepository;
+use EfTech\BookLibrary\Repository\UserJsonFileRepository;
 use EfTech\BookLibrary\Service\ArrivalNewTextDocumentService;
 use EfTech\BookLibrary\Service\SearchAuthorsService;
 use EfTech\BookLibrary\Service\SearchTextDocumentService;
@@ -33,6 +40,31 @@ return [
         'controllerNs' => 'EfTech\\BookLibrary\\Controller'
     ],
     'services' => [
+        HashStr::class => [
+            'args' => [
+                'output' => OutputInterface::class
+            ]
+        ],
+        HttpAuthProvider::class => [
+            'args' => [
+                'userDataStorage' => UserDataStorageInterface::class,
+                'session' => SessionInterface::class,
+                'loginUri' => 'loginUri'
+            ]
+        ],
+        BookLibrary\Controller\LoginController::class => [
+            'args' => [
+                'viewTemplate' => ViewTemplateInterface::class,
+                'httpAuthProvider' => HttpAuthProvider::class
+            ]
+        ],
+        UserDataStorageInterface::class => [
+            'class' => UserJsonFileRepository::class,
+            'args' => [
+                'pathToUsers' => 'pathToUsers',
+                'dataLoader' => DataLoaderInterface::class
+            ]
+        ],
         ViewTemplateInterface::class => [
             'class' => PhtmlTemplate::class
         ],
@@ -42,7 +74,8 @@ return [
                 'searchTextDocumentService' => SearchTextDocumentService::class,
                 'viewTemplate' => ViewTemplateInterface::class,
                 'authorsService' => SearchAuthorsService::class,
-                'arrivalNewTextDocumentService' => ArrivalNewTextDocumentService::class
+                'arrivalNewTextDocumentService' => ArrivalNewTextDocumentService::class,
+                'httpAuthProvider' => HttpAuthProvider::class
             ]
         ],
         BookLibrary\Controller\CreateRegisterMagazinesController::class => [
@@ -166,7 +199,13 @@ return [
         //    ]
         //],
         LoggerInterface::class => [
-            'class' => Logger::class,
+            'class' => BookLibrary\Infrastructure\Logger\Logger::class,
+            'args' => [
+                'adapter' => AdapterInterface::class
+            ]
+        ],
+        AdapterInterface::class => [
+            'class' => BookLibrary\Infrastructure\Logger\Adapter\FileAdapter::class,
             'args' => [
                 'pathToFile' => 'pathToLogFile'
             ]
@@ -207,8 +246,21 @@ return [
         ]
     ],
 'factories'=>[
+        'loginUri' => static function(ContainerInterface $c): Uri {
+            /** @var AppConfig $appConfig */
+            $appConfig = $c->get(AppConfig::class);
+            return Uri::createFromString($appConfig->getLoginUri());
+        },
+        SessionInterface::class => static function(ContainerInterface $c) {
+            return SessionNative::create();
+        },
         ContainerInterface::class => static function(ContainerInterface $c):ContainerInterface {
             return $c;
+        },
+        'pathToUsers' => static function(ContainerInterface $c):string {
+            /** @var AppConfig $appConfig */
+            $appConfig = $c->get(AppConfig::class);
+            return $appConfig->getPathToUsers();
         },
         'pathToLogFile' => static function(ContainerInterface $c):string {
             /** @var AppConfig $appConfig */

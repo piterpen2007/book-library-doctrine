@@ -10,8 +10,9 @@ use EfTech\BookLibrary\Infrastructure\AppConfig;
 use EfTech\BookLibrary\Infrastructure\Autoloader;
 use EfTech\BookLibrary\Infrastructure\DI\Container;
 use EfTech\BookLibrary\Infrastructure\http\ServerRequest;
+use EfTech\BookLibrary\Infrastructure\Logger\Adapter\NullAdapter;
+use EfTech\BookLibrary\Infrastructure\Logger\Logger;
 use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
-use EfTech\BookLibrary\Infrastructure\Logger\NullLogger\Logger;
 use EfTech\BookLibrary\Infrastructure\Uri\Uri;
 use EfTech\BookLibrary\Repository\AuthorJsonFileRepository;
 use EfTech\BookLibrary\Service\SearchAuthorsService;
@@ -48,7 +49,7 @@ class FindAuthorsTest
         $appConfig = AppConfig::createFromArray(require __DIR__ . '/../../config/dev/config.php');
         $diContainer = new Container(
             [
-                LoggerInterface::class => new Logger(),
+                LoggerInterface::class => new Logger(new NullAdapter()),
                 'pathToAuthors' => $appConfig->getPathToAuthor()
             ],
             [

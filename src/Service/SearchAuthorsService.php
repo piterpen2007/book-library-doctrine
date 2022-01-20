@@ -53,7 +53,7 @@ class SearchAuthorsService
         foreach ($entitiesCollection as $entity) {
             $dtoCollection[] = $this->createDto($entity);
         }
-        $this->logger->log( 'found authors: ' . count($entitiesCollection));
+        $this->logger->debug( 'found authors: ' . count($entitiesCollection));
         return $dtoCollection;
     }
     /**

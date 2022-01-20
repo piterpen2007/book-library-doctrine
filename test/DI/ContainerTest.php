@@ -7,6 +7,9 @@ use EfTech\BookLibrary\Entity\AuthorRepositoryInterface;
 use EfTech\BookLibrary\Infrastructure\AppConfig;
 use EfTech\BookLibrary\Infrastructure\Autoloader;
 use EfTech\BookLibrary\Infrastructure\DI\Container;
+use EfTech\BookLibrary\Infrastructure\Logger\Adapter\NullAdapter;
+use EfTech\BookLibrary\Infrastructure\Logger\AdapterInterface;
+use EfTech\BookLibrary\Infrastructure\Logger\Logger;
 use EfTech\BookLibrary\Repository\AuthorJsonFileRepository;
 use EfTech\BookLibrary\Service\SearchAuthorsService;
 
@@ -58,11 +61,14 @@ class ContainerTest
                     ]
                 ],
                 \EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface::class => [
-                    'class' => \EfTech\BookLibrary\Infrastructure\Logger\FileLogger\Logger::class,
+                    'class' => Logger::class,
                     'args' => [
-                        'pathToFile' => 'pathToLogFile'
+                        'adapter' => AdapterInterface::class
                     ]
                 ],
+                AdapterInterface::class => [
+                    'class' => NullAdapter::class
+                ]
             ],
             'factories' => [
                 'pathToLogFile' => static function(Container $c) {

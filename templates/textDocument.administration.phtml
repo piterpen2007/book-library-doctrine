@@ -4,6 +4,8 @@ use EfTech\BookLibrary;
  * @var BookLibrary\Service\SearchTextDocumentService\TextDocumentDto[] $textDocuments;
  * @var BookLibrary\Service\SearchAuthorsService\AuthorDto[] $authors
  * @var array $formValidationResults
+ * @var array $bookData
+ * @var array $magazineData
  */
 ?>
 <style>
@@ -22,7 +24,7 @@ use EfTech\BookLibrary;
         <input type="hidden" value="book" name="type">
         <div>
             <label for="book_title">Название</label>
-            <input type="text" name="title" id="book_title">
+            <input type="text" name="title" id="book_title" value="<?php echo ($bookData['title'] ?? '') ?>">
             <?php if (isset($formValidationResults['book']['title'])): ?>
             <ul>
                 <?php foreach ($formValidationResults['book']['title'] as $err): ?>
@@ -33,7 +35,7 @@ use EfTech\BookLibrary;
         </div>
         <div>
             <label for="year_title">Год книги</label>
-            <input type="text" name="year" id="year_title">
+            <input type="text" name="year" id="year_title" value="<?php echo ($bookData['year'] ?? '') ?>">
             <?php if (isset($formValidationResults['book']['year'])): ?>
                 <ul>
                     <?php foreach ($formValidationResults['book']['year'] as $err): ?>
@@ -46,7 +48,9 @@ use EfTech\BookLibrary;
             <label for="book_author_id">Автор</label>
             <select name="author_id" id="book_author_id">
                 <?php foreach ($authors as $index => $author): ?>
-                <option value="<?php echo $author->getId() ?>" ><?php echo $author->getSurname() ?> <?php echo $author->getName() ?>  </option>
+                <option <?php echo (isset($bookData['author_id'])
+                && $bookData['author_id']
+                === (string)$author->getId() ? 'selected' : '') ?> value="<?php echo $author->getId() ?>" ><?php echo $author->getSurname() ?> <?php echo $author->getName() ?>  </option>
                 <?php endforeach; ?>
             </select>
         </div>
@@ -64,7 +68,7 @@ use EfTech\BookLibrary;
     <input type="hidden" value="magazine" name="type">
     <div>
         <label for="magazine_title">Название</label>
-        <input type="text" name="title" id="magazine_title">
+        <input type="text" name="title" id="magazine_title" value="<?php echo ($magazineData['title'] ?? '') ?>">
         <?php if (isset($formValidationResults['magazine']['title'])): ?>
             <ul>
                 <?php foreach ($formValidationResults['magazine']['title'] as $err): ?>
@@ -75,7 +79,7 @@ use EfTech\BookLibrary;
     </div>
     <div>
         <label for="year_title">Год книги</label>
-        <input type="text" name="year" id="year_title">
+        <input type="text" name="year" id="year_title" value="<?php echo ($magazineData['year'] ?? '') ?>">
         <?php if (isset($formValidationResults['magazine']['year'])): ?>
             <ul>
                 <?php foreach ($formValidationResults['magazine']['year'] as $err): ?>
@@ -89,13 +93,15 @@ use EfTech\BookLibrary;
         <select name="author_id" id="magazine_author_id">
             <option value="null">Отсутствует</option>
             <?php foreach ($authors as $index => $author): ?>
-                <option value="<?php echo $author->getId() ?>" ><?php echo $author->getSurname() ?> <?php echo $author->getName() ?>  </option>
+                <option <?php echo (isset($magazineData['author_id'])
+                && $magazineData['author_id']
+                === (string)$author->getId() ? 'selected' : '') ?> value="<?php echo $author->getId() ?>" ><?php echo $author->getSurname() ?> <?php echo $author->getName() ?>  </option>
             <?php endforeach; ?>
         </select>
     </div>
     <div>
         <label for="number_title">Номер журнала</label>
-        <input type="text" name="number" id="number_title">
+        <input type="text" name="number" id="number_title" value="<?php echo ($magazineData['number'] ?? '') ?>">
         <?php if (isset($formValidationResults['magazine']['number'])): ?>
             <ul>
                 <?php foreach ($formValidationResults['magazine']['number'] as $err): ?>
@@ -112,7 +118,7 @@ use EfTech\BookLibrary;
 </div>
 
 
-<table style="text-align: center; margin: auto;">
+<table style="text-align: center; margin: auto; border: 2px solid black;">
     <thead>
         <tr>
             <th> № </th>

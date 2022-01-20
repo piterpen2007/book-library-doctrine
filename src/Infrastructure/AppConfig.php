@@ -8,10 +8,6 @@ use EfTech\BookLibrary\Exception;
  */
 class AppConfig
 {
-    /**
-     * @var string Тип логера
-     */
-    private string $loggerType = 'nullLogger';
     /** Скрывает сообщения о ошибках
      * @var bool
      */
@@ -32,24 +28,6 @@ class AppConfig
     {
         $this->hideErrorMsg = $hideErrorMsg;
     }
-
-    /** Возвращает тип логера
-     * @return string
-     */
-    public function getLoggerType(): string
-    {
-        return $this->loggerType;
-    }
-
-    /** Устанавливает тип логера
-     * @param string $loggerType
-     */
-    private function setLoggerType(string $loggerType): AppConfig
-    {
-        $this->loggerType = $loggerType;
-        return $this;
-    }
-
     /**
      * @var string путь до файла логирования
      */
@@ -88,6 +66,48 @@ class AppConfig
      * @var string
      */
     private string $pathToMagazines = __DIR__ . '/../../data/magazines.json';
+    private string $pathToUsers = __DIR__ . '/../../data/users.json';
+    /** Возвращает ури логина
+     * @var string
+     */
+    private string $loginUri;
+
+    /**
+     * @return string
+     */
+    public function getLoginUri(): string
+    {
+        return $this->loginUri;
+    }
+
+    /**
+     * @param string $loginUri
+     * @return AppConfig
+     */
+    private function setLoginUri(string $loginUri): AppConfig
+    {
+        $this->loginUri = $loginUri;
+        return $this;
+    }
+
+
+    /**
+     * @param string $pathToUsers
+     */
+    private function setPathToUsers(string $pathToUsers): void
+    {
+        $this->validateFilePath($pathToUsers);
+        $this->pathToUsers = $pathToUsers;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPathToUsers(): string
+    {
+        return $this->pathToUsers;
+    }
+
 
     /**
      * @return string
@@ -165,8 +185,9 @@ class AppConfig
      * @uses AppConfig::setPathToAuthor()
      * @uses AppConfig::setPathToMagazines()
      * @uses AppConfig::setPathToLogFile()
-     * @uses AppConfig::setLoggerType()
      * @uses AppConfig::setHideErrorMsg()
+     * @uses AppConfig::setPathToUsers()
+     * @uses AppConfig::setLoginUri()
      */
     public static function createFromArray(array $config): self
     {

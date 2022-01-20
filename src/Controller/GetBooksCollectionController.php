@@ -72,7 +72,7 @@ class GetBooksCollectionController implements ControllerInterface
      */
     public function __invoke(ServerRequest $request): HttpResponse
     {
-        $this->logger->log("Ветка books");
+        $this->logger->info("Ветка books");
         $resultOfParamValidation = $this->validateQueryParams($request);
 
         if (null === $resultOfParamValidation) {

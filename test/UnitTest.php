@@ -29,8 +29,8 @@ class UnitTest
     private static function testDataProvider():array
     {
         $diConfig = require __DIR__ . '/../config/dev/di.php';
-        $diConfig['services'][LoggerInterface::class] = [
-            'class' => EfTech\BookLibrary\Infrastructure\Logger\NullLogger\Logger::class
+        $diConfig['services'][\EfTech\BookLibrary\Infrastructure\Logger\AdapterInterface::class] = [
+            'class' => \EfTech\BookLibrary\Infrastructure\Logger\Adapter\NullAdapter::class
         ];
         $diConfig['services'][RenderInterface::class] = [
             'class' => NullRender::class

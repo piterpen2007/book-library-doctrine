@@ -4,6 +4,7 @@ namespace EfTech\BookLibrary\Controller;
 
 use EfTech\BookLibrary\Entity\Book;
 use EfTech\BookLibrary\Exception\RuntimeException;
+use EfTech\BookLibrary\Infrastructure\Auth\HttpAuthProvider;
 use EfTech\BookLibrary\Infrastructure\http\httpResponse;
 use EfTech\BookLibrary\Infrastructure\http\ServerRequest;
 use EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory;
@@ -19,6 +20,7 @@ use EfTech\BookLibrary\Service\SearchTextDocumentService\SearchTextDocumentServi
 
 class TextDocumentAdministrationController implements \EfTech\BookLibrary\Infrastructure\Controller\ControllerInterface
 {
+    private HttpAuthProvider $httpAuthProvider;
     /** сервис добавления текстового документа
      * @var ArrivalNewTextDocumentService
      */
@@ -47,18 +49,22 @@ class TextDocumentAdministrationController implements \EfTech\BookLibrary\Infras
      * @param ViewTemplateInterface $viewTemplate
      * @param SearchAuthorsService $authorsService
      * @param ArrivalNewTextDocumentService $arrivalNewTextDocumentService
+     * @param HttpAuthProvider $httpAuthProvider
      */
     public function __construct(
         LoggerInterface           $logger,
         SearchTextDocumentService $searchTextDocumentService,
         ViewTemplateInterface     $viewTemplate,
-        SearchAuthorsService      $authorsService, \EfTech\BookLibrary\Service\ArrivalNewTextDocumentService $arrivalNewTextDocumentService)
+        SearchAuthorsService      $authorsService, \EfTech\BookLibrary\Service\ArrivalNewTextDocumentService $arrivalNewTextDocumentService,
+        HttpAuthProvider $httpAuthProvider
+    )
     {
         $this->logger = $logger;
         $this->searchTextDocumentService = $searchTextDocumentService;
         $this->viewTemplate = $viewTemplate;
         $this->authorsService = $authorsService;
         $this->arrivalNewTextDocumentService = $arrivalNewTextDocumentService;
+        $this->httpAuthProvider = $httpAuthProvider;
     }
 
 
@@ -67,27 +73,41 @@ class TextDocumentAdministrationController implements \EfTech\BookLibrary\Infras
      */
     public function __invoke(ServerRequest $request): httpResponse
     {
-        $this->logger->log('run TextDocumentAdministrationController::__invoke');
+        try {
+            if (false === $this->httpAuthProvider->isAuth()) {
+                return $this->httpAuthProvider->doAuth($request->getUri());
+            }
+            $this->logger->info('run TextDocumentAdministrationController::__invoke');
+            $resultCreationTextDocument = [];
+            if ('POST' === $request->getMethod()) {
+                $resultCreationTextDocument = $this->creationOfTextDocument($request);
+            }
+            $dtoBooksCollection = $this->searchTextDocumentService->search(new SearchTextDocumentServiceCriteria());
+            $dtoAuthorsCollection = $this->authorsService->search(new SearchAuthorsCriteria());
+            $viewData = [
+                'textDocuments' => $dtoBooksCollection,
+                'authors' => $dtoAuthorsCollection
+            ];
+            $contex = array_merge($viewData, $resultCreationTextDocument);
+            $template = __DIR__ . '/../../templates/textDocument.administration.phtml';
+            $httpCode = 200;
 
-        $resultCreationTextDocument = [];
-        if ('POST' === $request->getMethod()) {
-            $resultCreationTextDocument = $this->creationOfTextDocument($request);
+
+        } catch (\Throwable $e) {
+            $httpCode = 500;
+            $template = __DIR__ . '/../../templates/errors.phtml';
+            $contex = [
+                'errors' => [
+                    $e->getMessage()
+                ]
+            ];
         }
-        $dtoBooksCollection = $this->searchTextDocumentService->search(new SearchTextDocumentServiceCriteria());
-        $dtoAuthorsCollection = $this->authorsService->search(new SearchAuthorsCriteria());
-        $viewData = [
-            'textDocuments' => $dtoBooksCollection,
-            'authors' => $dtoAuthorsCollection
-        ];
-        $contex = array_merge($viewData,$resultCreationTextDocument);
-
-
         $html = $this->viewTemplate->render(
-            __DIR__ . '/../../templates/textDocument.administration.phtml',
+            $template,
             $contex
         );
 
-        return ServerResponseFactory::createHtmlResponse(200,$html);
+        return ServerResponseFactory::createHtmlResponse($httpCode,$html);
     }
 
     /** Результат создания текстовых документов
@@ -116,6 +136,8 @@ class TextDocumentAdministrationController implements \EfTech\BookLibrary\Infras
 
             if (0 === count($result['formValidationResults']['book'])) {
                 $this->createBook($dataToCreate);
+            } else {
+                $result['bookData'] = $dataToCreate;
             }
         } elseif ('magazine' === $dataToCreate['type']) {
 
@@ -123,6 +145,8 @@ class TextDocumentAdministrationController implements \EfTech\BookLibrary\Infras
 
             if (0 === count($result['formValidationResults']['magazine'])) {
                 $this->createMagazine($dataToCreate);
+            } else {
+                $result['magazineData'] = $dataToCreate;
             }
 
         } else {

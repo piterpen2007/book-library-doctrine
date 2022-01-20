@@ -111,7 +111,7 @@ class SearchTextDocumentService
         foreach ($entitiesCollection as $entity) {
             $dtoCollection[] = $this->createDto($entity);
         }
-        $this->logger->log("Найдено книг: " . count($entitiesCollection));
+        $this->logger->debug("Найдено книг: " . count($entitiesCollection));
         return $dtoCollection;
     }
 

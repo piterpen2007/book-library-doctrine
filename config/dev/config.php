@@ -17,8 +17,12 @@ return [
      */
     'pathToLogFile' => __DIR__ . '/../../var/log/app.log',
     /**
-     * Тип используемого логера
+     * Путь до файла с пользователями
      */
-    'loggerType' => 'fileLogger',
+    'pathToUsers' => __DIR__ . '/../../data/users.json',
+    /**
+     * Uri по которому можно открыть форму логина
+     */
+    'loginUri' => '/login',
     'hideErrorMsg' => false
 ];

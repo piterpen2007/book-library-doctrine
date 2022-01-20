@@ -66,7 +66,7 @@ class GetAuthorsCollectionController implements ControllerInterface
      */
     public function __invoke(ServerRequest $request): HttpResponse
     {
-        $this->logger->log("Ветка authors");
+        $this->logger->info("Ветка authors");
 
         $resultOfParamValidation = $this->validateQueryParams($request);
 

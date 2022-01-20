@@ -8,5 +8,6 @@ use EfTech\BookLibrary\Controller\TextDocumentAdministrationController;
 return [
     '/books' => GetBooksCollectionController::class,
     '/authors' => GetAuthorsCollectionController::class,
-    '/text-document/administration' => TextDocumentAdministrationController::class
+    '/text-document/administration' => TextDocumentAdministrationController::class,
+    '/login' => \EfTech\BookLibrary\Controller\LoginController::class
 ];
