@@ -1,0 +1,348 @@
+POST http://book-library-fedyancev.ru:8083/text-document/administration
+
+<> 2022-01-20T122152.200.html
+
+###
+
+POST http://book-library-fedyancev.ru:8083/login?redirect=http://book-library-fedyancev.ru:8083/text-document/administration
+Content-Type: text/html
+
+<> 2022-01-20T122152.500.html
+
+###
+
+POST http://book-library-fedyancev.ru:8083/magazines/register
+Content-Type: application/json
+
+{
+  "title" : "Новый журнал",
+  "year": 2021,
+  "author_id" : null,
+  "number": 10
+}
+
+<> 2022-01-20T122152-1.201.json
+
+###
+
+POST http://book-library-fedyancev.ru:8083/books/register
+Content-Type: application/json
+
+{
+  "title" : "Текстовой документ",
+  "year": 2021,
+  "author_id" : 1
+}
+
+<> 2022-01-20T122152.201.json
+
+###
+
+PUT http://book-library-fedyancev.ru:8083/books/6/moveToArchive
+
+<> 2022-01-20T122152.500.json
+
+###
+
+GET http://book-library-fedyancev.ru:8083/authors
+
+<> 2022-01-20T122152-3.200.json
+
+###
+
+GET http://book-library-fedyancev.ru:8083/authors/0
+
+<> 2022-01-20T122152-1.404.json
+
+###
+
+GET http://book-library-fedyancev.ru:8083/authors/1
+
+<> 2022-01-20T122152-2.200.json
+
+###
+
+GET http://book-library-fedyancev.ru:8083/books/0
+
+<> 2022-01-20T122152.404.json
+
+###
+
+GET http://book-library-fedyancev.ru:8083/books/17
+
+<> 2022-01-20T122152-1.200.json
+
+###
+
+GET http://book-library-fedyancev.ru:8083/books?title=Логос
+
+<> 2022-01-20T122152.200.json
+
+###
+
+GET http://book-library-fedyancev.ru:8083/authors?surname[]=Дик
+
+<> 2022-01-20T122151-2.500.json
+
+###
+
+GET http://book-library-fedyancev.ru:8083?param=ru
+
+<> 2022-01-20T122151-1.404.json
+
+###
+
+GET http://book-library-fedyancev.ru:8083/hhh?param=ru
+
+<> 2022-01-20T122151.404.json
+
+###
+
+GET http://book-library-fedyancev.ru:8083/authors?surname=Паланик
+
+<> 2022-01-20T122151-2.200.json
+
+###
+
+GET http://book-library-fedyancev.ru:8083/books?author_surname=Дик
+
+<> 2022-01-20T122151-1.200.json
+
+###
+
+GET http://book-library-fedyancev.ru:8083/books?author_surname[]=Дик
+
+<> 2022-01-20T122151-1.500.json
+
+###
+
+GET http://book-library-fedyancev.ru:8083/books?title[]=Мечтают ли андроиды об электроовцах?
+
+<> 2022-01-20T122151.500.json
+
+###
+
+GET http://book-library-fedyancev.ru:8083/books?title=Мечтают ли андроиды об электроовцах?
+
+<> 2022-01-20T122151.200.json
+
+###
+
+POST http://book-library-fedyancev.ru:8083/text-document/administration
+
+<> 2022-01-20T115902.200.html
+
+###
+
+POST http://book-library-fedyancev.ru:8083/login?redirect=http://book-library-fedyancev.ru:8083/text-document/administration
+Content-Type: text/html
+
+<> 2022-01-20T115902.500.html
+
+###
+
+POST http://book-library-fedyancev.ru:8083/magazines/register
+Content-Type: application/json
+
+{
+  "title" : "Новый журнал",
+  "year": 2021,
+  "author_id" : null,
+  "number": 10
+}
+
+<> 2022-01-20T115902-1.201.json
+
+###
+
+POST http://book-library-fedyancev.ru:8083/books/register
+Content-Type: application/json
+
+{
+  "title" : "Текстовой документ",
+  "year": 2021,
+  "author_id" : 1
+}
+
+<> 2022-01-20T115902.201.json
+
+###
+
+PUT http://book-library-fedyancev.ru:8083/books/6/moveToArchive
+
+<> 2022-01-20T115902.500.json
+
+###
+
+GET http://book-library-fedyancev.ru:8083/authors
+
+<> 2022-01-20T115902-1.200.json
+
+###
+
+GET http://book-library-fedyancev.ru:8083/authors/0
+
+<> 2022-01-20T115902-1.404.json
+
+###
+
+GET http://book-library-fedyancev.ru:8083/authors/1
+
+<> 2022-01-20T115902.200.json
+
+###
+
+GET http://book-library-fedyancev.ru:8083/books/0
+
+<> 2022-01-20T115902.404.json
+
+###
+
+GET http://book-library-fedyancev.ru:8083/books/17
+
+<> 2022-01-20T115901-4.200.json
+
+###
+
+GET http://book-library-fedyancev.ru:8083/books?title=Логос
+
+<> 2022-01-20T115901-3.200.json
+
+###
+
+GET http://book-library-fedyancev.ru:8083/authors?surname[]=Дик
+
+<> 2022-01-20T115901-2.500.json
+
+###
+
+GET http://book-library-fedyancev.ru:8083?param=ru
+
+<> 2022-01-20T115901-1.404.json
+
+###
+
+GET http://book-library-fedyancev.ru:8083/hhh?param=ru
+
+<> 2022-01-20T115901.404.json
+
+###
+
+GET http://book-library-fedyancev.ru:8083/authors?surname=Паланик
+
+<> 2022-01-20T115901-2.200.json
+
+###
+
+GET http://book-library-fedyancev.ru:8083/books?author_surname=Дик
+
+<> 2022-01-20T115901-1.200.json
+
+###
+
+GET http://book-library-fedyancev.ru:8083/books?author_surname[]=Дик
+
+<> 2022-01-20T115901-1.500.json
+
+###
+
+GET http://book-library-fedyancev.ru:8083/books?title[]=Мечтают ли андроиды об электроовцах?
+
+<> 2022-01-20T115901.500.json
+
+###
+
+GET http://book-library-fedyancev.ru:8083/books?title=Мечтают ли андроиды об электроовцах?
+
+<> 2022-01-20T115901.200.json
+
+###
+
+POST http://book-library-fedyancev.ru:8083/text-document/administration
+
+<> 2022-01-20T113742.200.html
+
+###
+
+POST http://book-library-fedyancev.ru:8083/login?redirect=http://book-library-fedyancev.ru:8083/text-document/administration
+Content-Type: text/html
+
+<> 2022-01-20T113742.500.html
+
+###
+
+POST http://book-library-fedyancev.ru:8083/magazines/register
+Content-Type: application/json
+
+{
+  "title" : "Новый журнал",
+  "year": 2021,
+  "author_id" : null,
+  "number": 10
+}
+
+<> 2022-01-20T113742-1.201.json
+
+###
+
+POST http://book-library-fedyancev.ru:8083/books/register
+Content-Type: application/json
+
+{
+  "title" : "Текстовой документ",
+  "year": 2021,
+  "author_id" : 1
+}
+
+<> 2022-01-20T113742.201.json
+
+###
+
+PUT http://book-library-fedyancev.ru:8083/books/6/moveToArchive
+
+<> 2022-01-20T113742.500.json
+
+###
+
+GET http://book-library-fedyancev.ru:8083/authors
+
+<> 2022-01-20T113742-1.200.json
+
+###
+
+GET http://book-library-fedyancev.ru:8083/authors/0
+
+<> 2022-01-20T113742-1.404.json
+
+###
+
+GET http://book-library-fedyancev.ru:8083/authors/1
+
+<> 2022-01-20T113742.200.json
+
+###
+
+GET http://book-library-fedyancev.ru:8083/books/0
+
+<> 2022-01-20T113742.404.json
+
+###
+
+GET http://book-library-fedyancev.ru:8083/books/17
+
+<> 2022-01-20T113741-4.200.json
+
+###
+
+GET http://book-library-fedyancev.ru:8083/books?title=Логос
+
+<> 2022-01-20T113741-3.200.json
+
+###
+
+GET http://book-library-fedyancev.ru:8083/authors?surname[]=Дик
+
+<> 2022-01-20T113741-2.500.json
+
+###
+
