@@ -1,9 +1,9 @@
 <?php
-require_once __DIR__ . '/../src/Infrastructure/Autoloader.php';
+require_once __DIR__ . '/../src/Infrastructure/Autoloader/Autoloader.php';
 
-use EfTech\BookLibrary\Infrastructure\App;
-use EfTech\BookLibrary\Infrastructure\AppConfig;
-use EfTech\BookLibrary\Infrastructure\Autoloader;
+use EfTech\BookLibrary\Infrastructure\HttpApplication\App;
+use EfTech\BookLibrary\Config\AppConfig;
+use EfTech\BookLibrary\Infrastructure\Autoloader\Autoloader;
 use EfTech\BookLibrary\Infrastructure\DI\Container;
 use EfTech\BookLibrary\Infrastructure\http\ServerRequest;
 use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;

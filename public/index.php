@@ -1,15 +1,15 @@
 <?php
 
-require_once __DIR__ . '/../src/Infrastructure/Autoloader.php';
+require_once __DIR__ . '/../src/Infrastructure/Autoloader/Autoloader.php';
 
-use EfTech\BookLibrary\Infrastructure\AppConfig;
-use EfTech\BookLibrary\Infrastructure\Autoloader;
+use EfTech\BookLibrary\Config\AppConfig;
+use EfTech\BookLibrary\Infrastructure\Autoloader\Autoloader;
 spl_autoload_register(new Autoloader([
         'EfTech\\BookLibrary\\' => __DIR__ . '/../src/',
         'EfTech\\BookLibraryTest\\' => __DIR__ . '/../test/'
     ])
 );
-use EfTech\BookLibrary\Infrastructure\App;
+use EfTech\BookLibrary\Infrastructure\HttpApplication\App;
 use EfTech\BookLibrary\Infrastructure\DI\Container;
 use EfTech\BookLibrary\Infrastructure\http\ServerRequestFactory;
 use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;

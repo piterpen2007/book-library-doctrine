@@ -4,8 +4,8 @@ namespace EfTech\BookLibraryTest\Infrastructure\DI;
 
 use EfTech\BookLibrary\Controller\GetAuthorsCollectionController;
 use EfTech\BookLibrary\Entity\AuthorRepositoryInterface;
-use EfTech\BookLibrary\Infrastructure\AppConfig;
-use EfTech\BookLibrary\Infrastructure\Autoloader;
+use EfTech\BookLibrary\Config\AppConfig;
+use EfTech\BookLibrary\Infrastructure\Autoloader\Autoloader;
 use EfTech\BookLibrary\Infrastructure\DI\Container;
 use EfTech\BookLibrary\Infrastructure\Logger\Adapter\NullAdapter;
 use EfTech\BookLibrary\Infrastructure\Logger\AdapterInterface;
@@ -14,7 +14,7 @@ use EfTech\BookLibrary\Repository\AuthorJsonFileRepository;
 use EfTech\BookLibrary\Service\SearchAuthorsService;
 
 
-require_once __DIR__ . '/../../src/Infrastructure/Autoloader.php';
+require_once __DIR__ . '/../../src/Infrastructure/Autoloader/Autoloader.php';
 
 spl_autoload_register(
     new Autoloader([
@@ -72,16 +72,16 @@ class ContainerTest
             ],
             'factories' => [
                 'pathToLogFile' => static function(Container $c) {
-                    /** @var AppConfig $appConfig */
+                    /** @var \EfTech\BookLibrary\Config\AppConfig $appConfig */
                     $appConfig = $c->get(AppConfig::class);
                     return $appConfig->getPathToLogFile();
                     },
-                \EfTech\BookLibrary\Infrastructure\AppConfig::class => static function(Container $c) {
+                \EfTech\BookLibrary\Config\AppConfig::class => static function(Container $c) {
             $appConfig = $c->get('appConfig');
             return AppConfig::createFromArray($appConfig);
             },
                 'pathToAuthors' => static function(Container $c) {
-            /** @var AppConfig $appConfig */
+            /** @var \EfTech\BookLibrary\Config\AppConfig $appConfig */
                     $appConfig = $c->get(AppConfig::class);
                     return $appConfig->getPathToAuthor();
                     },

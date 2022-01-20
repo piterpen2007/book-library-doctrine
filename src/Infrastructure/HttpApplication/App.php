@@ -1,8 +1,7 @@
 <?php
 
-namespace EfTech\BookLibrary\Infrastructure;
+namespace EfTech\BookLibrary\Infrastructure\HttpApplication;
 use EfTech\BookLibrary\Exception\RuntimeException;
-
 use EfTech\BookLibrary\Infrastructure\DI\ContainerInterface;
 use EfTech\BookLibrary\Infrastructure\http\httpResponse;
 use EfTech\BookLibrary\Infrastructure\http\ServerRequest;
@@ -19,9 +18,9 @@ final class App
 {
 
     /** Конфиг приложения
-     * @var AppConfig|null
+     * @var AppConfigInterface|null
      */
-    private ?AppConfig $appConfig = null;
+    private ?AppConfigInterface $appConfig = null;
     /** Логирование
      * @var LoggerInterface|null
      */
@@ -70,9 +69,9 @@ final class App
     }
 
     /**
-     * @return AppConfig|null
+     * @return AppConfigInterface|null
      */
-    private function getAppConfig(): AppConfig
+    private function getAppConfig(): AppConfigInterface
     {
         if (null === $this->appConfig) {
             $this->appConfig = ($this->appConfigFactory)($this->getContainer());
@@ -160,7 +159,7 @@ final class App
     {
         $hasAppConfig = false;
         try {
-            $hasAppConfig = $this->getAppConfig() instanceof AppConfig;
+            $hasAppConfig = $this->getAppConfig() instanceof AppConfigInterface;
             $logger = $this->getLogger();
 
             $urlPath = $serverRequest->getUri()->getPath();

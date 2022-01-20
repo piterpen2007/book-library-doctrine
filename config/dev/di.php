@@ -5,7 +5,7 @@ use EfTech\BookLibrary\ConsoleCommand\FindAuthors;
 use EfTech\BookLibrary\ConsoleCommand\FindBooks;
 use EfTech\BookLibrary\ConsoleCommand\HashStr;
 use EfTech\BookLibrary\Controller\UpdateMoveToArchiveBooksController;
-use EfTech\BookLibrary\Infrastructure\AppConfig;
+use EfTech\BookLibrary\Config\AppConfig;
 use EfTech\BookLibrary\Infrastructure\Auth\HttpAuthProvider;
 use EfTech\BookLibrary\Infrastructure\Auth\UserDataStorageInterface;
 use EfTech\BookLibrary\Infrastructure\Console\Output\EchoOutput;
@@ -247,7 +247,7 @@ return [
     ],
 'factories'=>[
         'loginUri' => static function(ContainerInterface $c): Uri {
-            /** @var AppConfig $appConfig */
+            /** @var \EfTech\BookLibrary\Config\AppConfig $appConfig */
             $appConfig = $c->get(AppConfig::class);
             return Uri::createFromString($appConfig->getLoginUri());
         },
@@ -258,12 +258,12 @@ return [
             return $c;
         },
         'pathToUsers' => static function(ContainerInterface $c):string {
-            /** @var AppConfig $appConfig */
+            /** @var \EfTech\BookLibrary\Config\AppConfig $appConfig */
             $appConfig = $c->get(AppConfig::class);
             return $appConfig->getPathToUsers();
         },
         'pathToLogFile' => static function(ContainerInterface $c):string {
-            /** @var AppConfig $appConfig */
+            /** @var \EfTech\BookLibrary\Config\AppConfig $appConfig */
             $appConfig = $c->get(AppConfig::class);
             return $appConfig->getPathToLogFile();
         },
@@ -278,7 +278,7 @@ return [
             return $appConfig->getPathToMagazines();
         },
         'pathToAuthor' => static function(ContainerInterface $c):string {
-            /** @var AppConfig $appConfig */
+            /** @var \EfTech\BookLibrary\Config\AppConfig $appConfig */
             $appConfig = $c->get(AppConfig::class);
             return $appConfig->getPathToAuthor();
         },

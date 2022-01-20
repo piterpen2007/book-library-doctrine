@@ -2,10 +2,10 @@
 
 namespace EfTech\BookLibraryTest\Infrastructure\Uri;
 
-use EfTech\BookLibrary\Infrastructure\Autoloader;
+use EfTech\BookLibrary\Infrastructure\Autoloader\Autoloader;
 use EfTech\BookLibrary\Infrastructure\Uri\Uri;
 
-require_once __DIR__ . '/../../../src/Infrastructure/Autoloader.php';
+require_once __DIR__ . '/../../../src/Infrastructure/Autoloader/Autoloader.php';
 
 spl_autoload_register(
     new Autoloader([
