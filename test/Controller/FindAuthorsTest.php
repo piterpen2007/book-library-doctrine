@@ -6,7 +6,7 @@ require_once __DIR__ . '/../../src/Infrastructure/Autoloader/Autoloader.php';
 
 use EfTech\BookLibrary\Controller\GetAuthorsCollectionController;
 use EfTech\BookLibrary\Entity\AuthorRepositoryInterface;
-use EfTech\BookLibrary\Infrastructure\AppConfig;
+use EfTech\BookLibrary\Config\AppConfig;
 use EfTech\BookLibrary\Infrastructure\Autoloader\Autoloader;
 use EfTech\BookLibrary\Infrastructure\DI\Container;
 use EfTech\BookLibrary\Infrastructure\http\ServerRequest;

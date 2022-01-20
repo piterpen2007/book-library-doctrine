@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../src/Infrastructure/Autoloader/Autoloader.php';
 
-use EfTech\BookLibrary\Infrastructure\AppConfig;
+use EfTech\BookLibrary\Config\AppConfig;
 use EfTech\BookLibrary\Infrastructure\Autoloader\Autoloader;
 spl_autoload_register(new Autoloader([
         'EfTech\\BookLibrary\\' => __DIR__ . '/../src/',
