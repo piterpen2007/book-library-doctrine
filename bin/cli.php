@@ -1,5 +1,6 @@
 #!/usr/nin/env_php
 <?php
+require_once __DIR__ . '/../vendor/autoload.php';
 
 use EfTech\BookLibrary\Infrastructure\Autoloader\Autoloader;
 use EfTech\BookLibrary\Infrastructure\Console\AppConsole;
