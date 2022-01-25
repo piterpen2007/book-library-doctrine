@@ -1,3 +1,5 @@
 /../../.idea
 var/log/app.log
 composer.phar
+vendor
+.idea
