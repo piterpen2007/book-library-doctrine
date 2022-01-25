@@ -2,7 +2,7 @@
 
 namespace EfTech\BookLibrary\Infrastructure\Logger;
 
-use EfTech\BookLibrary\Exception\RuntimeException;
+use EfTech\BookLibrary\Infrastructure\Exception\RuntimeException;
 
 /**
  * Универсальный логер

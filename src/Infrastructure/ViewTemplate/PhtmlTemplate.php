@@ -2,7 +2,7 @@
 
 namespace EfTech\BookLibrary\Infrastructure\ViewTemplate;
 
-use EfTech\BookLibrary\Exception\RuntimeException;
+use EfTech\BookLibrary\Infrastructure\Exception\RuntimeException;
 
 class PhtmlTemplate implements ViewTemplateInterface
 {
