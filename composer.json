@@ -21,11 +21,18 @@
   },
   "require": {
     "php" : "^7.4 || ^8.0",
-    "ext-json": "*"
+    "ext-json": "*",
+    "eff-tech/framework" : "dev-lesson_25-01-2022"
   },
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require-dev": {
     "phpunit/phpunit": "9.*"
+  },
+  "repositories": [
+    {
+      "type": "git",
+      "url": "git@git.effective-team.ru:rnd/educational-projects/interns/2021-flow-1/fedyancev.d.a/framework.git"
   }
+  ]
 }
