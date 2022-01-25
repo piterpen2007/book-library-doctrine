@@ -2,8 +2,8 @@
 
 namespace EfTech\BookLibrary\Infrastructure\DI;
 
-use EfTech\BookLibrary\Exception\DomainException;
-use EfTech\BookLibrary\Exception\RuntimeException;
+use EfTech\BookLibrary\Infrastructure\Exception\DomainException;
+use EfTech\BookLibrary\Infrastructure\Exception\RuntimeException;
 use Throwable;
 
 /**

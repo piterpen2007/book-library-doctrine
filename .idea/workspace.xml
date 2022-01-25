@@ -5,20 +5,39 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b084fc4a-9faf-4787-8f25-dcf3307018b2" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/readme" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/book-library.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/book-library.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Infrastructure/Exception/DomainException.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Infrastructure/Exception/ErrorCreateAppConfigException.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Infrastructure/Exception/ExceptionInterface.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Infrastructure/Exception/InvalidDataStructureException.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Infrastructure/Exception/RuntimeException.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Infrastructure/Exception/UnexpectedValueException.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/httpRequests/http-requests-log.http" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/httpRequests/http-requests-log.http" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/cli.php" beforeDir="false" afterPath="$PROJECT_DIR$/bin/cli.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/public/index.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Exception/DomainException.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Exception/DomainException.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Exception/ErrorCreateAppConfigException.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Exception/ErrorCreateAppConfigException.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Exception/InvalidDataStructureException.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Exception/InvalidDataStructureException.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Exception/RuntimeException.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Exception/RuntimeException.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Exception/UnexpectedValueException.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Exception/UnexpectedValueException.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Infrastructure/Auth/HttpAuthProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Infrastructure/Auth/HttpAuthProvider.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Infrastructure/Console/AppConsole.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Infrastructure/Console/AppConsole.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Infrastructure/DI/Container.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Infrastructure/DI/Container.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Infrastructure/DI/ServiceLocator.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Infrastructure/DI/ServiceLocator.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Infrastructure/DI/ServiceManager.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Infrastructure/DI/ServiceManager.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Infrastructure/HttpApplication/App.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Infrastructure/HttpApplication/App.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Infrastructure/HttpApplication/AppConfig.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Infrastructure/HttpApplication/AppConfig.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Infrastructure/Logger/Logger.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Infrastructure/Logger/Logger.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Infrastructure/Session/SessionNative.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Infrastructure/Session/SessionNative.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Infrastructure/Uri/Exception/ErrorUrlException.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Infrastructure/Uri/Exception/ErrorUrlException.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Infrastructure/ViewTemplate/PhtmlTemplate.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Infrastructure/ViewTemplate/PhtmlTemplate.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Infrastructure/http/Exception/ErrorHttpRequestException.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Infrastructure/http/Exception/ErrorHttpRequestException.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Infrastructure/http/ServerResponseFactory.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Infrastructure/http/ServerResponseFactory.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ComposerSettings" synchronizationState="DONT_SYNCHRONIZE">
+  <component name="ComposerSettings" doNotAsk="true" synchronizationState="DONT_SYNCHRONIZE">
     <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
     <execution>
       <phar pharPath="$PROJECT_DIR$/composer.phar" interpreterId="f3cc6abe-d58c-4e1d-8fb4-3f2d782dd40c" />
@@ -110,7 +129,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="com.jetbrains.php.lang.actions.generation.PhpGenerateFieldAccessorHandlerBase$MyMemberChooser.fluent.setters.last.selected" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/Config" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/Infrastructure" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="php.override.implement.member.chooser.php.doc" value="NONE" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
@@ -119,11 +138,11 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/Infrastructure" />
       <recent name="$PROJECT_DIR$/data" />
       <recent name="$PROJECT_DIR$/src/Controller" />
       <recent name="$PROJECT_DIR$/src/Service/ArrivalNewTextDocumentService" />
       <recent name="$PROJECT_DIR$/src/Exception" />
-      <recent name="$PROJECT_DIR$/src" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/Infrastructure/DataLoader" />
@@ -133,14 +152,7 @@
       <recent name="$PROJECT_DIR$/test" />
     </key>
   </component>
-  <component name="RunManager" selected="PHP Built-in Web Server.local php web">
-    <configuration default="true" type="ComposerRunConfigurationType" factoryName="Composer Script">
-      <option name="pathToComposerJson" value="$PROJECT_DIR$/composer.json" />
-      <method v="2" />
-    </configuration>
-    <configuration name="All in test (1)" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" path="$PROJECT_DIR$/test/test.http">
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="PHP Script.FindAuthorsTest.php">
     <configuration name="local php web" type="PhpBuiltInWebServerConfigurationType" factoryName="PHP Built-in Web Server" document_root="$PROJECT_DIR$" host="book-library-fedyancev.ru" port="8083" router_script="$PROJECT_DIR$/public/index.php" use_router_script="true">
       <method v="2" />
     </configuration>
@@ -150,6 +162,9 @@
     <configuration name="FindAuthorsTest.php" type="PhpLocalRunConfigurationType" factoryName="PHP Console" temporary="true" path="$PROJECT_DIR$/test/Controller/FindAuthorsTest.php">
       <method v="2" />
     </configuration>
+    <configuration name="ServerRequestFactoryTest.php" type="PhpLocalRunConfigurationType" factoryName="PHP Console" temporary="true" path="$PROJECT_DIR$/test/Infrastrucrute/http/ServerRequestFactoryTest.php">
+      <method v="2" />
+    </configuration>
     <configuration name="UnitTest.php" type="PhpLocalRunConfigurationType" factoryName="PHP Console" temporary="true" path="$PROJECT_DIR$/test/UnitTest.php">
       <method v="2" />
     </configuration>
@@ -157,19 +172,19 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="HTTP Request.All in test (1)" />
       <item itemvalue="PHP Built-in Web Server.local php web" />
+      <item itemvalue="PHP Script.ContainerTest.php" />
+      <item itemvalue="PHP Script.UnitTest.php" />
+      <item itemvalue="PHP Script.ServerRequestFactoryTest.php" />
       <item itemvalue="PHP Script.UriTest.php" />
       <item itemvalue="PHP Script.FindAuthorsTest.php" />
-      <item itemvalue="PHP Script.UnitTest.php" />
-      <item itemvalue="PHP Script.ContainerTest.php" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="HTTP Request.All in test (1)" />
-        <item itemvalue="PHP Script.ContainerTest.php" />
         <item itemvalue="PHP Script.FindAuthorsTest.php" />
+        <item itemvalue="PHP Script.ContainerTest.php" />
         <item itemvalue="PHP Script.UriTest.php" />
+        <item itemvalue="PHP Script.ServerRequestFactoryTest.php" />
         <item itemvalue="PHP Script.UnitTest.php" />
       </list>
     </recent_temporary>
@@ -203,6 +218,8 @@
       <workItem from="1641884867201" duration="32798000" />
       <workItem from="1641996503610" duration="49758000" />
       <workItem from="1643005006212" duration="13833000" />
+      <workItem from="1643092676632" duration="11000" />
+      <workItem from="1643094579914" duration="3109000" />
     </task>
     <task id="LOCAL-00001" summary="Создал файл index.php.">
       <created>1637824720369</created>

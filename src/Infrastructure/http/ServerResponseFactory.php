@@ -2,7 +2,7 @@
 
 namespace EfTech\BookLibrary\Infrastructure\http;
 
-use EfTech\BookLibrary\Exception\RuntimeException;
+use EfTech\BookLibrary\Infrastructure\Exception\RuntimeException;
 use EfTech\BookLibrary\Infrastructure\Uri\Uri;
 use Throwable;
 

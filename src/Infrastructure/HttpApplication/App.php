@@ -1,7 +1,7 @@
 <?php
 
 namespace EfTech\BookLibrary\Infrastructure\HttpApplication;
-use EfTech\BookLibrary\Exception\RuntimeException;
+use EfTech\BookLibrary\Infrastructure\Exception\RuntimeException;
 use EfTech\BookLibrary\Infrastructure\DI\ContainerInterface;
 use EfTech\BookLibrary\Infrastructure\http\httpResponse;
 use EfTech\BookLibrary\Infrastructure\http\ServerRequest;
@@ -9,7 +9,7 @@ use EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory;
 use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
 use EfTech\BookLibrary\Infrastructure\Router\RouterInterface;
 use Throwable;
-use EfTech\BookLibrary\Exception;
+use EfTech\BookLibrary\Infrastructure\Exception;
 use EfTech\BookLibrary\Infrastructure\View\RenderInterface;
 /**
  * Ядро приложения
@@ -177,7 +177,7 @@ final class App
                 );
             }
             $this->getRender()->render($httpResponse);
-        } catch (Exception\invalidDataStructureException $e) {
+        } catch (Exception\InvalidDataStructureException $e) {
             $httpResponse = ServerResponseFactory::createJsonResponse(
                 503,
                 ['status' => 'fail', 'message' => $e->getMessage()]

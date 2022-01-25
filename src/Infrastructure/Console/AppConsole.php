@@ -2,10 +2,10 @@
 
 namespace EfTech\BookLibrary\Infrastructure\Console;
 
-use EfTech\BookLibrary\Exception\RuntimeException;
+use EfTech\BookLibrary\Infrastructure\Exception\RuntimeException;
 use EfTech\BookLibrary\Infrastructure\Console\Output\EchoOutput;
 use EfTech\BookLibrary\Infrastructure\Console\Output\OutputInterface;
-use EfTech\BookLibrary\Exception;
+use EfTech\BookLibrary\Infrastructure\Exception;
 use EfTech\BookLibrary\Infrastructure\DI\ContainerInterface;
 use Throwable;
 

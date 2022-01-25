@@ -2,7 +2,7 @@
 
 namespace EfTech\BookLibrary\Infrastructure\DI;
 
-use EfTech\BookLibrary\Exception\RuntimeException;
+use EfTech\BookLibrary\Infrastructure\Exception\RuntimeException;
 
 /**
  * Манаджер сервисов

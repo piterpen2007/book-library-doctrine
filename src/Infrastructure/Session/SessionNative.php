@@ -2,7 +2,7 @@
 
 namespace EfTech\BookLibrary\Infrastructure\Session;
 
-use EfTech\BookLibrary\Exception\RuntimeException;
+use EfTech\BookLibrary\Infrastructure\Exception\RuntimeException;
 
 class SessionNative implements SessionInterface
 {

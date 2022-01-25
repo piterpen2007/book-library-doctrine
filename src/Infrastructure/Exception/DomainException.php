@@ -1,13 +1,11 @@
 <?php
 
-namespace EfTech\BookLibrary\Exception;
-
-use EfTech\BookLibrary\Infrastructure\Exception as BaseException;
+namespace EfTech\BookLibrary\Infrastructure\Exception;
 
 /**
  * Выбрасывает исключение, если значеине ге соответствует определенной допустимой области данных
  */
-class DomainException extends BaseException\DomainException implements ExceptionInterface
+class DomainException extends \DomainException implements ExceptionInterface
 {
 
 }

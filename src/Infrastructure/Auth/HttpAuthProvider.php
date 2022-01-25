@@ -6,7 +6,6 @@ use EfTech\BookLibrary\Infrastructure\http\httpResponse;
 use EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory;
 use EfTech\BookLibrary\Infrastructure\Session\SessionInterface;
 use EfTech\BookLibrary\Infrastructure\Uri\Uri;
-use http\Exception\UnexpectedValueException;
 
 /**
  * Поставщик услуги аутификации
