@@ -14,7 +14,7 @@ use EfTech\BookLibrary\Repository\AuthorJsonFileRepository;
 use EfTech\BookLibrary\Service\SearchAuthorsService;
 
 
-require_once __DIR__ . '/../../src/Infrastructure/Autoloader/Autoloader.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 spl_autoload_register(
     new Autoloader([

@@ -5,7 +5,7 @@ namespace EfTech\BookLibrary\Infrastructure\http;
 use EfTech\BookLibrary\Infrastructure\Autoloader\Autoloader;
 use EfTech\BookLibraryTest\TestUtils;
 
-require_once __DIR__ . '/../../../src/Infrastructure/Autoloader/Autoloader.php';
+require_once __DIR__ . '/../../../vendor/autoload.php';
 
 spl_autoload_register(
     new Autoloader([

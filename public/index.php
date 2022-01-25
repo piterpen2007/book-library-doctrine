@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/../vendor/eff-tech/framework/src/Autoloader/Autoloader.php';
+//require_once __DIR__ . '/../vendor/eff-tech/framework/src/Autoloader/Autoloader.php';
 
 use EfTech\BookLibrary\Config\AppConfig;
 use EfTech\BookLibrary\Infrastructure\Autoloader\Autoloader;
@@ -12,7 +12,6 @@ use EfTech\BookLibrary\Infrastructure\Router\RouterInterface;
 use EfTech\BookLibrary\Infrastructure\View\RenderInterface;
 
 spl_autoload_register(new Autoloader([
-        'EfTech\\BookLibrary\\Infrastructure\\' => __DIR__ . '/../vendor/eff-tech/framework/src/',
         'EfTech\\BookLibrary\\' => __DIR__ . '/../src/',
         'EfTech\\BookLibraryTest\\' => __DIR__ . '/../test/',
     ])

@@ -2,7 +2,7 @@
 
 namespace EfTech\BookLibraryTest\Infrastructure\Controller;
 
-require_once __DIR__ . '/../../src/Infrastructure/Autoloader/Autoloader.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 use EfTech\BookLibrary\Controller\GetAuthorsCollectionController;
 use EfTech\BookLibrary\Entity\AuthorRepositoryInterface;

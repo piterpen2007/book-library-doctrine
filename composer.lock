@@ -12,7 +12,7 @@
             "source": {
                 "type": "git",
                 "url": "git@git.effective-team.ru:rnd/educational-projects/interns/2021-flow-1/fedyancev.d.a/framework.git",
-                "reference": "3e5023c14d244353d070d44c2706f796e0190714"
+                "reference": "eebafad6ef62458a0426dc9ff76a5f93a33fef5f"
             },
             "require": {
                 "ext-json": "*",
@@ -24,7 +24,7 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "'EfTech\\BookLibrary\\Infrastructure\\'": "src"
+                    "EfTech\\BookLibrary\\Infrastructure\\": "src"
                 }
             },
             "license": [
@@ -47,7 +47,7 @@
             "support": {
                 "email": "popkin@yandex.ru"
             },
-            "time": "2022-01-25T11:44:57+00:00"
+            "time": "2022-01-25T11:47:29+00:00"
         }
     ],
     "packages-dev": [
