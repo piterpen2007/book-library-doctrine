@@ -5,32 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b084fc4a-9faf-4787-8f25-dcf3307018b2" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/Infrastructure/Exception/DomainException.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Infrastructure/Exception/ErrorCreateAppConfigException.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Infrastructure/Exception/ExceptionInterface.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Infrastructure/Exception/InvalidDataStructureException.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Infrastructure/Exception/RuntimeException.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Infrastructure/Exception/UnexpectedValueException.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/httpRequests/http-requests-log.http" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/httpRequests/http-requests-log.http" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/eff-tech/framework/composer.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/book-library.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/book-library.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Exception/DomainException.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Exception/DomainException.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Exception/ErrorCreateAppConfigException.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Exception/ErrorCreateAppConfigException.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Exception/InvalidDataStructureException.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Exception/InvalidDataStructureException.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Exception/RuntimeException.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Exception/RuntimeException.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Exception/UnexpectedValueException.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Exception/UnexpectedValueException.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Infrastructure/Auth/HttpAuthProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Infrastructure/Auth/HttpAuthProvider.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Infrastructure/Console/AppConsole.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Infrastructure/Console/AppConsole.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Infrastructure/DI/Container.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Infrastructure/DI/Container.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Infrastructure/DI/ServiceLocator.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Infrastructure/DI/ServiceLocator.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Infrastructure/DI/ServiceManager.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Infrastructure/DI/ServiceManager.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Infrastructure/HttpApplication/App.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Infrastructure/HttpApplication/App.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Infrastructure/HttpApplication/AppConfig.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Infrastructure/HttpApplication/AppConfig.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Infrastructure/Logger/Logger.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Infrastructure/Logger/Logger.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Infrastructure/Session/SessionNative.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Infrastructure/Session/SessionNative.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Infrastructure/Uri/Exception/ErrorUrlException.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Infrastructure/Uri/Exception/ErrorUrlException.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Infrastructure/ViewTemplate/PhtmlTemplate.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Infrastructure/ViewTemplate/PhtmlTemplate.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Infrastructure/http/Exception/ErrorHttpRequestException.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Infrastructure/http/Exception/ErrorHttpRequestException.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Infrastructure/http/ServerResponseFactory.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Infrastructure/http/ServerResponseFactory.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,7 +35,8 @@
         <entry key="$PROJECT_DIR$" value="main" />
       </map>
     </option>
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/vendor/eff-tech/framework" />
+    <option name="ROOT_SYNC" value="DONT_SYNC" />
   </component>
   <component name="GitSEFilterConfiguration">
     <file-type-list>
@@ -113,6 +93,7 @@
       <path value="$PROJECT_DIR$/vendor/nikic/php-parser" />
       <path value="$PROJECT_DIR$/vendor/phar-io/manifest" />
       <path value="$PROJECT_DIR$/vendor/phar-io/version" />
+      <path value="$PROJECT_DIR$/vendor/eff-tech/framework" />
     </include_path>
   </component>
   <component name="ProblemsViewState">
@@ -129,20 +110,20 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="com.jetbrains.php.lang.actions.generation.PhpGenerateFieldAccessorHandlerBase$MyMemberChooser.fluent.setters.last.selected" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/Infrastructure" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/vendor/eff-tech/framework" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="php.override.implement.member.chooser.php.doc" value="NONE" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="reference.webide.settings.project.settings.php.composer" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/vendor/eff-tech/framework" />
       <recent name="$PROJECT_DIR$/src/Infrastructure" />
       <recent name="$PROJECT_DIR$/data" />
       <recent name="$PROJECT_DIR$/src/Controller" />
       <recent name="$PROJECT_DIR$/src/Service/ArrivalNewTextDocumentService" />
-      <recent name="$PROJECT_DIR$/src/Exception" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/Infrastructure/DataLoader" />
@@ -219,7 +200,7 @@
       <workItem from="1641996503610" duration="49758000" />
       <workItem from="1643005006212" duration="13833000" />
       <workItem from="1643092676632" duration="11000" />
-      <workItem from="1643094579914" duration="3109000" />
+      <workItem from="1643094579914" duration="4501000" />
     </task>
     <task id="LOCAL-00001" summary="Создал файл index.php.">
       <created>1637824720369</created>
@@ -501,7 +482,14 @@
       <option name="project" value="LOCAL" />
       <updated>1643011650024</updated>
     </task>
-    <option name="localTasksCounter" value="41" />
+    <task id="LOCAL-00041" summary="Переместили исключение на уровень инфраструктуры и отнаследовали их в икслючениях на уровне приложения">
+      <created>1643097895497</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1643097895497</updated>
+    </task>
+    <option name="localTasksCounter" value="42" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -518,7 +506,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="lesson_20-01-2022" />
+                        <option value="lesson_25-01-2022" />
                       </list>
                     </value>
                   </entry>
@@ -531,7 +519,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Добавили критерии поиска по названию книги и по фамилии автора." />
     <MESSAGE value="Добавили в gitignore app.log" />
     <MESSAGE value="Добавили запись в логи" />
     <MESSAGE value="Перезаписал проект, проект с использованием ООП" />
@@ -556,7 +543,8 @@
     <MESSAGE value="Актуальный проект" />
     <MESSAGE value="Отделили AppConfig от фреймвёрка" />
     <MESSAGE value=".gitignore" />
-    <option name="LAST_COMMIT_MESSAGE" value=".gitignore" />
+    <MESSAGE value="Переместили исключение на уровень инфраструктуры и отнаследовали их в икслючениях на уровне приложения" />
+    <option name="LAST_COMMIT_MESSAGE" value="Переместили исключение на уровень инфраструктуры и отнаследовали их в икслючениях на уровне приложения" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
