@@ -7,7 +7,6 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 use EfTech\BookLibrary\Controller\GetAuthorsCollectionController;
 use EfTech\BookLibrary\Entity\AuthorRepositoryInterface;
 use EfTech\BookLibrary\Config\AppConfig;
-use EfTech\BookLibrary\Infrastructure\Autoloader\Autoloader;
 use EfTech\BookLibrary\Infrastructure\DI\Container;
 use EfTech\BookLibrary\Infrastructure\http\ServerRequest;
 use EfTech\BookLibrary\Infrastructure\Logger\Adapter\NullAdapter;
@@ -19,12 +18,7 @@ use EfTech\BookLibrary\Service\SearchAuthorsService;
 use EfTech\BookLibraryTest\TestUtils;
 
 
-spl_autoload_register(
-    new Autoloader([
-        'EfTech\\BookLibrary\\' => __DIR__ . '/../../src/',
-        'EfTech\\BookLibraryTest\\' => __DIR__ . '/../../test/'
-    ])
-);
+
 
 /**
  * Тестирование контроллера FindAuthors

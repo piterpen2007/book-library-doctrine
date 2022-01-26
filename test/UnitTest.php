@@ -3,7 +3,6 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use EfTech\BookLibrary\Infrastructure\HttpApplication\App;
 use EfTech\BookLibrary\Config\AppConfig;
-use EfTech\BookLibrary\Infrastructure\Autoloader\Autoloader;
 use EfTech\BookLibrary\Infrastructure\DI\Container;
 use EfTech\BookLibrary\Infrastructure\http\ServerRequest;
 use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
@@ -14,11 +13,6 @@ use EfTech\BookLibrary\Infrastructure\View\RenderInterface;
 use EfTech\BookLibraryTest\TestUtils;
 
 
-spl_autoload_register(new Autoloader([
-        'EfTech\\BookLibrary\\' => __DIR__ . '/../src/',
-        'EfTech\\BookLibraryTest\\' => __DIR__ . '/../test/',
-    ])
-);
 
 /**
  *  Тестирование приложения

@@ -2,17 +2,10 @@
 
 namespace EfTech\BookLibraryTest\Infrastructure\Uri;
 
-use EfTech\BookLibrary\Infrastructure\Autoloader\Autoloader;
 use EfTech\BookLibrary\Infrastructure\Uri\Uri;
 
 require_once __DIR__ . '/../../../vendor/autoload.php';
 
-spl_autoload_register(
-    new Autoloader([
-        'EfTech\\BookLibrary\\' => __DIR__ . '/../../../src/',
-        'EfTech\\BookLibraryTest\\' => __DIR__ . '/../../../test/'
-    ])
-);
 
 /** Тестирование Uri
  *

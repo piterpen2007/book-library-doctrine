@@ -29,6 +29,12 @@
   "require-dev": {
     "phpunit/phpunit": "9.*"
   },
+  "autoload": {
+    "psr-4": {
+      "EfTech\\BookLibrary\\" : "src",
+      "EfTech\\BookLibraryTest\\" : "test"
+    }
+  },
   "repositories": [
     {
       "type": "git",

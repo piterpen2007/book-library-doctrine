@@ -2,17 +2,10 @@
 
 namespace EfTech\BookLibrary\Infrastructure\http;
 
-use EfTech\BookLibrary\Infrastructure\Autoloader\Autoloader;
 use EfTech\BookLibraryTest\TestUtils;
 
 require_once __DIR__ . '/../../../vendor/autoload.php';
 
-spl_autoload_register(
-    new Autoloader([
-        'EfTech\\BookLibrary\\' => __DIR__ . '/../../../src/',
-        'EfTech\\BookLibraryTest\\' => __DIR__ . '/../../../test/'
-    ])
-);
 /**
  *  Тестирует логику работу фабрики, создающий серверный http запрос
  */
