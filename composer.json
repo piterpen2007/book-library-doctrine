@@ -31,7 +31,11 @@
   },
   "autoload": {
     "psr-4": {
-      "EfTech\\BookLibrary\\" : "src",
+      "EfTech\\BookLibrary\\" : "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
       "EfTech\\BookLibraryTest\\" : "test"
     }
   },
