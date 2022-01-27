@@ -4,15 +4,15 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "18c3d4c5c88161f80ae1e138724561db",
+    "content-hash": "607acdd4a0f66a453a6719403f2e6fb6",
     "packages": [
         {
             "name": "eff-tech/framework",
-            "version": "dev-lesson_25-01-2022",
+            "version": "dev-lesson_26-01-2022",
             "source": {
                 "type": "git",
                 "url": "git@git.effective-team.ru:rnd/educational-projects/interns/2021-flow-1/fedyancev.d.a/framework.git",
-                "reference": "eebafad6ef62458a0426dc9ff76a5f93a33fef5f"
+                "reference": "2966b4077e805ce03d420cf198a3f04c109ec25d"
             },
             "require": {
                 "ext-json": "*",
@@ -47,7 +47,7 @@
             "support": {
                 "email": "popkin@yandex.ru"
             },
-            "time": "2022-01-25T11:47:29+00:00"
+            "time": "2022-01-26T09:46:13+00:00"
         }
     ],
     "packages-dev": [
