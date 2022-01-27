@@ -11,5 +11,4 @@ use EfTech\BookLibrary\Infrastructure\Auth\UserDataProviderInterface;
 class UserDataProvider extends User implements
     UserDataProviderInterface
 {
-
 }

@@ -72,9 +72,11 @@ final class FindAuthors implements CommandInterface
                 ->setId(isset($params['id']) ? (int)$params['id'] : null)
         );
         $jsonData = $this->buildJsonData($dtoCollection);
-        $this->output->print(json_encode($jsonData,
+        $this->output->print(json_encode(
+            $jsonData,
             JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT |
-            JSON_UNESCAPED_UNICODE));
+            JSON_UNESCAPED_UNICODE
+        ));
     }
     /**
      *
@@ -83,7 +85,7 @@ final class FindAuthors implements CommandInterface
      *
      * @return array
      */
-    private function buildJsonData(array $dtoCollection):array
+    private function buildJsonData(array $dtoCollection): array
     {
         $result = [];
         foreach ($dtoCollection as $authorDto) {
@@ -97,5 +99,4 @@ final class FindAuthors implements CommandInterface
         }
         return $result;
     }
-
 }

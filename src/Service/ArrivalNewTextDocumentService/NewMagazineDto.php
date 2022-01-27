@@ -71,9 +71,4 @@ final class NewMagazineDto
     {
         return $this->number;
     }
-
-
-
-
-
 }

@@ -245,44 +245,44 @@ return [
             ]
         ]
     ],
-'factories'=>[
-        'loginUri' => static function(ContainerInterface $c): Uri {
+    'factories' => [
+        'loginUri' => static function (ContainerInterface $c): Uri {
             /** @var \EfTech\BookLibrary\Config\AppConfig $appConfig */
             $appConfig = $c->get(AppConfig::class);
             return Uri::createFromString($appConfig->getLoginUri());
         },
-        SessionInterface::class => static function(ContainerInterface $c) {
+        SessionInterface::class => static function (ContainerInterface $c) {
             return SessionNative::create();
         },
-        ContainerInterface::class => static function(ContainerInterface $c):ContainerInterface {
+        ContainerInterface::class => static function (ContainerInterface $c): ContainerInterface {
             return $c;
         },
-        'pathToUsers' => static function(ContainerInterface $c):string {
+        'pathToUsers' => static function (ContainerInterface $c): string {
             /** @var \EfTech\BookLibrary\Config\AppConfig $appConfig */
             $appConfig = $c->get(AppConfig::class);
             return $appConfig->getPathToUsers();
         },
-        'pathToLogFile' => static function(ContainerInterface $c):string {
+        'pathToLogFile' => static function (ContainerInterface $c): string {
             /** @var \EfTech\BookLibrary\Config\AppConfig $appConfig */
             $appConfig = $c->get(AppConfig::class);
             return $appConfig->getPathToLogFile();
         },
-        'pathToBooks' => static function(ContainerInterface $c):string {
+        'pathToBooks' => static function (ContainerInterface $c): string {
             /** @var AppConfig $appConfig */
             $appConfig = $c->get(AppConfig::class);
             return $appConfig->getPathToBooks();
         },
-        'pathToMagazines' => static function(ContainerInterface $c):string {
+        'pathToMagazines' => static function (ContainerInterface $c): string {
             /** @var AppConfig $appConfig */
             $appConfig = $c->get(AppConfig::class);
             return $appConfig->getPathToMagazines();
         },
-        'pathToAuthor' => static function(ContainerInterface $c):string {
+        'pathToAuthor' => static function (ContainerInterface $c): string {
             /** @var \EfTech\BookLibrary\Config\AppConfig $appConfig */
             $appConfig = $c->get(AppConfig::class);
             return $appConfig->getPathToAuthor();
         },
-        AppConfig::class => static function(ContainerInterface $c): AppConfig {
+        AppConfig::class => static function (ContainerInterface $c): AppConfig {
             $appConfig = $c->get('appConfig');
             return AppConfig::createFromArray($appConfig);
         }

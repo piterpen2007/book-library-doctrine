@@ -1,4 +1,5 @@
 <?php
+
 namespace EfTech\BookLibrary\Service\SearchAuthorsService;
 
 /** Класс декларирующий по каким критериям можно вести поиск по авторам

@@ -1,6 +1,7 @@
 <?php
 
 namespace EfTech\BookLibrary\Entity;
+
 use EfTech\BookLibrary\Exception;
 
 final class Book extends AbstractTextDocument
@@ -15,10 +16,18 @@ final class Book extends AbstractTextDocument
      * @param string $title
      * @param int $year
      * @param Author $author
+     * @param array $purchasePrices
+     * @param string $status
      */
-    public function __construct(int $id, string $title, int $year, Author $author,array $purchasePrices,string $status)
-    {
-        parent::__construct($id, $title, $year, $purchasePrices,$status);
+    public function __construct(
+        int $id,
+        string $title,
+        int $year,
+        Author $author,
+        array $purchasePrices,
+        string $status
+    ) {
+        parent::__construct($id, $title, $year, $purchasePrices, $status);
         $this->author = $author;
     }
 
@@ -48,7 +57,8 @@ final class Book extends AbstractTextDocument
      */
     public function getTitleForPrinting(): string
     {
-        return "{$this->getTitle()} . {$this->getAuthor()->getSurname()} {$this->getAuthor()->getName()} . {$this->getYear()}";
+        return "{$this->getTitle()} ." .
+            " {$this->getAuthor()->getSurname()} {$this->getAuthor()->getName()} . {$this->getYear()}";
     }
 
 

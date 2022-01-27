@@ -52,13 +52,13 @@ class TextDocumentAdministrationController implements \EfTech\BookLibrary\Infras
      * @param HttpAuthProvider $httpAuthProvider
      */
     public function __construct(
-        LoggerInterface           $logger,
+        LoggerInterface $logger,
         SearchTextDocumentService $searchTextDocumentService,
-        ViewTemplateInterface     $viewTemplate,
-        SearchAuthorsService      $authorsService, \EfTech\BookLibrary\Service\ArrivalNewTextDocumentService $arrivalNewTextDocumentService,
+        ViewTemplateInterface $viewTemplate,
+        SearchAuthorsService $authorsService,
+        \EfTech\BookLibrary\Service\ArrivalNewTextDocumentService $arrivalNewTextDocumentService,
         HttpAuthProvider $httpAuthProvider
-    )
-    {
+    ) {
         $this->logger = $logger;
         $this->searchTextDocumentService = $searchTextDocumentService;
         $this->viewTemplate = $viewTemplate;
@@ -91,8 +91,6 @@ class TextDocumentAdministrationController implements \EfTech\BookLibrary\Infras
             $contex = array_merge($viewData, $resultCreationTextDocument);
             $template = __DIR__ . '/../../templates/textDocument.administration.phtml';
             $httpCode = 200;
-
-
         } catch (\Throwable $e) {
             $httpCode = 500;
             $template = __DIR__ . '/../../templates/errors.phtml';
@@ -107,7 +105,7 @@ class TextDocumentAdministrationController implements \EfTech\BookLibrary\Infras
             $contex
         );
 
-        return ServerResponseFactory::createHtmlResponse($httpCode,$html);
+        return ServerResponseFactory::createHtmlResponse($httpCode, $html);
     }
 
     /** Результат создания текстовых документов
@@ -115,10 +113,10 @@ class TextDocumentAdministrationController implements \EfTech\BookLibrary\Infras
      * @param ServerRequest $request
      * @return array - данные о ошибках у форм создания книг и журналов
      */
-    private function creationOfTextDocument(ServerRequest $request):array
+    private function creationOfTextDocument(ServerRequest $request): array
     {
         $dataToCreate = [];
-        parse_str($request->getBody(),$dataToCreate);
+        parse_str($request->getBody(), $dataToCreate);
         if (false === array_key_exists('type', $dataToCreate)) {
             throw new RuntimeException('Отсутствуют данные о типе текстового документа');
         }
@@ -131,7 +129,6 @@ class TextDocumentAdministrationController implements \EfTech\BookLibrary\Infras
         ];
 
         if ('book' === $dataToCreate['type']) {
-
             $result['formValidationResults']['book'] = $this->validateBook($dataToCreate);
 
             if (0 === count($result['formValidationResults']['book'])) {
@@ -140,7 +137,6 @@ class TextDocumentAdministrationController implements \EfTech\BookLibrary\Infras
                 $result['bookData'] = $dataToCreate;
             }
         } elseif ('magazine' === $dataToCreate['type']) {
-
             $result['formValidationResults']['magazine'] = $this->validateMagazine($dataToCreate);
 
             if (0 === count($result['formValidationResults']['magazine'])) {
@@ -148,7 +144,6 @@ class TextDocumentAdministrationController implements \EfTech\BookLibrary\Infras
             } else {
                 $result['magazineData'] = $dataToCreate;
             }
-
         } else {
             throw new RuntimeException('Неизвестный тип текстового документа');
         }
@@ -161,7 +156,7 @@ class TextDocumentAdministrationController implements \EfTech\BookLibrary\Infras
      * @param array $dataToCreate
      * @return void
      */
-    private function validateBook(array $dataToCreate):array
+    private function validateBook(array $dataToCreate): array
     {
         $errs = [];
         $errTitle = $this->validateTitle($dataToCreate);
@@ -187,11 +182,11 @@ class TextDocumentAdministrationController implements \EfTech\BookLibrary\Infras
     private function createBook(array $dataToCreate)
     {
         $this->arrivalNewTextDocumentService->registerBook(
-          new NewBookDto(
-              $dataToCreate['title'],
-              (int)$dataToCreate['year'],
-              (int)$dataToCreate['author_id']
-          )
+            new NewBookDto(
+                $dataToCreate['title'],
+                (int)$dataToCreate['year'],
+                (int)$dataToCreate['author_id']
+            )
         );
     }
 
@@ -199,7 +194,7 @@ class TextDocumentAdministrationController implements \EfTech\BookLibrary\Infras
      * @param array $dataToCreate
      * @return void
      */
-    private function validateMagazine(array $dataToCreate):array
+    private function validateMagazine(array $dataToCreate): array
     {
         $errs = [];
         $errTitle = $this->validateTitle($dataToCreate);
@@ -222,25 +217,25 @@ class TextDocumentAdministrationController implements \EfTech\BookLibrary\Infras
 
         return $errs;
     }
-    private function validateBookAuthor(array $dataToCreate):void
+    private function validateBookAuthor(array $dataToCreate): void
     {
-        if (false === array_key_exists('author_id',$dataToCreate)) {
+        if (false === array_key_exists('author_id', $dataToCreate)) {
             throw new RuntimeException('Нет данных о авторе');
         } elseif (false === is_string($dataToCreate['author_id'])) {
             throw new RuntimeException('Данные о авторе должны быть строкой');
         }
     }
 
-    private function validateYear(array $dataToCreate):array
+    private function validateYear(array $dataToCreate): array
     {
         $errs = [];
-        if (false === array_key_exists('year',$dataToCreate)) {
+        if (false === array_key_exists('year', $dataToCreate)) {
             throw new RuntimeException('Нет данных о годе');
         } elseif (false === is_string($dataToCreate['year'])) {
             throw new RuntimeException('Данные о годе должны быть строкой');
         } else {
             $trimYear = trim($dataToCreate['year']);
-            $yearIsValid = 1 === preg_match('/^[0-9]{4}$/',$trimYear);
+            $yearIsValid = 1 === preg_match('/^[0-9]{4}$/', $trimYear);
 
             $errYear = [];
             if (false === $yearIsValid) {
@@ -255,17 +250,16 @@ class TextDocumentAdministrationController implements \EfTech\BookLibrary\Infras
             }
         }
         return $errs;
-
     }
     /** Валидация заголовка
      * @param array $dataToCreate
      * @return array
      */
-    private function validateTitle(array $dataToCreate):array
+    private function validateTitle(array $dataToCreate): array
     {
         $errs = [];
 
-        if (false === array_key_exists('title',$dataToCreate)) {
+        if (false === array_key_exists('title', $dataToCreate)) {
             throw new RuntimeException('Нет данных о заголовке');
         } elseif (false === is_string($dataToCreate['title'])) {
             throw new RuntimeException('Данные о заголовке должны быть строкой');
@@ -304,13 +298,13 @@ class TextDocumentAdministrationController implements \EfTech\BookLibrary\Infras
     private function validateNumber(array $dataToCreate): array
     {
         $errs = [];
-        if (false === array_key_exists('number',$dataToCreate)) {
+        if (false === array_key_exists('number', $dataToCreate)) {
             throw new RuntimeException('Нет данных о номере журнала');
         } elseif (false === is_string($dataToCreate['number'])) {
             throw new RuntimeException('Данные о номере журнала должны быть строкой');
         } else {
             $trimNumber = trim($dataToCreate['number']);
-            $numberIsValid = 1 === preg_match('/^\d+$/',$trimNumber);
+            $numberIsValid = 1 === preg_match('/^\d+$/', $trimNumber);
 
             $errsNumber = [];
             if (false === $numberIsValid) {
@@ -323,17 +317,15 @@ class TextDocumentAdministrationController implements \EfTech\BookLibrary\Infras
         return $errs;
     }
 
-    private function validateMagazineBookAuthor(array $dataToCreate):void
+    private function validateMagazineBookAuthor(array $dataToCreate): void
     {
-        if (false === array_key_exists('author_id',$dataToCreate)) {
+        if (false === array_key_exists('author_id', $dataToCreate)) {
             throw new RuntimeException('Нет данных о авторе');
         } elseif (false === is_string($dataToCreate['author_id'])) {
             throw new RuntimeException('Данные о авторе должны быть строкой');
         }
-        if (!('null' === $dataToCreate['author_id'] || 1 === preg_match('/^\d+$/',$dataToCreate['author_id']))) {
+        if (!('null' === $dataToCreate['author_id'] || 1 === preg_match('/^\d+$/', $dataToCreate['author_id']))) {
             throw new RuntimeException('Данные о авторе имеют не корректный формат');
         }
     }
-
-
 }

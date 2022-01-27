@@ -1,6 +1,7 @@
 <?php
 
 namespace EfTech\BookLibrary\Service;
+
 use EfTech\BookLibrary\Entity\AbstractTextDocument;
 use EfTech\BookLibrary\Entity\AuthorRepositoryInterface;
 use EfTech\BookLibrary\Entity\Book;
@@ -33,19 +34,18 @@ final class ArrivalNewTextDocumentService
     public function __construct(
         TextDocumentRepositoryInterface $textDocumentRepository,
         AuthorRepositoryInterface $authorRepository
-    )
-    {
+    ) {
         $this->textDocumentRepository = $textDocumentRepository;
         $this->authorRepository = $authorRepository;
     }
 
-    public function registerBook(NewBookDto $bookDto):ResultRegisteringTextDocumentDto
+    public function registerBook(NewBookDto $bookDto): ResultRegisteringTextDocumentDto
     {
         $authorId = $bookDto->getAuthorId();
 
         $authorsCollection = $this->authorRepository->findBy(['id' => $authorId]);
 
-        if(1 !== count($authorsCollection)) {
+        if (1 !== count($authorsCollection)) {
             throw new RuntimeException(
                 'Нельзя зарегистрировать книгу с author_id = ' . $authorId . '. Автор с данным id  не найден.'
             );
@@ -64,15 +64,19 @@ final class ArrivalNewTextDocumentService
         $this->textDocumentRepository->add($entity);
 
 
-        return new ResultRegisteringTextDocumentDto($entity->getId(), $entity->getTitleForPrinting(), $entity->getStatus());
+        return new ResultRegisteringTextDocumentDto(
+            $entity->getId(),
+            $entity->getTitleForPrinting(),
+            $entity->getStatus()
+        );
     }
 
-    public function registerMagazine(NewMagazineDto $magazineDto):ResultRegisteringTextDocumentDto
+    public function registerMagazine(NewMagazineDto $magazineDto): ResultRegisteringTextDocumentDto
     {
         $authorId = $magazineDto->getAuthorId();
         if (null !== $authorId) {
             $authorsCollection = $this->authorRepository->findBy(['id' => $authorId]);
-            if(1 !== count($authorsCollection)) {
+            if (1 !== count($authorsCollection)) {
                 throw new RuntimeException(
                     'Нельзя зарегистрировать журнал с author_id = ' . $authorId . '. Автор с данным id  не найден.'
                 );
@@ -95,6 +99,10 @@ final class ArrivalNewTextDocumentService
         $this->textDocumentRepository->add($entity);
 
 
-        return new ResultRegisteringTextDocumentDto($entity->getId(), $entity->getTitleForPrinting(), $entity->getStatus());
+        return new ResultRegisteringTextDocumentDto(
+            $entity->getId(),
+            $entity->getTitleForPrinting(),
+            $entity->getStatus()
+        );
     }
 }

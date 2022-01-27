@@ -54,8 +54,4 @@ final class NewBookDto
     {
         return $this->authorId;
     }
-
-
-
-
 }

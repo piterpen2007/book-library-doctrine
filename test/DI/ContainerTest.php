@@ -19,7 +19,7 @@ class ContainerTest
     /**
      * Тестирование получения сервиса
      */
-    public static function testGetService():void
+    public static function testGetService(): void
     {
         echo "------------------Тестирование получения сервиса---------------\n";
         //Arrange
@@ -63,20 +63,20 @@ class ContainerTest
                 ]
             ],
             'factories' => [
-                'pathToLogFile' => static function(Container $c) {
+                'pathToLogFile' => static function (Container $c) {
                     /** @var \EfTech\BookLibrary\Config\AppConfig $appConfig */
                     $appConfig = $c->get(AppConfig::class);
                     return $appConfig->getPathToLogFile();
-                    },
-                \EfTech\BookLibrary\Config\AppConfig::class => static function(Container $c) {
-            $appConfig = $c->get('appConfig');
-            return AppConfig::createFromArray($appConfig);
-            },
-                'pathToAuthors' => static function(Container $c) {
+                },
+                \EfTech\BookLibrary\Config\AppConfig::class => static function (Container $c) {
+                    $appConfig = $c->get('appConfig');
+                    return AppConfig::createFromArray($appConfig);
+                },
+                'pathToAuthors' => static function (Container $c) {
             /** @var \EfTech\BookLibrary\Config\AppConfig $appConfig */
                     $appConfig = $c->get(AppConfig::class);
                     return $appConfig->getPathToAuthor();
-                    },
+                },
                 ],
             ];
 
@@ -92,7 +92,6 @@ class ContainerTest
             echo "     FAIL - di контейнер отработал корректно";
         }
     }
-
 }
 
 ContainerTest::testGetService();

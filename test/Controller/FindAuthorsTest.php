@@ -29,7 +29,7 @@ class FindAuthorsTest
      * @return void
      * @throws \JsonException
      */
-    public static function testSearchAuthorsBySurname():void
+    public static function testSearchAuthorsBySurname(): void
     {
         echo "-------------------Тестирование поиска автора по фамилии-----------------------\n";
         $httpRequest = new ServerRequest(
@@ -37,7 +37,7 @@ class FindAuthorsTest
             '1.1',
             '/authors?surname=Паланик',
             Uri::createFromString('http://book-library-fedyancev.ru:8083/authors?surname=Паланик'),
-            ['Content-Type'=> 'application/json'],
+            ['Content-Type' => 'application/json'],
             null
         );
         $appConfig = AppConfig::createFromArray(require __DIR__ . '/../../config/dev/config.php');
@@ -83,15 +83,15 @@ class FindAuthorsTest
         }
         $expected = [
             [
-                'id'=> 1,
-                'name'=> 'Чак',
-                'surname'=>'Паланик',
-                'birthday'=> '21.02.1962',
+                'id' => 1,
+                'name' => 'Чак',
+                'surname' => 'Паланик',
+                'birthday' => '21.02.1962',
                 'country' => 'us'
             ]
         ];
 
-        $actualResult =  json_decode($httpResponse->getBody(), true, 512 , JSON_THROW_ON_ERROR);
+        $actualResult =  json_decode($httpResponse->getBody(), true, 512, JSON_THROW_ON_ERROR);
 
         $unnecessaryElements = TestUtils::arrayDiffAssocRecursive($actualResult, $expected);
         $missingElements =  TestUtils::arrayDiffAssocRecursive($expected, $actualResult);
@@ -99,10 +99,16 @@ class FindAuthorsTest
         $errMsg = '';
 
         if (count($unnecessaryElements) > 0) {
-            $errMsg .= sprintf("         Есть лишние элементы %s\n", json_encode($unnecessaryElements,JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE));
+            $errMsg .= sprintf("         Есть лишние элементы %s\n", json_encode(
+                $unnecessaryElements,
+                JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE
+            ));
         }
         if (count($missingElements) > 0) {
-            $errMsg .= sprintf("         Есть лишние недостающие элементы %s\n", json_encode($missingElements,JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE));
+            $errMsg .= sprintf("         Есть лишние недостающие элементы %s\n", json_encode(
+                $missingElements,
+                JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE
+            ));
         }
 
         if ('' === $errMsg) {
@@ -110,7 +116,6 @@ class FindAuthorsTest
         } else {
             echo "    FAIL - данные ответа валидны\n" . $errMsg;
         }
-
     }
 }
 FindAuthorsTest::testSearchAuthorsBySurname();

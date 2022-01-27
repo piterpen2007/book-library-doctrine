@@ -9,5 +9,4 @@ use EfTech\BookLibrary\Infrastructure\Exception as BaseException;
  */
 class RuntimeException extends BaseException\RuntimeException implements ExceptionInterface
 {
-
 }

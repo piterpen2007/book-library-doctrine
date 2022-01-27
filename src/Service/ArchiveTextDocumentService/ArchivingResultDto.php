@@ -1,6 +1,7 @@
 <?php
 
 namespace EfTech\BookLibrary\Service\ArchiveTextDocumentService;
+
 /**
  *  Результат архивации документа
  */
@@ -54,7 +55,4 @@ final class ArchivingResultDto
     {
         return $this->status;
     }
-
-
-
 }

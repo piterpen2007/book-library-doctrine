@@ -34,8 +34,7 @@ final class SearchTextDocumentServiceCriteria
      *
      * @return SearchTextDocumentServiceCriteria
      */
-    public function setAuthorSurname(?string $authorSurname):
-    SearchTextDocumentServiceCriteria
+    public function setAuthorSurname(?string $authorSurname): SearchTextDocumentServiceCriteria
     {
         $this->authorSurname = $authorSurname;
         return $this;
@@ -47,8 +46,7 @@ final class SearchTextDocumentServiceCriteria
      *
      * @return SearchTextDocumentServiceCriteria
      */
-    public function setId(?int $id):
-    SearchTextDocumentServiceCriteria
+    public function setId(?int $id): SearchTextDocumentServiceCriteria
     {
         $this->id = $id;
         return $this;
@@ -60,8 +58,7 @@ final class SearchTextDocumentServiceCriteria
      *
      * @return SearchTextDocumentServiceCriteria
      */
-    public function setTitle(?string $title):
-    SearchTextDocumentServiceCriteria
+    public function setTitle(?string $title): SearchTextDocumentServiceCriteria
     {
         $this->title = $title;
         return $this;

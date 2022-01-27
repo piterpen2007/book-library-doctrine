@@ -18,7 +18,6 @@ use JsonException;
  */
 class SearchAuthorsService
 {
-
     private AuthorRepositoryInterface $authorRepository;
     /**
      *
@@ -30,11 +29,9 @@ class SearchAuthorsService
 
     /**
      * @param LoggerInterface $logger
-     * @param string $pathToAuthors
-     * @param DataLoaderInterface $dataLoader
      * @param AuthorRepositoryInterface $authorRepository
      */
-    public function __construct(LoggerInterface $logger , AuthorRepositoryInterface $authorRepository)
+    public function __construct(LoggerInterface $logger, AuthorRepositoryInterface $authorRepository)
     {
         $this->logger = $logger;
         $this->authorRepository = $authorRepository;
@@ -45,7 +42,7 @@ class SearchAuthorsService
      * @return AuthorDto[]
      * @throws JsonException
      */
-    public function search(SearchAuthorsCriteria $searchCriteria):array
+    public function search(SearchAuthorsCriteria $searchCriteria): array
     {
         $criteria = $this->searchCriteriaToArray($searchCriteria);
         $entitiesCollection = $this->authorRepository->findBy($criteria);
@@ -53,7 +50,7 @@ class SearchAuthorsService
         foreach ($entitiesCollection as $entity) {
             $dtoCollection[] = $this->createDto($entity);
         }
-        $this->logger->debug( 'found authors: ' . count($entitiesCollection));
+        $this->logger->debug('found authors: ' . count($entitiesCollection));
         return $dtoCollection;
     }
     /**
@@ -76,15 +73,15 @@ class SearchAuthorsService
      * @param SearchAuthorsCriteria $searchCriteria
      * @return array
      */
-    private function searchCriteriaToArray(SearchAuthorsCriteria $searchCriteria):array
+    private function searchCriteriaToArray(SearchAuthorsCriteria $searchCriteria): array
     {
         $criteriaForRepository = [
             'id' => $searchCriteria->getId(),
             'surname' => $searchCriteria->getSurname()
         ];
 
-        return array_filter($criteriaForRepository, static function($v):bool {return null !== $v;});
+        return array_filter($criteriaForRepository, static function ($v): bool {
+            return null !== $v;
+        });
     }
-
-
 }

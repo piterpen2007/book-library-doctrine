@@ -40,7 +40,7 @@ class AuthorJsonFileRepository implements AuthorRepositoryInterface
      * @return array
      */
 
-    private function loadData():array
+    private function loadData(): array
     {
         if (null === $this->data) {
             $this->data = $this->dataLoader->loadData($this->pathToAuthors);
@@ -53,12 +53,12 @@ class AuthorJsonFileRepository implements AuthorRepositoryInterface
         $authors = $this->loadData();
         $foundAuthors = [];
         foreach ($authors as $author) {
-            if (array_key_exists('surname',$criteria)) {
+            if (array_key_exists('surname', $criteria)) {
                 $authorMeetsSearchCriteria = $criteria['surname'] === $author['surname'];
             } else {
                 $authorMeetsSearchCriteria = true;
             }
-            if ($authorMeetsSearchCriteria && array_key_exists('id',$criteria)) {
+            if ($authorMeetsSearchCriteria && array_key_exists('id', $criteria)) {
                 $authorMeetsSearchCriteria = $criteria['id'] === $author['id'];
             }
             if ($authorMeetsSearchCriteria) {

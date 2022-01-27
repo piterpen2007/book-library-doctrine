@@ -41,7 +41,4 @@ final class PurchasePrice
     {
         return $this->money;
     }
-
-
-
 }

@@ -33,13 +33,12 @@ class UpdateMoveToArchiveBooksController implements \EfTech\BookLibrary\Infrastr
     {
         try {
             $attributes = $request->getAttributes();
-            if (false === array_key_exists('id',$attributes)) {
+            if (false === array_key_exists('id', $attributes)) {
                 throw new Exception\RuntimeException('there is no information about the id of the text document');
             }
             $resultDto = $this->archivingTextDocumentService->archive((int)$attributes['id']);
             $httpCode = 200;
             $jsonData = $this->buildJsonData($resultDto);
-
         } catch (TextDocumentNotFoundException $e) {
             $httpCode = 404;
             $jsonData = ['status' => 'fail', 'message' => $e->getMessage()];
@@ -55,7 +54,7 @@ class UpdateMoveToArchiveBooksController implements \EfTech\BookLibrary\Infrastr
      * @param ArchivingResultDto $resultDto
      * @return array
      */
-    private function buildJsonData(ArchivingResultDto $resultDto):array
+    private function buildJsonData(ArchivingResultDto $resultDto): array
     {
         return [
             'id' => $resultDto->getId(),

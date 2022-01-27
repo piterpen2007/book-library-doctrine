@@ -1,6 +1,7 @@
 <?php
 
 namespace EfTech\BookLibrary\Entity;
+
 use EfTech\BookLibrary\Exception;
 use JsonSerializable;
 
@@ -159,5 +160,4 @@ final class Author
         }
         return new Author($data['id'], $data['name'], $data['surname'], $data['birthday'], $data['country']);
     }
-
 }

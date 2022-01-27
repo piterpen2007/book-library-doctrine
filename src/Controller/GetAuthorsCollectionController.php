@@ -2,7 +2,6 @@
 
 namespace EfTech\BookLibrary\Controller;
 
-
 use EfTech\BookLibrary\Entity\Author;
 use EfTech\BookLibrary\Infrastructure\Controller\ControllerInterface;
 use EfTech\BookLibrary\Infrastructure\http\HttpResponse;
@@ -15,7 +14,6 @@ use EfTech\BookLibrary\Service\SearchAuthorsService\SearchAuthorsCriteria;
 use EfTech\BookLibrary\Service\SearchAuthorsService;
 use Exception;
 use JsonException;
-
 
 /** Контроллер поиска авторов
  *
@@ -53,9 +51,9 @@ class GetAuthorsCollectionController implements ControllerInterface
             'id' => 'incorrect author id'
         ];
 
-        $params = array_merge($serverRequest->getQueryParams(),$serverRequest->getAttributes());
+        $params = array_merge($serverRequest->getQueryParams(), $serverRequest->getAttributes());
 
-        return Assert::arrayElementsIsString($paramsValidation,$params);
+        return Assert::arrayElementsIsString($paramsValidation, $params);
     }
 
     /**
@@ -82,20 +80,19 @@ class GetAuthorsCollectionController implements ControllerInterface
             $result = $this->buildResult($foundAuthors);
         } else {
             $httpCode = 500;
-            $result=[
+            $result = [
                 'status' => 'fail',
                 'message' => $resultOfParamValidation
             ];
         }
-        return ServerResponseFactory::createJsonResponse($httpCode,$result);
-
+        return ServerResponseFactory::createJsonResponse($httpCode, $result);
     }
 
     /** Определяет http code
      * @param array $foundAuthors
      * @return int
      */
-    protected function buildHttpCode(array $foundAuthors):int
+    protected function buildHttpCode(array $foundAuthors): int
     {
         return 200;
     }
@@ -111,14 +108,13 @@ class GetAuthorsCollectionController implements ControllerInterface
             $result[] = $this->serializeAuthor($foundAuthor);
         }
         return $result;
-
     }
 
     /**
      * @param AuthorDto $authorDto
      * @return array
      */
-    final protected function serializeAuthor(AuthorDto $authorDto):array
+    final protected function serializeAuthor(AuthorDto $authorDto): array
     {
         return [
             'id' => $authorDto->getId(),
@@ -128,6 +124,4 @@ class GetAuthorsCollectionController implements ControllerInterface
             'country' => $authorDto->getCountry(),
         ];
     }
-
-
 }

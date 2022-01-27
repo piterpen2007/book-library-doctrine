@@ -29,7 +29,7 @@ class ArchivingTextDocumentService
     public function archive(int $textDocumentId): ArchivingResultDto
     {
         $entities = $this->textDocumentRepository->findBy(['id' => $textDocumentId]);
-        if(1 !== count($entities)) {
+        if (1 !== count($entities)) {
             throw new TextDocumentNotFoundException(
                 "Не удалось отправить документ в архив. Документ с id='$textDocumentId' не найден."
             );
@@ -40,6 +40,6 @@ class ArchivingTextDocumentService
 
         $this->textDocumentRepository->save($entity);
 
-        return new ArchivingResultDto($entity->getId(),$entity->getTitleForPrinting(),$entity->getStatus());
+        return new ArchivingResultDto($entity->getId(), $entity->getTitleForPrinting(), $entity->getStatus());
     }
 }

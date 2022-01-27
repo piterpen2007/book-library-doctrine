@@ -1,4 +1,5 @@
 <?php
+
 namespace EfTech\BookLibrary\Service\SearchAuthorsService;
 
 /** Структура информации о авторах
@@ -43,8 +44,7 @@ final class AuthorDto
      * @param string $birthday - день рождение автора
      * @param string $country - страна автора
      */
-    public function __construct(int $id, string $name, string
-    $surname, string $birthday, string $country)
+    public function __construct(int $id, string $name, string $surname, string $birthday, string $country)
     {
         $this->id = $id;
         $this->name = $name;

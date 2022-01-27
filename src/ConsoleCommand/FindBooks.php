@@ -33,7 +33,8 @@ final class FindBooks implements CommandInterface
      * @param OutputInterface $output
      * @param SearchTextDocumentService $searchTextDocumentService
      */
-    public function __construct(OutputInterface $output, SearchTextDocumentService $searchTextDocumentService) {
+    public function __construct(OutputInterface $output, SearchTextDocumentService $searchTextDocumentService)
+    {
         $this->output = $output;
         $this->searchTextDocumentService = $searchTextDocumentService;
     }
@@ -68,24 +69,23 @@ final class FindBooks implements CommandInterface
             new SearchTextDocumentServiceCriteria())
             ->setAuthorSurname($params['author_surname'] ?? null)
             ->setId(isset($params['id']) ? (int)$params['id'] : null)
-            ->setTitle($params['title'] ?? null)
-        );
+            ->setTitle($params['title'] ?? null));
         $jsonData = $this->buildJsonData($textDocumentsDto);
-        $this->output->print(json_encode($jsonData,
+        $this->output->print(json_encode(
+            $jsonData,
             JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT |
-            JSON_UNESCAPED_UNICODE));
- }
+            JSON_UNESCAPED_UNICODE
+        ));
+    }
     /**
      * @param TextDocumentDto[]
      * @return array
      */
-    private function buildJsonData(array $foundTextDocuments):
-    array
+    private function buildJsonData(array $foundTextDocuments): array
     {
         $result = [];
         foreach ($foundTextDocuments as $foundTextDocument) {
-            $result[] = $this->serializeTextDocument
-            ($foundTextDocument);
+            $result[] = $this->serializeTextDocument($foundTextDocument);
         }
         return $result;
     }
@@ -94,7 +94,7 @@ final class FindBooks implements CommandInterface
      * @param TextDocumentDto $textDocument
      * @return array
      */
-    private function serializeTextDocument(TextDocumentDto $textDocument):array
+    private function serializeTextDocument(TextDocumentDto $textDocument): array
     {
         $jsonData = [
                 'id' => $textDocument->getId(),
@@ -119,6 +119,4 @@ final class FindBooks implements CommandInterface
         }
         return $jsonData;
     }
-
-
 }

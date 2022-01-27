@@ -15,7 +15,6 @@ use EfTech\BookLibrary\Service\SearchTextDocumentService\TextDocumentDto;
 use Exception;
 use JsonException;
 
-
 /**
  * Контроллер поиска книг
  *
@@ -40,11 +39,9 @@ class GetBooksCollectionController implements ControllerInterface
     public function __construct(
         LoggerInterface $logger,
         SearchTextDocumentService $searchTextDocumentService
-
     ) {
         $this->logger = $logger;
         $this->searchTextDocumentService = $searchTextDocumentService;
-
     }
 
 
@@ -52,15 +49,15 @@ class GetBooksCollectionController implements ControllerInterface
      * @param ServerRequest $request
      * @return string|null
      */
-    private function validateQueryParams(ServerRequest $request):?string
+    private function validateQueryParams(ServerRequest $request): ?string
     {
         $paramTypeValidation = [
             'author_surname' => "incorrect author surname",
             'title' => 'incorrect book title',
             'id' => 'incorrect book id'
         ];
-        $queryParams = array_merge($request->getQueryParams(),$request->getAttributes());
-        return Assert::arrayElementsIsString($paramTypeValidation,$queryParams);
+        $queryParams = array_merge($request->getQueryParams(), $request->getAttributes());
+        return Assert::arrayElementsIsString($paramTypeValidation, $queryParams);
     }
 
 
@@ -81,22 +78,18 @@ class GetBooksCollectionController implements ControllerInterface
                 ->search((new SearchTextDocumentServiceCriteria())
                     ->setAuthorSurname($params['author_surname'] ?? null)
                     ->setId($params['id'] ?? null)
-                    ->setTitle($params['title'] ?? null)
-            );
+                    ->setTitle($params['title'] ?? null));
 
             $result = $this->buildResult($foundTextDocuments);
             $httpCode = $this->buildHttpCode($foundTextDocuments);
-
-
         } else {
             $httpCode = 500;
-            $result=[
+            $result = [
                 'status' => 'fail',
                 'message' => $resultOfParamValidation
             ];
         }
-        return ServerResponseFactory::createJsonResponse($httpCode,$result);
-
+        return ServerResponseFactory::createJsonResponse($httpCode, $result);
     }
 
     /** Подготавливает данные для ответа
@@ -110,7 +103,6 @@ class GetBooksCollectionController implements ControllerInterface
             $result[] = $this->serializeTextDocument($foundTextDocument);
         }
         return $result;
-
     }
     /**
      *
@@ -149,9 +141,8 @@ class GetBooksCollectionController implements ControllerInterface
      * @param array $foundTextDocument
      * @return int
      */
-    protected function buildHttpCode(array $foundTextDocument):int
+    protected function buildHttpCode(array $foundTextDocument): int
     {
         return 200;
     }
-
 }

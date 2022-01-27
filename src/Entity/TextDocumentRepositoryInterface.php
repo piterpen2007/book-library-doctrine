@@ -1,6 +1,7 @@
 <?php
 
 namespace EfTech\BookLibrary\Entity;
+
 /**
  *  Интерфейс репозитория текстовых документов
  */
@@ -11,18 +12,18 @@ interface TextDocumentRepositoryInterface
      * @param array $criteria
      * @return AbstractTextDocument[]
      */
-    public function findBy(array $criteria):array;
+    public function findBy(array $criteria): array;
 
     /** Сохранить сущность в репозитории
      * @param AbstractTextDocument $entity
      * @return AbstractTextDocument
      */
-    public function save(AbstractTextDocument $entity):AbstractTextDocument;
-    public function nextId():int;
+    public function save(AbstractTextDocument $entity): AbstractTextDocument;
+    public function nextId(): int;
 
     /** Добавляет новую сущность
      * @param AbstractTextDocument $entity
      * @return AbstractTextDocument
      */
-    public function add(AbstractTextDocument $entity):AbstractTextDocument;
+    public function add(AbstractTextDocument $entity): AbstractTextDocument;
 }

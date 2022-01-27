@@ -1,6 +1,7 @@
 <?php
 
 namespace EfTech\BookLibrary\Controller;
+
 /**
  * Получение информации о одной книге
  */
@@ -23,8 +24,5 @@ class GetBooksController extends GetBooksCollectionController
         return 1 === count($foundTextDocuments)
             ? $this->serializeTextDocument(current($foundTextDocuments))
             : [ 'status' => 'fail', 'message' => 'entity not found'];
-
-
     }
-
 }

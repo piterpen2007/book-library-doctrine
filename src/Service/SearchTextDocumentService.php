@@ -1,6 +1,7 @@
 <?php
 
 namespace EfTech\BookLibrary\Service;
+
 use EfTech\BookLibrary\Entity\AbstractTextDocument;
 use EfTech\BookLibrary\Entity\Book;
 use EfTech\BookLibrary\Entity\Magazine;
@@ -36,9 +37,9 @@ class SearchTextDocumentService
      * @param TextDocumentRepositoryInterface $textDocumentRepository
      */
     public function __construct(
-        LoggerInterface $logger, TextDocumentRepositoryInterface $textDocumentRepository
-    )
-    {
+        LoggerInterface $logger,
+        TextDocumentRepositoryInterface $textDocumentRepository
+    ) {
         $this->logger = $logger;
         $this->textDocumentRepository = $textDocumentRepository;
     }
@@ -51,11 +52,11 @@ class SearchTextDocumentService
      *
      * @return string
      */
-    private function getTextDocumentType(AbstractTextDocument $textDocument):string
+    private function getTextDocumentType(AbstractTextDocument $textDocument): string
     {
         if ($textDocument instanceof Magazine) {
             $type = TextDocumentDto::TYPE_MAGAZINE;
-        } elseif($textDocument instanceof Book) {
+        } elseif ($textDocument instanceof Book) {
             $type = TextDocumentDto::TYPE_BOOK;
         } else {
             throw new RuntimeException(' ');
@@ -74,7 +75,10 @@ class SearchTextDocumentService
     private function createDto(AbstractTextDocument $textDocument): TextDocumentDto
     {
         $authorDto = null;
-        if ($textDocument instanceof Book || ($textDocument instanceof Magazine && null !== $textDocument->getAuthor())) {
+        if (
+            $textDocument instanceof Book ||
+            ($textDocument instanceof Magazine && null !== $textDocument->getAuthor())
+        ) {
             $author = $textDocument->getAuthor();
             $authorDto = new
             AuthorDto(
@@ -103,7 +107,7 @@ class SearchTextDocumentService
      * @param SearchTextDocumentServiceCriteria $searchCriteria
      * @return TextDocumentDto[]
      */
-    public function search(SearchTextDocumentServiceCriteria $searchCriteria):array
+    public function search(SearchTextDocumentServiceCriteria $searchCriteria): array
     {
         $criteria = $this->searchCriteriaToArray($searchCriteria);
         $entitiesCollection = $this->textDocumentRepository->findBy($criteria);
@@ -119,16 +123,15 @@ class SearchTextDocumentService
      * @param SearchTextDocumentServiceCriteria $searchCriteria
      * @return array
      */
-    private function searchCriteriaToArray(SearchTextDocumentServiceCriteria $searchCriteria):array
+    private function searchCriteriaToArray(SearchTextDocumentServiceCriteria $searchCriteria): array
     {
         $criteriaForRepository = [
             'id' => $searchCriteria->getId(),
             'author_surname' => $searchCriteria->getAuthorSurname(),
             'title' => $searchCriteria->getTitle()
         ];
-        return array_filter($criteriaForRepository, static function($v):bool {return null !== $v;});
-
+        return array_filter($criteriaForRepository, static function ($v): bool {
+            return null !== $v;
+        });
     }
-
-
 }

@@ -55,5 +55,4 @@ class ResultRegisteringTextDocumentDto
     {
         return $this->status;
     }
-
 }

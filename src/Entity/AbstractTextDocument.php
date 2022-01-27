@@ -1,4 +1,5 @@
 <?php
+
 namespace EfTech\BookLibrary\Entity;
 
 use EfTech\BookLibrary\Exception\DomainException;
@@ -32,10 +33,11 @@ abstract class AbstractTextDocument
 
     /** Конструктор класса
      *
-     * @param string $status
      * @param int $id - id книги
      * @param string $title - Заголовок книги
      * @param int $year - Год выпуска книги
+     * @param array $purchasePrices
+     * @param string $status
      */
     public function __construct(int $id, string $title, int $year, array $purchasePrices, string $status)
     {
@@ -55,11 +57,11 @@ abstract class AbstractTextDocument
     /** Перенос документа в архив
      * @return $this
      */
-    public function moveToArchive():self
+    public function moveToArchive(): self
     {
         if ('archive' === $this->status) {
             throw new RuntimeException(
-              "Текстовый документ с id {$this->getId()} уже находится в архиве"
+                "Текстовый документ с id {$this->getId()} уже находится в архиве"
             );
         }
         $this->status = self::STATUS_ARCHIVE;

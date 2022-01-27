@@ -75,8 +75,7 @@ final class TextDocumentDto
         int $year,
         ?AuthorDto $author,
         ?int $number
-    )
-    {
+    ) {
         $this->id = $id;
         $this->title = $title;
         $this->year = $year;

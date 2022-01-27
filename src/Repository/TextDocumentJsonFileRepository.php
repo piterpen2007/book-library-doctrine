@@ -72,8 +72,12 @@ class TextDocumentJsonFileRepository implements TextDocumentRepositoryInterface
      * @param string $pathToAuthors
      * @param DataLoaderInterface $dataLoader
      */
-    public function __construct(string $pathToBooks, string $pathToMagazines, string $pathToAuthors, DataLoaderInterface $dataLoader)
-    {
+    public function __construct(
+        string $pathToBooks,
+        string $pathToMagazines,
+        string $pathToAuthors,
+        DataLoaderInterface $dataLoader
+    ) {
         $this->pathToBooks = $pathToBooks;
         $this->pathToMagazines = $pathToMagazines;
         $this->pathToAuthors = $pathToAuthors;
@@ -84,7 +88,7 @@ class TextDocumentJsonFileRepository implements TextDocumentRepositoryInterface
      *
      * @return Author[]
      */
-    private function loadAuthorEntity():array
+    private function loadAuthorEntity(): array
     {
         if (null === $this->authorIdToInfo) {
             $authors = $this->dataLoader->loadData($this->pathToAuthors);
@@ -94,20 +98,18 @@ class TextDocumentJsonFileRepository implements TextDocumentRepositoryInterface
                 $authorIdToInfo[$authorObj->getId()] = $authorObj;
             }
             $this->authorIdToInfo = $authorIdToInfo;
-
         }
         return $this->authorIdToInfo;
-
     }
 
     /**
      * @return array
      */
-    private function loadTextDocumentData():array
+    private function loadTextDocumentData(): array
     {
         if (null === $this->textDocumentData) {
             $this->booksData = $this->dataLoader->loadData($this->pathToBooks);
-            $this->magazinesData= $this->dataLoader->loadData($this->pathToMagazines);
+            $this->magazinesData = $this->dataLoader->loadData($this->pathToMagazines);
 
             $this->bookIdToIndex = array_combine(
                 array_map(
@@ -124,10 +126,12 @@ class TextDocumentJsonFileRepository implements TextDocumentRepositoryInterface
                 array_keys($this->magazinesData)
             );
 
-            $this->textDocumentData = array_merge($this->booksData,$this->magazinesData);
+            $this->textDocumentData = array_merge($this->booksData, $this->magazinesData);
             $this->currentId = max(
                 array_map(
-                    static function (array $v) {return $v['id'];},
+                    static function (array $v) {
+                        return $v['id'];
+                    },
                     $this->textDocumentData
                 )
             );
@@ -135,19 +139,18 @@ class TextDocumentJsonFileRepository implements TextDocumentRepositoryInterface
         return $this->textDocumentData;
     }
 
-    private function extractTextDocument($v):int
+    private function extractTextDocument($v): int
     {
         if (false === is_array($v)) {
             throw new InvalidDataStructureException('Данные о текстовом документе должны быть массивом');
         }
-        if (false === array_key_exists('id',$v)) {
+        if (false === array_key_exists('id', $v)) {
             throw new InvalidDataStructureException('Нету id текстового документа');
         }
         if (false === is_int($v['id'])) {
             throw new InvalidDataStructureException('id текстового документа должен быть целым числом');
         }
         return $v['id'];
-
     }
 
     /**
@@ -160,7 +163,8 @@ class TextDocumentJsonFileRepository implements TextDocumentRepositoryInterface
      */
     private function textDocumentFactory(array $textDocument, array $authorIdToEntity): AbstractTextDocument
     {
-        $textDocument['author'] = null === $textDocument['author_id'] ? null : $authorIdToEntity[$textDocument['author_id']];
+        $textDocument['author'] = null === $textDocument['author_id'] ?
+            null : $authorIdToEntity[$textDocument['author_id']];
         $textDocument['purchasePrices'] = $this->createPurchasePrices($textDocument);
         if (array_key_exists('number', $textDocument)) {
             $textDocumentObj = Magazine::createFromArray($textDocument);
@@ -178,12 +182,12 @@ class TextDocumentJsonFileRepository implements TextDocumentRepositoryInterface
      *
      * @return PurchasePrice[]
      */
-    private function createPurchasePrices(array $textDocument):array
+    private function createPurchasePrices(array $textDocument): array
     {
-        if(false === array_key_exists('purchase_price',$textDocument)) {
+        if (false === array_key_exists('purchase_price', $textDocument)) {
             throw new InvalidDataStructureException('Нет данных о закупочной цене');
         }
-        if(false === is_array($textDocument['purchase_price'])) {
+        if (false === is_array($textDocument['purchase_price'])) {
             throw new InvalidDataStructureException('Данные о закупочных ценах имею не верный формат');
         }
         $purchasePrices = [];
@@ -200,24 +204,24 @@ class TextDocumentJsonFileRepository implements TextDocumentRepositoryInterface
      *
      * @return PurchasePrice
      */
-    private function createPurchasePrice($purchasePriceData):PurchasePrice
+    private function createPurchasePrice($purchasePriceData): PurchasePrice
     {
         if (false === is_array($purchasePriceData)) {
             throw new InvalidDataStructureException('Данные о закупочной цене имею не верный формат');
         }
-        if (false === array_key_exists('date',$purchasePriceData)) {
+        if (false === array_key_exists('date', $purchasePriceData)) {
             throw new InvalidDataStructureException('Отсутствуют данные о времени закупки');
         }
         if (false === is_string($purchasePriceData['date'])) {
             throw new InvalidDataStructureException('Данные о времени закупки имеют не верный формат');
         }
-        if (false === array_key_exists('price',$purchasePriceData)) {
+        if (false === array_key_exists('price', $purchasePriceData)) {
             throw new InvalidDataStructureException('Отсутствуют данные о цене закупки');
         }
         if (false === is_int($purchasePriceData['price'])) {
             throw new InvalidDataStructureException('Данные о цене закупки имеют не верный формат');
         }
-        if (false === array_key_exists('currency',$purchasePriceData)) {
+        if (false === array_key_exists('currency', $purchasePriceData)) {
             throw new InvalidDataStructureException('Отсутствуют данные о валюте закупки');
         }
         if (false === is_string($purchasePriceData['currency'])) {
@@ -243,17 +247,17 @@ class TextDocumentJsonFileRepository implements TextDocumentRepositoryInterface
         $authorIdToEntity = $this->loadAuthorEntity();
         $foundTextDocument = [];
         foreach ($textDocuments as $textDocument) {
-            if (array_key_exists('author_surname',$criteria)) {
+            if (array_key_exists('author_surname', $criteria)) {
                 $bookMeetsSearchCriteria = null !== $textDocument['author_id']
                     && $criteria['author_surname']
                     === $authorIdToEntity[$textDocument['author_id']]->getSurname();
             } else {
                 $bookMeetsSearchCriteria = true;
             }
-            if ($bookMeetsSearchCriteria && array_key_exists('id',$criteria)) {
+            if ($bookMeetsSearchCriteria && array_key_exists('id', $criteria)) {
                 $bookMeetsSearchCriteria = $criteria['id'] === $textDocument['id'];
             }
-            if ($bookMeetsSearchCriteria && array_key_exists('title',$criteria)) {
+            if ($bookMeetsSearchCriteria && array_key_exists('title', $criteria)) {
                 $bookMeetsSearchCriteria = $criteria['title'] === $textDocument['title'];
             }
             if ($bookMeetsSearchCriteria) {
@@ -275,14 +279,12 @@ class TextDocumentJsonFileRepository implements TextDocumentRepositoryInterface
             $item = $this->buildJsonDataForBook($entity);
             $data[$itemIndex] = $item;
             $file = $this->pathToBooks;
-
         } elseif ($entity instanceof Magazine) {
             $data = $this->magazinesData;
             $itemIndex = $this->getItemIndex($entity);
             $item = $this->buildJsonDataForMagazine($entity);
             $data[$itemIndex] = $item;
             $file = $this->pathToMagazines;
-
         } else {
             throw new RuntimeException('Текстовый документ данного типа не может быть сохранен');
         }
@@ -296,7 +298,7 @@ class TextDocumentJsonFileRepository implements TextDocumentRepositoryInterface
      * @param AbstractTextDocument $entity
      * @return int
      */
-    private function getItemIndex(AbstractTextDocument $entity):int
+    private function getItemIndex(AbstractTextDocument $entity): int
     {
         $id = $entity->getId();
         if ($entity instanceof Book) {
@@ -317,7 +319,7 @@ class TextDocumentJsonFileRepository implements TextDocumentRepositoryInterface
      * @param Book $entity
      * @return array
      */
-    private function buildJsonDataForBook(Book $entity):array
+    private function buildJsonDataForBook(Book $entity): array
     {
         return [
                 'id' => $entity->getId(),
@@ -334,7 +336,7 @@ class TextDocumentJsonFileRepository implements TextDocumentRepositoryInterface
      * @param Book $entity
      * @return array
      */
-    private function buildJsonDataForPurchasePrices(AbstractTextDocument $entity):array
+    private function buildJsonDataForPurchasePrices(AbstractTextDocument $entity): array
     {
         $data = [];
         foreach ($entity->getPurchasePrices() as $purchasePrice) {
@@ -352,7 +354,7 @@ class TextDocumentJsonFileRepository implements TextDocumentRepositoryInterface
      * @param Magazine $entity
      * @return array
      */
-    private function buildJsonDataForMagazine(Magazine $entity):array
+    private function buildJsonDataForMagazine(Magazine $entity): array
     {
         $author = $entity->getAuthor();
 
@@ -371,7 +373,7 @@ class TextDocumentJsonFileRepository implements TextDocumentRepositoryInterface
     public function nextId(): int
     {
         $this->loadTextDocumentData();
-        $this->currentId = $this->currentId + 1;
+        ++$this->currentId;
 
         return $this->currentId;
     }
@@ -379,7 +381,7 @@ class TextDocumentJsonFileRepository implements TextDocumentRepositoryInterface
     public function add(AbstractTextDocument $entity): AbstractTextDocument
     {
         $this->loadTextDocumentData();
-        if($entity instanceof Book) {
+        if ($entity instanceof Book) {
             $item = $this->buildJsonDataForBook($entity);
             $this->booksData[] = $item;
             $data = $this->booksData;
@@ -399,6 +401,4 @@ class TextDocumentJsonFileRepository implements TextDocumentRepositoryInterface
         file_put_contents($file, $jsonStr);
         return $entity;
     }
-
-
 }

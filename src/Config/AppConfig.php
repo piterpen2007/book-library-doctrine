@@ -1,14 +1,15 @@
 <?php
 
 namespace EfTech\BookLibrary\Config;
+
 use EfTech\BookLibrary\Exception;
-use \EfTech\BookLibrary\Infrastructure\HttpApplication\AppConfig as BaseConfig;
+use EfTech\BookLibrary\Infrastructure\HttpApplication\AppConfig as BaseConfig;
+
 /**
  *  Конфиг приложения
  */
 class AppConfig extends BaseConfig
 {
-
     /**
      * @var string путь до файла логирования
      */
@@ -158,7 +159,4 @@ class AppConfig extends BaseConfig
             throw new Exception\ErrorCreateAppConfigException('Некорректный путь до файла с данными');
         }
     }
-
-
-
 }

@@ -15,12 +15,10 @@ class GetAuthorsController extends GetAuthorsCollectionController
     /**
      * @inheritDoc
      */
-    protected function buildResult(array $foundAuthors):array
+    protected function buildResult(array $foundAuthors): array
     {
         return 1 === count($foundAuthors)
             ? $this->serializeAuthor(current($foundAuthors))
             : [ 'status' => 'fail', 'message' => 'entity not found'];
-
     }
-
 }

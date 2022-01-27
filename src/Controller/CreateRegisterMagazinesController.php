@@ -29,7 +29,7 @@ class CreateRegisterMagazinesController implements ControllerInterface
     public function __invoke(ServerRequest $request): httpResponse
     {
         try {
-            $requestData = json_decode($request->getBody(), true,512,JSON_THROW_ON_ERROR);
+            $requestData = json_decode($request->getBody(), true, 512, JSON_THROW_ON_ERROR);
             $validationResult = $this->validateData($requestData);
 
             if (0 === count($validationResult)) {
@@ -39,22 +39,21 @@ class CreateRegisterMagazinesController implements ControllerInterface
                 $jsonData = $this->buildJsonData($responseDto);
             } else {
                 $httpCode = 400;
-                $jsonData = ['status' => 'fail','message'=> implode('.',$validationResult)];
+                $jsonData = ['status' => 'fail','message' => implode('.', $validationResult)];
             }
-
         } catch (\Throwable $e) {
             $httpCode = 500;
-            $jsonData = ['status' => 'fail','message'=>$e->getMessage()];
+            $jsonData = ['status' => 'fail','message' => $e->getMessage()];
         }
 
-        return ServerResponseFactory::createJsonResponse($httpCode,$jsonData);
+        return ServerResponseFactory::createJsonResponse($httpCode, $jsonData);
     }
 
     /** Запуск сервиса
      * @param array $requestData
      * @return ResultRegisteringTextDocumentDto
      */
-    private function runService(array $requestData):ResultRegisteringTextDocumentDto
+    private function runService(array $requestData): ResultRegisteringTextDocumentDto
     {
         $requestDto = new NewMagazineDto(
             $requestData['title'],
@@ -70,7 +69,7 @@ class CreateRegisterMagazinesController implements ControllerInterface
      * @param ResultRegisteringTextDocumentDto $responseDto
      * @return array
      */
-    private function buildJsonData(ResultRegisteringTextDocumentDto $responseDto):array
+    private function buildJsonData(ResultRegisteringTextDocumentDto $responseDto): array
     {
         return [
             'id' => $responseDto->getId(),
@@ -83,13 +82,13 @@ class CreateRegisterMagazinesController implements ControllerInterface
      * @param $requestData
      * @return array
      */
-    private function validateData($requestData):array
+    private function validateData($requestData): array
     {
         $err = [];
         if (false === is_array($requestData)) {
             $err[] = 'Данные о новом журнале не являются массивом';
         } else {
-            if (false === array_key_exists('title',$requestData)) {
+            if (false === array_key_exists('title', $requestData)) {
                 $err[] = 'Отсутствует информация о заголовке журнала';
             } elseif (false === is_string($requestData['title'])) {
                 $err[] = 'Заголовок журнала должен быть строкой';
@@ -97,7 +96,7 @@ class CreateRegisterMagazinesController implements ControllerInterface
                 $err[] = 'Заголовок журнала не может быть пустой строкой';
             }
 
-            if (false === array_key_exists('year',$requestData)) {
+            if (false === array_key_exists('year', $requestData)) {
                 $err[] = 'Отсутствует информация о годе издания журнала';
             } elseif (false === is_int($requestData['year'])) {
                 $err[] = 'Год издания журнала должен быть целым числом';
@@ -105,13 +104,13 @@ class CreateRegisterMagazinesController implements ControllerInterface
                 $err[] = 'Год издания журнала не может быть меньше или равен нуля';
             }
 
-            if (false === array_key_exists('author_id',$requestData)) {
+            if (false === array_key_exists('author_id', $requestData)) {
                 $err[] = 'Отсутствует информация о id автора журнала';
-            } elseif ( null !== $requestData['author_id'] && false === is_int($requestData['author_id'])) {
+            } elseif (null !== $requestData['author_id'] && false === is_int($requestData['author_id'])) {
                 $err[] = 'Id автора должно быть целым числом либо иметь значение null';
             }
 
-            if (false === array_key_exists('number',$requestData)) {
+            if (false === array_key_exists('number', $requestData)) {
                 $err[] = 'Отсутствует информация о номере журнала';
             } elseif (false === is_int($requestData['number'])) {
                 $err[] = 'Номер журнала должен быть целым числом';
@@ -122,5 +121,4 @@ class CreateRegisterMagazinesController implements ControllerInterface
 
         return $err;
     }
-
 }

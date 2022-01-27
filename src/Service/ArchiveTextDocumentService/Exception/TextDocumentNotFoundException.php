@@ -7,5 +7,4 @@ namespace EfTech\BookLibrary\Service\ArchiveTextDocumentService\Exception;
  */
 class TextDocumentNotFoundException extends RuntimeException
 {
-
 }
