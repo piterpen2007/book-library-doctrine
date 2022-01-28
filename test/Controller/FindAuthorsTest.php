@@ -1,37 +1,31 @@
 <?php
 
-namespace EfTech\BookLibraryTest\Infrastructure\Controller;
+namespace EfTech\BookLibraryTest\Controller;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
-
-use EfTech\BookLibrary\Controller\GetAuthorsCollectionController;
-use EfTech\BookLibrary\Entity\AuthorRepositoryInterface;
 use EfTech\BookLibrary\Config\AppConfig;
-use EfTech\BookLibrary\Infrastructure\DI\Container;
+use EfTech\BookLibrary\Controller\GetAuthorsCollectionController;
+use EfTech\BookLibrary\Infrastructure\DataLoader\JsonDataLoader;
 use EfTech\BookLibrary\Infrastructure\http\ServerRequest;
 use EfTech\BookLibrary\Infrastructure\Logger\Adapter\NullAdapter;
 use EfTech\BookLibrary\Infrastructure\Logger\Logger;
-use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
 use EfTech\BookLibrary\Infrastructure\Uri\Uri;
 use EfTech\BookLibrary\Repository\AuthorJsonFileRepository;
 use EfTech\BookLibrary\Service\SearchAuthorsService;
-use EfTech\BookLibraryTest\TestUtils;
-
-
-
+use JsonException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Тестирование контроллера FindAuthors
  */
-class FindAuthorsTest
+class FindAuthorsTest extends TestCase
 {
     /** Тестирование поиска авторов по фамилии
-     * @return void
-     * @throws \JsonException
+     *
+     * @throws JsonException
      */
-    public static function testSearchAuthorsBySurname(): void
+    public function testSearchAuthorsBySurname(): void
     {
-        echo "-------------------Тестирование поиска автора по фамилии-----------------------\n";
+        //Arrange
         $httpRequest = new ServerRequest(
             'GET',
             '1.1',
@@ -41,46 +35,22 @@ class FindAuthorsTest
             null
         );
         $appConfig = AppConfig::createFromArray(require __DIR__ . '/../../config/dev/config.php');
-        $diContainer = new Container(
-            [
-                LoggerInterface::class => new Logger(new NullAdapter()),
-                'pathToAuthors' => $appConfig->getPathToAuthor()
-            ],
-            [
-                GetAuthorsCollectionController::class => [
-                    'args' => [
-                        'logger' => LoggerInterface::class,
-                        'searchAuthorsService' => SearchAuthorsService::class,
-                    ]
-                ],
-                SearchAuthorsService::class => [
-                    'args' => [
-                        'logger' => \EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface::class,
-                        'authorRepository' => AuthorRepositoryInterface::class
-                    ]
-                ],
-                \EfTech\BookLibrary\Infrastructure\DataLoader\DataLoaderInterface::class => [
-                    'class' => \EfTech\BookLibrary\Infrastructure\DataLoader\JsonDataLoader::class
-                ],
-                AuthorRepositoryInterface::class => [
-                    'class' => AuthorJsonFileRepository::class,
-                    'args' => [
-                        'pathToAuthors' => 'pathToAuthors',
-                        'dataLoader' => \EfTech\BookLibrary\Infrastructure\DataLoader\DataLoaderInterface::class
-                    ]
+        $logger = new Logger(new NullAdapter());
 
-                ],
-                ]
+        $controller = new GetAuthorsCollectionController(
+            $logger,
+            new SearchAuthorsService(
+                $logger,
+                new AuthorJsonFileRepository(
+                    $appConfig->getPathToAuthor(),
+                    new JsonDataLoader()
+                )
+            )
         );
 
-        $findAuthors = $diContainer->get(GetAuthorsCollectionController::class);
-        $httpResponse = $findAuthors($httpRequest);
-        //Assert
-        if ($httpResponse->getStatusCode() === 200) {
-            echo "    OK --- код ответа\n";
-        } else {
-            echo "    FAIL - код ответа. Ожидалось: 200. Актуальное значение: {$httpResponse->getStatusCode()}\n";
-        }
+        //Act
+        $httpResponse = $controller($httpRequest);
+        $actualResult =  json_decode($httpResponse->getBody(), true, 512, JSON_THROW_ON_ERROR);
         $expected = [
             [
                 'id' => 1,
@@ -91,31 +61,8 @@ class FindAuthorsTest
             ]
         ];
 
-        $actualResult =  json_decode($httpResponse->getBody(), true, 512, JSON_THROW_ON_ERROR);
-
-        $unnecessaryElements = TestUtils::arrayDiffAssocRecursive($actualResult, $expected);
-        $missingElements =  TestUtils::arrayDiffAssocRecursive($expected, $actualResult);
-
-        $errMsg = '';
-
-        if (count($unnecessaryElements) > 0) {
-            $errMsg .= sprintf("         Есть лишние элементы %s\n", json_encode(
-                $unnecessaryElements,
-                JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE
-            ));
-        }
-        if (count($missingElements) > 0) {
-            $errMsg .= sprintf("         Есть лишние недостающие элементы %s\n", json_encode(
-                $missingElements,
-                JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE
-            ));
-        }
-
-        if ('' === $errMsg) {
-            echo "    ОК- данные ответа валидны\n";
-        } else {
-            echo "    FAIL - данные ответа валидны\n" . $errMsg;
-        }
+        //Assert
+        $this->assertEquals(200, $httpResponse->getStatusCode(), 'код http ответа не корректен');
+        $this->assertEquals($expected, $actualResult, 'Данные ответа не валидны');
     }
 }
-FindAuthorsTest::testSearchAuthorsBySurname();
