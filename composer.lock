@@ -12,11 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "git@git.effective-team.ru:rnd/educational-projects/interns/2021-flow-1/fedyancev.d.a/framework.git",
-                "reference": "91ef0befa8d6f10612c35e2aff399d16a8a70f28"
+                "reference": "15232407afd84373fe5f2dcedc0e64c9fc866872"
             },
             "require": {
                 "ext-json": "*",
-                "php": "^7.4 || ^8.0"
+                "php": "^7.4 || ^8.0",
+                "psr/container": "^1.1.2"
             },
             "require-dev": {
                 "phpunit/phpunit": "9.*",
@@ -53,7 +54,7 @@
             "support": {
                 "email": "popkin@yandex.ru"
             },
-            "time": "2022-01-28T12:00:46+00:00"
+            "time": "2022-01-31T07:42:03+00:00"
         },
         {
             "name": "psr/container",
