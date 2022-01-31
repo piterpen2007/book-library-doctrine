@@ -40,11 +40,11 @@ return [
         'controllerNs' => 'EfTech\\BookLibrary\\Controller'
     ],
     'services' => [
-        HashStr::class => [
-            'args' => [
-                'output' => OutputInterface::class
-            ]
-        ],
+//        HashStr::class => [
+//            'args' => [
+//                'output' => OutputInterface::class
+//            ]
+//        ],
         HttpAuthProvider::class => [
             'args' => [
                 'userDataStorage' => UserDataStorageInterface::class,

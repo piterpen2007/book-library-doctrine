@@ -4,7 +4,7 @@ return [
     /**
      *  Путь до файла с данными о авторе
      */
-    '$pathToAuthor' => __DIR__ . '/../../data/authors.json',
+    'pathToAuthor' => __DIR__ . '/../../data/authors.json',
     /**
      *  Путь до файла с данными о книге
      */

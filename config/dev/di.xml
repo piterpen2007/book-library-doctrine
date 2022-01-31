@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+
+<services>
+    <service id="EfTech\BookLibrary\ConsoleCommand\HashStr" public="true">
+        <argument key="$output"
+                  type="service"
+                  id="EfTech\BookLibrary\Infrastructure\Console\Output\OutputInterface"/>
+    </service>
+    <service
+            id="EfTech\BookLibrary\Infrastructure\Console\Output\OutputInterface"
+            class="EfTech\BookLibrary\Infrastructure\Console\Output\EchoOutput"
+            public="false"
+    />
+
+    <service id="EfTech\BookLibrary\Config\AppConfig" public="true">
+        <factory class="EfTech\BookLibrary\Config\AppConfig" method="createFromArray"/>
+        <argument key="$config" type="collection">
+            <argument key="pathToAuthor">%kernel.project_dir%/data/authors.json</argument>
+            <argument key="pathToBooks">%kernel.project_dir%/data/books.json</argument>
+            <argument key="pathToMagazines">%kernel.project_dir%/data/magazines.json</argument>
+            <argument key="pathToLogFile">%kernel.project_dir%/var/log/app.log</argument>
+            <argument key="pathToUsers">%kernel.project_dir%/data/users.json</argument>
+            <argument key="loginUri">/login</argument>
+            <argument key="hideErrorMsg">false</argument>
+        </argument>
+    </service>
+
+<!--    <service id="pathToMagazines">-->
+<!--        <factory service="EfTech\BookLibrary\Config\AppConfig" method="getPathToMagazines" />-->
+<!--    </service>-->
+
+</services>
+</container>
