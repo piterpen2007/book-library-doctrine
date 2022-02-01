@@ -41,7 +41,12 @@ class DiAppServiceTest extends TestCase
     public function testCreateService(string $serviceId, string $expectedServiceClass): void
     {
         //Arrange
-        $diContainerFactory = new SymfonyDiContainerInit(__DIR__ . '/../config/dev/di.xml');
+        $diContainerFactory = new SymfonyDiContainerInit(
+            __DIR__ . '/../config/dev/di.xml',
+            [
+                'kernel.project_dir' => __DIR__ . '/../'
+            ]
+        );
         $diContainer = $diContainerFactory();
 
         //Act

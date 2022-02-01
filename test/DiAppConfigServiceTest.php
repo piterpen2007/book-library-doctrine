@@ -65,7 +65,12 @@ class DiAppConfigServiceTest extends TestCase
     public function testAppConfigGetter(string $method, $expectedValue, bool $isPath): void
     {
         //Arrange
-        $diContainerFactory = new SymfonyDiContainerInit(__DIR__ . '/../config/dev/di.xml');
+        $diContainerFactory = new SymfonyDiContainerInit(
+            __DIR__ . '/../config/dev/di.xml',
+            [
+            'kernel.project_dir' => __DIR__ . '/../'
+            ]
+        );
         $diContainer = $diContainerFactory();
         $appConfig = $diContainer->get(AppConfig::class);
 
