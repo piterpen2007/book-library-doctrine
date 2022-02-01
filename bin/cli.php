@@ -6,6 +6,7 @@ use EfTech\BookLibrary\Infrastructure\Console\AppConsole;
 use EfTech\BookLibrary\Infrastructure\Console\Output\OutputInterface;
 use EfTech\BookLibrary\Infrastructure\DI\Container;
 use EfTech\BookLibrary\Infrastructure\DI\ContainerInterface;
+use EfTech\BookLibrary\Infrastructure\DI\SymfonyDiContainerInit;
 
 
 (new AppConsole(
@@ -13,7 +14,10 @@ use EfTech\BookLibrary\Infrastructure\DI\ContainerInterface;
     static function (ContainerInterface $di): OutputInterface {
         return $di->get(OutputInterface::class);
     },
-    static function (): ContainerInterface {
-        return Container::createFromArray(require __DIR__ . '/../config/dev/di.php');
-    }
+    new SymfonyDiContainerInit(
+        __DIR__ . '/../config/dev/di.xml',
+        [
+                'kernel.project_dir' => __DIR__ . '/../'
+            ]
+    )
 ))->dispatch();

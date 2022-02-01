@@ -10,10 +10,11 @@
                   type="service"
                   id="EfTech\BookLibrary\Infrastructure\Console\Output\OutputInterface"/>
     </service>
+
     <service
             id="EfTech\BookLibrary\Infrastructure\Console\Output\OutputInterface"
             class="EfTech\BookLibrary\Infrastructure\Console\Output\EchoOutput"
-            public="false"
+            public="true"
     />
 
     <service id="EfTech\BookLibrary\Config\AppConfig" public="true">
@@ -29,9 +30,206 @@
         </argument>
     </service>
 
-<!--    <service id="pathToMagazines">-->
-<!--        <factory service="EfTech\BookLibrary\Config\AppConfig" method="getPathToMagazines" />-->
-<!--    </service>-->
+    <service id="EfTech\BookLibrary\Controller\TextDocumentAdministrationController" public="true">
+        <argument key="$logger" type="service" id="EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface"/>
+        <argument key="$searchTextDocumentService" type="service" id="EfTech\BookLibrary\Service\SearchTextDocumentService"/>
+        <argument key="$viewTemplate" type="service" id="EfTech\BookLibrary\Infrastructure\ViewTemplate\ViewTemplateInterface"/>
+        <argument key="$authorsService" type="service" id="EfTech\BookLibrary\Service\SearchAuthorsService"/>
+        <argument key="$arrivalNewTextDocumentService" type="service" id="EfTech\BookLibrary\Service\ArrivalNewTextDocumentService"/>
+        <argument key="$httpAuthProvider" type="service" id="EfTech\BookLibrary\Infrastructure\Auth\HttpAuthProvider"/>
+    </service>
+
+    <service
+            id="EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface"
+            class="EfTech\BookLibrary\Infrastructure\Logger\Logger"
+             public="true"
+    >
+        <argument key="$adapter" type="service" id="EfTech\BookLibrary\Infrastructure\Logger\AdapterInterface"/>
+    </service>
+
+    <service id="EfTech\BookLibrary\Infrastructure\Logger\AdapterInterface"
+             class="\EfTech\BookLibrary\Infrastructure\Logger\Adapter\FileAdapter"
+             public="false">
+        <argument key="$pathToFile" type="service">
+            <service>
+                <factory service="EfTech\BookLibrary\Config\AppConfig" method="getPathToLogFile"/>
+            </service>
+        </argument>
+    </service>
+    <service id="EfTech\BookLibrary\Service\SearchTextDocumentService"
+             public="false">
+        <argument key="$logger"
+                  type="service"
+                  id="EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface"/>
+        <argument key="$textDocumentRepository" type="service" id="EfTech\BookLibrary\Entity\TextDocumentRepositoryInterface"/>
+    </service>
+    <service id="EfTech\BookLibrary\Entity\TextDocumentRepositoryInterface"
+             class="EfTech\BookLibrary\Repository\TextDocumentJsonFileRepository"
+             public="false"
+    >
+        <argument key="$pathToBooks" type="service">
+            <service>
+                <factory service="EfTech\BookLibrary\Config\AppConfig" method="getPathToBooks"/>
+            </service>
+        </argument>
+        <argument key="$pathToMagazines" type="service">
+            <service>
+                <factory service="EfTech\BookLibrary\Config\AppConfig" method="getPathToMagazines"/>
+            </service>
+        </argument>
+        <argument key="$pathToAuthors" type="service">
+            <service>
+                <factory service="EfTech\BookLibrary\Config\AppConfig" method="getPathToAuthor"/>
+            </service>
+        </argument>
+        <argument key="$dataLoader" type="service" id="EfTech\BookLibrary\Infrastructure\DataLoader\DataLoaderInterface"/>
+    </service>
+    <service id="EfTech\BookLibrary\Infrastructure\DataLoader\DataLoaderInterface"
+             class="EfTech\BookLibrary\Infrastructure\DataLoader\JsonDataLoader"
+             public="false"
+    />
+    <service id="EfTech\BookLibrary\Infrastructure\ViewTemplate\ViewTemplateInterface"
+             class="EfTech\BookLibrary\Infrastructure\ViewTemplate\PhtmlTemplate"
+             public="false"
+    />
+    <service id="EfTech\BookLibrary\Service\SearchAuthorsService">
+        <argument key="$logger" type="service" id="EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface"/>
+        <argument key="$authorRepository" type="service" id="EfTech\BookLibrary\Entity\AuthorRepositoryInterface"/>
+</service>
+    <service id="EfTech\BookLibrary\Entity\AuthorRepositoryInterface"
+             class="EfTech\BookLibrary\Repository\AuthorJsonFileRepository"
+             public="false"
+    >
+        <argument key="$pathToAuthors" type="service">
+            <service>
+                <factory service="EfTech\BookLibrary\Config\AppConfig" method="getPathToAuthor"/>
+            </service>
+        </argument>
+        <argument key="$dataLoader" type="service" id="EfTech\BookLibrary\Infrastructure\DataLoader\DataLoaderInterface"/>
+
+    </service>
+
+    <service id="EfTech\BookLibrary\Service\ArrivalNewTextDocumentService"
+             public="false"
+    >
+        <argument key="$textDocumentRepository" type="service" id="EfTech\BookLibrary\Entity\TextDocumentRepositoryInterface"/>
+        <argument key="$authorRepository" type="service" id="EfTech\BookLibrary\Entity\AuthorRepositoryInterface"/>
+
+    </service>
+    <service id="EfTech\BookLibrary\Infrastructure\Auth\HttpAuthProvider"
+             public="false"
+    >
+        <argument key="$userDataStorage" type="service" id="EfTech\BookLibrary\Infrastructure\Auth\UserDataStorageInterface"/>
+        <argument key="$session" type="service" id="EfTech\BookLibrary\Infrastructure\Session\SessionInterface"/>
+        <argument key="$loginUri" type="service">
+                <service>
+                    <factory class="EfTech\BookLibrary\Infrastructure\Uri\Uri" method="createFromString"/>
+                    <argument key="$uri" type="service">
+                        <service>
+                            <factory service="EfTech\BookLibrary\Config\AppConfig" method="getLoginUri"/>
+                        </service>
+                    </argument>
+                </service>
+        </argument>
+    </service>
+    <service id="EfTech\BookLibrary\Infrastructure\Auth\UserDataStorageInterface"
+             class="EfTech\BookLibrary\Repository\UserJsonFileRepository"
+             public="false"
+    >
+        <argument key="$pathToUsers" type="service">
+            <service>
+                <factory service="EfTech\BookLibrary\Config\AppConfig" method="getPathToUsers" />
+            </service>
+        </argument>
+        <argument key="$dataLoader" type="service" id="EfTech\BookLibrary\Infrastructure\DataLoader\DataLoaderInterface"/>
+    </service>
+
+    <service id="EfTech\BookLibrary\Infrastructure\Session\SessionInterface" public="false">
+        <factory class="EfTech\BookLibrary\Infrastructure\Session\SessionNative" method="create"/>
+    </service>
+    <service id="EfTech\BookLibrary\Controller\LoginController"
+             public="true"
+    >
+        <argument key="$template" type="service" id="EfTech\BookLibrary\Infrastructure\ViewTemplate\ViewTemplateInterface"/>
+        <argument key="$authProvider" type="service" id="EfTech\BookLibrary\Infrastructure\Auth\HttpAuthProvider"/>
+    </service>
+    <service id="EfTech\BookLibrary\Controller\CreateRegisterMagazinesController" public="true">
+        <argument key="$arrivalNewTextDocumentService" type="service" id="EfTech\BookLibrary\Service\ArrivalNewTextDocumentService"/>
+    </service>
+<service id="EfTech\BookLibrary\Controller\CreateRegisterBooksController" public="true">
+    <argument key="$arrivalNewTextDocumentService" type="service" id="EfTech\BookLibrary\Service\ArrivalNewTextDocumentService"/>
+</service>
+    <service id="EfTech\BookLibrary\Controller\UpdateMoveToArchiveBooksController" public="true">
+        <argument key="$archivingTextDocumentService" type="service" id="EfTech\BookLibrary\Service\ArchivingTextDocumentService"/>
+    </service>
+    <service id="EfTech\BookLibrary\Service\ArchivingTextDocumentService" public="false">
+        <argument key="$textDocumentRepository" type="service" id="EfTech\BookLibrary\Entity\TextDocumentRepositoryInterface"/>
+    </service>
+    <service id="EfTech\BookLibrary\Controller\GetAuthorsCollectionController" public="true">
+        <argument key="$logger" type="service" id="EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface"/>
+        <argument key="$searchAuthorsService" type="service" id="EfTech\BookLibrary\Service\SearchAuthorsService"/>
+    </service>
+    <service id="EfTech\BookLibrary\Controller\GetAuthorsController" public="true">
+        <argument key="$logger" type="service" id="EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface"/>
+        <argument key="$searchAuthorsService" type="service" id="EfTech\BookLibrary\Service\SearchAuthorsService"/>
+    </service>
+    <service id="EfTech\BookLibrary\Controller\GetBooksCollectionController" public="true">
+        <argument key="$logger" type="service" id="EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface"/>
+        <argument key="$searchTextDocumentService" type="service" id="EfTech\BookLibrary\Service\SearchTextDocumentService"/>
+    </service>
+    <service id="EfTech\BookLibrary\Controller\GetBooksController" public="true">
+        <argument key="$logger" type="service" id="EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface"/>
+        <argument key="$searchTextDocumentService" type="service" id="EfTech\BookLibrary\Service\SearchTextDocumentService"/>
+    </service>
+
+    <service id="EfTech\BookLibrary\ConsoleCommand\FindAuthors" public="true">
+        <argument key="$output" type="service" id="EfTech\BookLibrary\Infrastructure\Console\Output\OutputInterface"/>
+        <argument key="$searchAuthorsService" type="service" id="EfTech\BookLibrary\Service\SearchAuthorsService"/>
+    </service>
+
+    <service id="EfTech\BookLibrary\ConsoleCommand\FindBooks" public="true">
+        <argument key="$output" type="service" id="EfTech\BookLibrary\Infrastructure\Console\Output\OutputInterface"/>
+        <argument key="$searchTextDocumentService" type="service" id="EfTech\BookLibrary\Service\SearchTextDocumentService"/>
+    </service>
+    <service id="EfTech\BookLibrary\Infrastructure\View\RenderInterface"
+             class="EfTech\BookLibrary\Infrastructure\View\DefaultRender"
+             public="true"
+    />
+
+    <service id="EfTech\BookLibrary\Infrastructure\Router\ControllerFactory" public="false">
+        <argument key="$diContainer" type="service" id="service_container"/>
+    </service>
+
+    <service id="EfTech\BookLibrary\Infrastructure\Router\DefaultRouter" public="true">
+        <argument key="$controllerFactory" type="service" id="EfTech\BookLibrary\Infrastructure\Router\ControllerFactory"/>
+        <argument key="$handlers" type="collection">
+            <argument key="/text-document/administration">EfTech\BookLibrary\Controller\TextDocumentAdministrationController</argument>
+            <argument key="/login">EfTech\BookLibrary\Controller\LoginController</argument>
+        </argument>
+    </service>
+
+    <service id="EfTech\BookLibrary\Infrastructure\Router\RegExpRouter" public="true">
+        <argument key="$controllerFactory" type="service" id="EfTech\BookLibrary\Infrastructure\Router\ControllerFactory"/>
+        <argument key="$handlers" type="collection"/>
+    </service>
+
+    <service id="EfTech\BookLibrary\Infrastructure\Router\UniversalRouter" public="true">
+        <argument key="$controllerFactory" type="service" id="EfTech\BookLibrary\Infrastructure\Router\ControllerFactory"/>
+        <argument key="$controllerNs">EfTech\BookLibrary\Controller</argument>
+    </service>
+    <service id="EfTech\BookLibrary\Infrastructure\Router\RouterInterface"
+             class="EfTech\BookLibrary\Infrastructure\Router\ChainRouters"
+             public="true"
+    >
+        <argument type="service" id="EfTech\BookLibrary\Infrastructure\Router\DefaultRouter"/>
+        <argument type="service" id="EfTech\BookLibrary\Infrastructure\Router\RegExpRouter"/>
+        <argument type="service" id="EfTech\BookLibrary\Infrastructure\Router\UniversalRouter"/>
+    </service>
+    <service id="\EfTech\BookLibrary\Infrastructure\View\RenderInterface"
+             public="true"
+             class="\EfTech\BookLibrary\Infrastructure\View\DefaultRender"
+    >
+    </service>
 
 </services>
 </container>
