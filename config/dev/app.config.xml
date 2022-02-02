@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+    <parameters>
+        <parameter key="app.configs" type="collection">
+            <parameter key="pathToAuthor">%kernel.project_dir%/data/authors.json</parameter>
+            <parameter key="pathToBooks">%kernel.project_dir%/data/books.json</parameter>
+            <parameter key="pathToMagazines">%kernel.project_dir%/data/magazines.json</parameter>
+            <parameter key="pathToLogFile">%kernel.project_dir%/var/log/app.log</parameter>
+            <parameter key="pathToUsers">%kernel.project_dir%/data/users.json</parameter>
+            <parameter key="loginUri">/login</parameter>
+            <parameter key="hideErrorMsg">false</parameter>
+        </parameter>
+    </parameters>
+</container>
