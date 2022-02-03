@@ -14,7 +14,11 @@
     </parameters>
 
 <services>
-    <defaults autowire="true" public="false"/>
+    <defaults autowire="true" public="false">
+        <bind key="string $pathToBooks"
+              type="expression">service(EfTech\BookLibrary\Config\AppConfig).getPathToBooks</bind>
+    </defaults>
+
 
     <prototype namespace="EfTech\BookLibrary\" resource="./../../src"/>
     <prototype namespace="EfTech\BookLibrary\Infrastructure\" resource="./../../vendor/eff-tech/framework/src"/>
@@ -78,11 +82,11 @@
              class="EfTech\BookLibrary\Repository\TextDocumentJsonFileRepository"
              public="false"
     >
-        <argument key="$pathToBooks" type="service">
-            <service>
-                <factory service="EfTech\BookLibrary\Config\AppConfig" method="getPathToBooks"/>
-            </service>
-        </argument>
+<!--        <argument key="$pathToBooks" type="service">-->
+<!--            <service>-->
+<!--                <factory service="EfTech\BookLibrary\Config\AppConfig" method="getPathToBooks"/>-->
+<!--            </service>-->
+<!--        </argument>-->
         <argument key="$pathToMagazines" type="service">
             <service>
                 <factory service="EfTech\BookLibrary\Config\AppConfig" method="getPathToMagazines"/>
