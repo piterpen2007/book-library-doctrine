@@ -12,7 +12,7 @@
             "source": {
                 "type": "git",
                 "url": "git@git.effective-team.ru:rnd/educational-projects/interns/2021-flow-1/fedyancev.d.a/framework.git",
-                "reference": "bdbe5e9833492fee7977250ada4f2a2ef2932276"
+                "reference": "2a95feef1f6016d0c128a08bc0d6e59cffad00dd"
             },
             "require": {
                 "ext-json": "*",
@@ -60,7 +60,7 @@
             "support": {
                 "email": "popkin@yandex.ru"
             },
-            "time": "2022-02-03T08:38:23+00:00"
+            "time": "2022-02-03T08:39:33+00:00"
         },
         {
             "name": "psr/cache",
