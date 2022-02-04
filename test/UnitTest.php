@@ -3,40 +3,66 @@
 namespace EfTech\BookLibraryTest;
 
 use EfTech\BookLibrary\Config\AppConfig;
-use EfTech\BookLibrary\Infrastructure\DI\Container;
 use EfTech\BookLibrary\Infrastructure\DI\ContainerInterface;
+use EfTech\BookLibrary\Infrastructure\DI\SymfonyDiContainerInit;
 use EfTech\BookLibrary\Infrastructure\http\ServerRequest;
 use EfTech\BookLibrary\Infrastructure\HttpApplication\App;
+use EfTech\BookLibrary\Infrastructure\Logger\Adapter\NullAdapter;
+use EfTech\BookLibrary\Infrastructure\Logger\AdapterInterface;
 use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
 use EfTech\BookLibrary\Infrastructure\Router\RouterInterface;
 use EfTech\BookLibrary\Infrastructure\Uri\Uri;
 use EfTech\BookLibrary\Infrastructure\View\NullRender;
 use EfTech\BookLibrary\Infrastructure\View\RenderInterface;
+use Exception;
+use JsonException;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
  *  Тестирование приложения
  */
 class UnitTest extends TestCase
 {
+    public static function bugFactory(array $config): string
+    {
+        return 'Ops!';
+    }
+    /**
+     * Создаёт DI контайнер симфони
+     * @throws Exception
+     */
+    private static function createDiContainer(): ContainerBuilder
+    {
+        $containerBuilder = SymfonyDiContainerInit::createContainerBuilder(
+            __DIR__ . '/../config/dev/di.xml',
+            [
+                'kernel.project_dir' => __DIR__ . '/../'
+            ]
+        );
+        $containerBuilder->getDefinition(AdapterInterface::class)
+            ->setClass(NullAdapter::class)
+            ->addArgument([]);
+        $containerBuilder->getDefinition(RenderInterface::class)
+            ->setClass(NullRender::class)
+            ->addArgument([]);
+        return $containerBuilder;
+    }
+
     /** Поставщик данных для тестирования приложения
      * @return array
+     * @throws Exception
      */
     public static function dataProvider(): array
     {
-        $diConfig = require __DIR__ . '/../config/dev/di.php';
-        $diConfig['services'][\EfTech\BookLibrary\Infrastructure\Logger\AdapterInterface::class] = [
-            'class' => \EfTech\BookLibrary\Infrastructure\Logger\Adapter\NullAdapter::class
-        ];
-        $diConfig['services'][RenderInterface::class] = [
-            'class' => NullRender::class
-        ];
-
         return [
             'Тестирование поиска книг по названию' => [
                 'in' => [
                     'uri' => '/books?title=Мечтают ли андроиды об электроовцах?',
-                    'diConfig' => $diConfig
+                    'diContainer' => (static function (ContainerBuilder $c): ContainerBuilder {
+                            $c->compile();
+                            return $c;
+                    })(self::createDiContainer())
 
                 ],
                 'out' => [
@@ -62,12 +88,14 @@ class UnitTest extends TestCase
             'Тестирование ситуации когда данные о книгах не корректны. Нет поля year' => [
                 'in' => [
                     'uri' => '/books?title=Мечтают ли андроиды об электроовцах?',
-                    'diConfig' => (static function ($diConfig) {
-                        $config = include __DIR__ . '/../config/dev/config.php';
-                        $config['pathToBooks'] = __DIR__ . '/data/broken.books.json';
-                        $diConfig['instances']['appConfig'] = $config;
-                        return $diConfig;
-                    })($diConfig)
+                    'diContainer' => (static function (ContainerBuilder $c): ContainerBuilder {
+                        $appConfigParams = $c->getParameter('app.configs');
+                        $appConfigParams['pathToBooks'] = __DIR__ . '/data/broken.books.json';
+                        $c->setParameter('app.configs', $appConfigParams);
+                        $c->compile();
+                        return $c;
+                    })(self::createDiContainer())
+
                 ],
                 'out' => [
                     'httpCode' => 503,
@@ -80,12 +108,11 @@ class UnitTest extends TestCase
             'Тестирование ситуации с некорректным  данными конфига приложения' => [
                 'in' => [
                     'uri' => '/books?title=Мечтают ли андроиды об электроовцах?',
-                    'diConfig' => (static function ($diConfig) {
-                        $diConfig['factories'][AppConfig::class] = static function () {
-                            return 'Ops!';
-                        };
-                        return $diConfig;
-                    })($diConfig)
+                    'diContainer' => (static function (ContainerBuilder $c): ContainerBuilder {
+                        $c->getDefinition(AppConfig::class)->setFactory([UnitTest::class, 'bugFactory']);
+                        $c->compile();
+                        return $c;
+                    })(self::createDiContainer())
 
                 ],
                 'out' => [
@@ -99,12 +126,13 @@ class UnitTest extends TestCase
             'Тестирование ситуации с некорректным путем до файла с книгами' => [
                 'in' => [
                     'uri' => '/books?title=Мечтают ли андроиды об электроовцах?',
-                    'diConfig' => (static function ($diConfig) {
-                        $config = include __DIR__ . '/../config/dev/config.php';
-                        $config['pathToBooks'] = __DIR__ . '/data/unknown.books.json';
-                        $diConfig['instances']['appConfig'] = $config;
-                        return $diConfig;
-                    })($diConfig)
+                    'diContainer' => (static function (ContainerBuilder $c): ContainerBuilder {
+                        $appConfigParams = $c->getParameter('app.configs');
+                        $appConfigParams['pathToBooks'] = __DIR__ . '/data/unknown.books.json';
+                        $c->setParameter('app.configs', $appConfigParams);
+                        $c->compile();
+                        return $c;
+                    })(self::createDiContainer())
                 ],
                 'out' => [
                     'httpCode' => 500,
@@ -117,12 +145,13 @@ class UnitTest extends TestCase
             'Тестирование ситуации когда данные о журналах некорректны. Нет поля id' => [
                 'in' => [
                     'uri' => '/books?title=National Geographic Magazine',
-                    'diConfig' => (static function ($diConfig) {
-                        $config = include __DIR__ . '/../config/dev/config.php';
-                        $config['pathToMagazines'] = __DIR__ . '/data/broken.magazines.json';
-                        $diConfig['instances']['appConfig'] = $config;
-                        return $diConfig;
-                    })($diConfig)
+                    'diContainer' => (static function (ContainerBuilder $c): ContainerBuilder {
+                        $appConfigParams = $c->getParameter('app.configs');
+                        $appConfigParams['pathToMagazines'] = __DIR__ . '/data/broken.magazines.json';
+                        $c->setParameter('app.configs', $appConfigParams);
+                        $c->compile();
+                        return $c;
+                    })(self::createDiContainer())
                 ],
                 'out' => [
                     'httpCode' => 503,
@@ -135,12 +164,13 @@ class UnitTest extends TestCase
             'Тестирование ситуации когда данные в авторах некорректны. Нет поля birthday' => [
                 'in' => [
                     'uri' => '/books?title=Мечтают ли андроиды об электроовцах?',
-                    'diConfig' => (static function ($diConfig) {
-                        $config = include __DIR__ . '/../config/dev/config.php';
-                        $config['pathToAuthor'] = __DIR__ . '/data/broken.authors.json';
-                        $diConfig['instances']['appConfig'] = $config;
-                        return $diConfig;
-                    })($diConfig)
+                    'diContainer' => (static function (ContainerBuilder $c): ContainerBuilder {
+                        $appConfigParams = $c->getParameter('app.configs');
+                        $appConfigParams['pathToAuthor'] = __DIR__ . '/data/broken.authors.json';
+                        $c->setParameter('app.configs', $appConfigParams);
+                        $c->compile();
+                        return $c;
+                    })(self::createDiContainer())
                 ],
                 'out' => [
                     'httpCode' => 503,
@@ -153,12 +183,13 @@ class UnitTest extends TestCase
             'Тестирование ситуации с некорректным путем до файла о авторе' => [
                 'in' => [
                     'uri' => '/books?title=Мечтают ли андроиды об электроовцах?',
-                    'diConfig' => (static function ($diConfig) {
-                        $config = include __DIR__ . '/../config/dev/config.php';
-                        $config['pathToAuthor'] = __DIR__ . '/data/unknown.authors.json';
-                        $diConfig['instances']['appConfig'] = $config;
-                        return $diConfig;
-                    })($diConfig)
+                    'diContainer' => (static function (ContainerBuilder $c): ContainerBuilder {
+                        $appConfigParams = $c->getParameter('app.configs');
+                        $appConfigParams['pathToAuthor'] = __DIR__ . '/data/unknown.authors.json';
+                        $c->setParameter('app.configs', $appConfigParams);
+                        $c->compile();
+                        return $c;
+                    })(self::createDiContainer())
                 ],
                 'out' => [
                     'httpCode' => 500,
@@ -171,13 +202,13 @@ class UnitTest extends TestCase
             'Тестирование ситуации с некорректным путем до файла до журналов' => [
                 'in' => [
                     'uri' =>  '/books?title=Мечтают ли андроиды об электроовцах?',
-                    'diConfig' => (static function ($diConfig) {
-                        $config = include __DIR__ . '/../config/dev/config.php';
-                        $config['pathToMagazines'] = __DIR__ . '/data/unknown.magazines.json';
-                        $diConfig['instances']['appConfig'] = $config;
-                        return $diConfig;
-                    })($diConfig)
-
+                    'diContainer' => (static function (ContainerBuilder $c): ContainerBuilder {
+                        $appConfigParams = $c->getParameter('app.configs');
+                        $appConfigParams['pathToMagazines'] = __DIR__ . '/data/unknown.magazines.json';
+                        $c->setParameter('app.configs', $appConfigParams);
+                        $c->compile();
+                        return $c;
+                    })(self::createDiContainer())
                 ],
                 'out' => [
                     'httpCode' => 500,
@@ -194,7 +225,7 @@ class UnitTest extends TestCase
      * @param array $in - входные данные
      * @param array $out
      * @dataProvider  dataProvider
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function testApp(array $in, array $out): void
     {
@@ -207,7 +238,7 @@ class UnitTest extends TestCase
             null
         );
         //Arrange и Act
-        $diConfig = $in['diConfig'];
+        $diContainer = $in['diContainer'];
         $httpResponse = (new App(
             static function (ContainerInterface $di): RouterInterface {
                 return $di->get(RouterInterface::class);
@@ -221,8 +252,8 @@ class UnitTest extends TestCase
             static function (ContainerInterface $di): RenderInterface {
                 return $di->get(RenderInterface::class);
             },
-            static function () use ($diConfig): ContainerInterface {
-                return Container::createFromArray($diConfig);
+            static function () use ($diContainer): ContainerInterface {
+                return $diContainer;
             }
         ))->dispath($httpRequest);
         // Assert

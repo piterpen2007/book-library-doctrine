@@ -12,6 +12,10 @@
          failOnRisky="true"
          failOnWarning="true"
          verbose="true">
+
+    <php>
+        <env name="ENV_TYPE" value="DEV"/>
+    </php>
     <testsuites>
         <testsuite name="default">
             <directory>test</directory>

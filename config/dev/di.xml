@@ -84,11 +84,11 @@
     </service>
     <service id="EfTech\BookLibrary\Infrastructure\Logger\AdapterInterface"
              class="EfTech\BookLibrary\Infrastructure\Logger\Adapter\FileAdapter">
-        <argument key="$pathToFile" type="service">
-            <service>
-                <factory service="EfTech\BookLibrary\Config\AppConfig" method="getPathToLogFile"/>
-            </service>
-        </argument>
+<!--        <argument key="$pathToFile" type="service">-->
+<!--            <service>-->
+<!--                <factory service="EfTech\BookLibrary\Config\AppConfig" method="getPathToLogFile"/>-->
+<!--            </service>-->
+<!--        </argument>-->
     </service>
 <!--    <service id="EfTech\BookLibrary\Service\SearchTextDocumentService"-->
 <!--             public="false">-->
