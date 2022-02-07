@@ -4,15 +4,15 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a95c4c39baca2666e76c875f4d962b16",
+    "content-hash": "032ea00795d3bc44974d5d35ff1017ef",
     "packages": [
         {
             "name": "eff-tech/framework",
-            "version": "dev-lesson_04-02-2022",
+            "version": "dev-lesson_07-02-2022",
             "source": {
                 "type": "git",
                 "url": "git@git.effective-team.ru:rnd/educational-projects/interns/2021-flow-1/fedyancev.d.a/framework.git",
-                "reference": "2a95feef1f6016d0c128a08bc0d6e59cffad00dd"
+                "reference": "13f611d05e5c4b6cdd686a508185813a99d9e3ae"
             },
             "require": {
                 "ext-json": "*",
@@ -60,7 +60,7 @@
             "support": {
                 "email": "popkin@yandex.ru"
             },
-            "time": "2022-02-03T08:39:33+00:00"
+            "time": "2022-02-04T12:40:17+00:00"
         },
         {
             "name": "psr/cache",
@@ -935,12 +935,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Symfony\\Polyfill\\Php80\\": ""
-                },
                 "files": [
                     "bootstrap.php"
                 ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Php80\\": ""
+                },
                 "classmap": [
                     "Resources/stubs"
                 ]
@@ -1018,12 +1018,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Symfony\\Polyfill\\Php81\\": ""
-                },
                 "files": [
                     "bootstrap.php"
                 ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Php81\\": ""
+                },
                 "classmap": [
                     "Resources/stubs"
                 ]
