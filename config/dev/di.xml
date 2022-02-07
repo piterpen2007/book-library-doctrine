@@ -37,6 +37,11 @@
             'EfTech\\BookLibrary\\Config\\AppConfig'
             ).getPathToUsers()
         </bind>
+        <bind key="string $pathToFile"
+              type="expression">service(
+            'EfTech\\ContactList\\Config\\AppConfig'
+            ).getPathToLogFile()
+        </bind>
         <bind key="string $controllerNs">%controllerNs%</bind>
     </defaults>
 
@@ -66,14 +71,6 @@
         <argument key="$config">%app.configs%</argument>
     </service>
 
-<!--    <service id="EfTech\BookLibrary\Controller\TextDocumentAdministrationController">-->
-<!--        <argument key="$logger" type="service" id="EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface"/>-->
-<!--        <argument key="$searchTextDocumentService" type="service" id="EfTech\BookLibrary\Service\SearchTextDocumentService"/>-->
-<!--        <argument key="$viewTemplate" type="service" id="EfTech\BookLibrary\Infrastructure\ViewTemplate\ViewTemplateInterface"/>-->
-<!--        <argument key="$authorsService" type="service" id="EfTech\BookLibrary\Service\SearchAuthorsService"/>-->
-<!--        <argument key="$arrivalNewTextDocumentService" type="service" id="EfTech\BookLibrary\Service\ArrivalNewTextDocumentService"/>-->
-<!--        <argument key="$httpAuthProvider" type="service" id="EfTech\BookLibrary\Infrastructure\Auth\HttpAuthProvider"/>-->
-<!--    </service>-->
 
     <service
             id="EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface"
