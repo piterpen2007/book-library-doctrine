@@ -26,11 +26,15 @@ $httpResponse = (new App(
     static function (ContainerInterface $di): RenderInterface {
         return $di->get(RenderInterface::class);
     },
+
     new SymfonyDiContainerInit(
-        __DIR__ . '/../config/dev/di.xml',
-        [
-            'kernel.project_dir' => __DIR__ . '/../'
-        ],
+        new SymfonyDiContainerInit\ContainerParams(
+            __DIR__ . '/../config/dev/di.xml',
+            [
+                'kernel.project_dir' => __DIR__ . '/../'
+            ],
+            \EfTech\BookLibrary\Config\ContainerExtensions::httpAppContainerExtension()
+        ),
         new SymfonyDiContainerInit\CacheParams(
             'DEV' !== getenv('ENV_TYPE'),
             __DIR__ . '/../var/cache/di-symfony/EfTechBookLibraryCachedContainer.php'

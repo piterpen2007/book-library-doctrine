@@ -15,9 +15,16 @@ use EfTech\BookLibrary\Infrastructure\DI\SymfonyDiContainerInit;
         return $di->get(OutputInterface::class);
     },
     new SymfonyDiContainerInit(
-        __DIR__ . '/../config/dev/di.xml',
-        [
+        new SymfonyDiContainerInit\ContainerParams(
+            __DIR__ . '/../config/dev/di.xml',
+            [
                 'kernel.project_dir' => __DIR__ . '/../'
-            ]
+            ],
+            \EfTech\BookLibrary\Config\ContainerExtensions::consoleContainerExtension()
+        ),
+        new SymfonyDiContainerInit\CacheParams(
+            'DEV' !== getenv('ENV_TYPE'),
+            __DIR__ . '/../var/cache/di-symfony/EfTechBookLibraryCachedContainer.php'
+        )
     )
 ))->dispatch();

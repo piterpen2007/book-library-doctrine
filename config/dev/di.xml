@@ -32,7 +32,7 @@
     <prototype namespace="EfTech\BookLibrary\" resource="./../../src"/>
     <prototype namespace="EfTech\BookLibrary\Infrastructure\"
                resource="./../../vendor/eff-tech/framework/src"
-               exclude="./../../vendor/eff-tech/framework/src/Router"/>
+               exclude="./../../vendor/eff-tech/framework/src/{Router,Logger}"/>
 
     <instanceof id="EfTech\BookLibrary\Infrastructure\Controller\ControllerInterface" public="true"/>
     <instanceof id="EfTech\BookLibrary\Infrastructure\Console\CommandInterface" public="true"/>
@@ -49,17 +49,6 @@
     </service>
 
 
-    <service
-            id="EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface"
-            class="EfTech\BookLibrary\Infrastructure\Logger\Logger"
-             public="true"
-    >
-
-    </service>
-    <service id="EfTech\BookLibrary\Infrastructure\Logger\AdapterInterface"
-             class="EfTech\BookLibrary\Infrastructure\Logger\Adapter\FileAdapter">
-
-    </service>
 
     <service id="EfTech\BookLibrary\Entity\TextDocumentRepositoryInterface"
              class="EfTech\BookLibrary\Repository\TextDocumentJsonFileRepository">

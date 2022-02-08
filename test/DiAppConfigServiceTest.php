@@ -3,6 +3,7 @@
 namespace EfTech\BookLibraryTest;
 
 use EfTech\BookLibrary\Config\AppConfig;
+use EfTech\BookLibrary\Config\ContainerExtensions;
 use EfTech\BookLibrary\Infrastructure\DI\SymfonyDiContainerInit;
 use Exception;
 use PHPUnit\Framework\TestCase;
@@ -66,10 +67,13 @@ class DiAppConfigServiceTest extends TestCase
     {
         //Arrange
         $diContainerFactory = new SymfonyDiContainerInit(
-            __DIR__ . '/../config/dev/di.xml',
-            [
-            'kernel.project_dir' => __DIR__ . '/../'
-            ]
+            new SymfonyDiContainerInit\ContainerParams(
+                __DIR__ . '/../config/dev/di.xml',
+                [
+                    'kernel.project_dir' => __DIR__ . '/../'
+                ],
+                ContainerExtensions::httpAppContainerExtension()
+            )
         );
         $diContainer = $diContainerFactory();
         $appConfig = $diContainer->get(AppConfig::class);
