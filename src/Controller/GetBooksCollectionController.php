@@ -2,18 +2,15 @@
 
 namespace EfTech\BookLibrary\Controller;
 
-use EfTech\BookLibrary\Entity\AbstractTextDocument;
 use EfTech\BookLibrary\Infrastructure\Controller\ControllerInterface;
-use EfTech\BookLibrary\Infrastructure\http\HttpResponse;
-use EfTech\BookLibrary\Infrastructure\http\ServerRequest;
 use EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory;
 use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
 use EfTech\BookLibrary\Infrastructure\Validator\Assert;
 use EfTech\BookLibrary\Service\SearchTextDocumentService;
 use EfTech\BookLibrary\Service\SearchTextDocumentService\SearchTextDocumentServiceCriteria;
 use EfTech\BookLibrary\Service\SearchTextDocumentService\TextDocumentDto;
-use Exception;
-use JsonException;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Контроллер поиска книг
@@ -46,10 +43,10 @@ class GetBooksCollectionController implements ControllerInterface
 
 
     /**  Валдирует параматры запроса
-     * @param ServerRequest $request
+     * @param ServerRequestInterface $request
      * @return string|null
      */
-    private function validateQueryParams(ServerRequest $request): ?string
+    private function validateQueryParams(ServerRequestInterface $request): ?string
     {
         $paramTypeValidation = [
             'author_surname' => "incorrect author surname",
@@ -62,12 +59,10 @@ class GetBooksCollectionController implements ControllerInterface
 
 
     /** Реализация поиска книг по критериям
-     * @param ServerRequest $request - серверный объект запроса
-     * @return HttpResponse - объект http ответа
-     * @throws JsonException
-     * @throws Exception
+     * @param ServerRequestInterface $request - серверный объект запроса
+     * @return ResponseInterface - объект http ответа
      */
-    public function __invoke(ServerRequest $request): HttpResponse
+    public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
         $this->logger->info("Ветка books");
         $resultOfParamValidation = $this->validateQueryParams($request);
@@ -94,7 +89,7 @@ class GetBooksCollectionController implements ControllerInterface
 
     /** Подготавливает данные для ответа
      * @param array $foundTextDocuments
-     * @return array|AbstractTextDocument
+     * @return array
      */
     protected function buildResult(array $foundTextDocuments)
     {

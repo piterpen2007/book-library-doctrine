@@ -3,12 +3,12 @@
 namespace EfTech\BookLibrary\Controller;
 
 use EfTech\BookLibrary\Infrastructure\Controller\ControllerInterface;
-use EfTech\BookLibrary\Infrastructure\http\httpResponse;
-use EfTech\BookLibrary\Infrastructure\http\ServerRequest;
 use EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory;
 use EfTech\BookLibrary\Service\ArrivalNewTextDocumentService;
 use EfTech\BookLibrary\Service\ArrivalNewTextDocumentService\NewMagazineDto;
 use EfTech\BookLibrary\Service\ArrivalNewTextDocumentService\ResultRegisteringTextDocumentDto;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  *  Контроллер реализующий логику обработки запроса добавления жрунала
@@ -26,7 +26,7 @@ class CreateRegisterMagazinesController implements ControllerInterface
     }
 
 
-    public function __invoke(ServerRequest $request): httpResponse
+    public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
         try {
             $requestData = json_decode($request->getBody(), true, 512, JSON_THROW_ON_ERROR);

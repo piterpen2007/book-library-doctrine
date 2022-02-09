@@ -24,7 +24,8 @@
     "ext-json": "*",
     "psr/container": "^1.1.2",
     "psr/container-implementation": "1.1",
-    "eff-tech/framework" : "dev-lesson_09-02-2022"
+    "eff-tech/framework" : "dev-lesson_09-02-2022",
+    "psr/http-message": "^1.0"
   },
   "minimum-stability": "dev",
   "prefer-stable": true,

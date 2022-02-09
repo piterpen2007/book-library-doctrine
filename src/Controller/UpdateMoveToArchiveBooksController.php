@@ -3,15 +3,16 @@
 namespace EfTech\BookLibrary\Controller;
 
 use EfTech\BookLibrary\Exception;
-use EfTech\BookLibrary\Infrastructure\http\httpResponse;
-use EfTech\BookLibrary\Infrastructure\http\ServerRequest;
+use EfTech\BookLibrary\Infrastructure\Controller\ControllerInterface;
 use EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory;
 use EfTech\BookLibrary\Service\ArchiveTextDocumentService\ArchivingResultDto;
 use EfTech\BookLibrary\Service\ArchiveTextDocumentService\Exception\TextDocumentNotFoundException;
 use EfTech\BookLibrary\Service\ArchivingTextDocumentService;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
 
-class UpdateMoveToArchiveBooksController implements \EfTech\BookLibrary\Infrastructure\Controller\ControllerInterface
+class UpdateMoveToArchiveBooksController implements ControllerInterface
 {
     /** Сервис архивации документов
      * @var ArchivingTextDocumentService
@@ -29,7 +30,7 @@ class UpdateMoveToArchiveBooksController implements \EfTech\BookLibrary\Infrastr
     /**
      * @inheritDoc
      */
-    public function __invoke(ServerRequest $request): httpResponse
+    public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
         try {
             $attributes = $request->getAttributes();

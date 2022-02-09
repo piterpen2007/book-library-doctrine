@@ -2,11 +2,9 @@
 
 namespace EfTech\BookLibrary\Controller;
 
-use EfTech\BookLibrary\Entity\Book;
 use EfTech\BookLibrary\Exception\RuntimeException;
 use EfTech\BookLibrary\Infrastructure\Auth\HttpAuthProvider;
-use EfTech\BookLibrary\Infrastructure\http\httpResponse;
-use EfTech\BookLibrary\Infrastructure\http\ServerRequest;
+use EfTech\BookLibrary\Infrastructure\Controller\ControllerInterface;
 use EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory;
 use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
 use EfTech\BookLibrary\Infrastructure\ViewTemplate\ViewTemplateInterface;
@@ -17,8 +15,11 @@ use EfTech\BookLibrary\Service\SearchAuthorsService;
 use EfTech\BookLibrary\Service\SearchAuthorsService\SearchAuthorsCriteria;
 use EfTech\BookLibrary\Service\SearchTextDocumentService;
 use EfTech\BookLibrary\Service\SearchTextDocumentService\SearchTextDocumentServiceCriteria;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Throwable;
 
-class TextDocumentAdministrationController implements \EfTech\BookLibrary\Infrastructure\Controller\ControllerInterface
+class TextDocumentAdministrationController implements ControllerInterface
 {
     private HttpAuthProvider $httpAuthProvider;
     /** сервис добавления текстового документа
@@ -56,7 +57,7 @@ class TextDocumentAdministrationController implements \EfTech\BookLibrary\Infras
         SearchTextDocumentService $searchTextDocumentService,
         ViewTemplateInterface $viewTemplate,
         SearchAuthorsService $authorsService,
-        \EfTech\BookLibrary\Service\ArrivalNewTextDocumentService $arrivalNewTextDocumentService,
+        ArrivalNewTextDocumentService $arrivalNewTextDocumentService,
         HttpAuthProvider $httpAuthProvider
     ) {
         $this->logger = $logger;
@@ -71,10 +72,11 @@ class TextDocumentAdministrationController implements \EfTech\BookLibrary\Infras
     /**
      * @inheritDoc
      */
-    public function __invoke(ServerRequest $request): httpResponse
+    public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
         try {
             if (false === $this->httpAuthProvider->isAuth()) {
+                //todo
                 return $this->httpAuthProvider->doAuth($request->getUri());
             }
             $this->logger->info('run TextDocumentAdministrationController::__invoke');
@@ -91,7 +93,7 @@ class TextDocumentAdministrationController implements \EfTech\BookLibrary\Infras
             $contex = array_merge($viewData, $resultCreationTextDocument);
             $template = __DIR__ . '/../../templates/textDocument.administration.phtml';
             $httpCode = 200;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $httpCode = 500;
             $template = __DIR__ . '/../../templates/errors.phtml';
             $contex = [
@@ -110,10 +112,10 @@ class TextDocumentAdministrationController implements \EfTech\BookLibrary\Infras
 
     /** Результат создания текстовых документов
      *
-     * @param ServerRequest $request
+     * @param ServerRequestInterface $request
      * @return array - данные о ошибках у форм создания книг и журналов
      */
-    private function creationOfTextDocument(ServerRequest $request): array
+    private function creationOfTextDocument(ServerRequestInterface $request): array
     {
         $dataToCreate = [];
         parse_str($request->getBody(), $dataToCreate);

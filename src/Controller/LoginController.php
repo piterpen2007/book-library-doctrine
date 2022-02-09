@@ -5,11 +5,12 @@ namespace EfTech\BookLibrary\Controller;
 use EfTech\BookLibrary\Exception\RuntimeException;
 use EfTech\BookLibrary\Infrastructure\Auth\HttpAuthProvider;
 use EfTech\BookLibrary\Infrastructure\Controller\ControllerInterface;
-use EfTech\BookLibrary\Infrastructure\http\httpResponse;
-use EfTech\BookLibrary\Infrastructure\http\ServerRequest;
 use EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory;
 use EfTech\BookLibrary\Infrastructure\Uri\Uri;
 use EfTech\BookLibrary\Infrastructure\ViewTemplate\ViewTemplateInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Throwable;
 
 class LoginController implements ControllerInterface
 {
@@ -33,24 +34,24 @@ class LoginController implements ControllerInterface
 
 
     /** Обработка http запроса
-     * @param ServerRequest $request
-     * @return httpResponse
+     * @param ServerRequestInterface $request
+     * @return ResponseInterface
      */
-    public function __invoke(ServerRequest $request): httpResponse
+    public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
         try {
             $response = $this->doLogin($request);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $response = $this->buildErrorResponse($e);
         }
         return $response;
     }
 
     /**
-     * @param \Throwable $e
-     * @return httpResponse
+     * @param Throwable $e
+     * @return ResponseInterface
      */
-    private function buildErrorResponse(\Throwable $e): httpResponse
+    private function buildErrorResponse(Throwable $e): ResponseInterface
     {
         $httpCode = 500;
         $contex = [
@@ -65,7 +66,7 @@ class LoginController implements ControllerInterface
         return ServerResponseFactory::createHtmlResponse($httpCode, $html);
     }
 
-    private function doLogin(ServerRequest $request): httpResponse
+    private function doLogin(ServerRequestInterface $request): ResponseInterface
     {
         $response = null;
         $contex = [];

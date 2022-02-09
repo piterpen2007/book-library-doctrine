@@ -2,18 +2,16 @@
 
 namespace EfTech\BookLibrary\Controller;
 
-use EfTech\BookLibrary\Entity\Author;
 use EfTech\BookLibrary\Infrastructure\Controller\ControllerInterface;
-use EfTech\BookLibrary\Infrastructure\http\HttpResponse;
-use EfTech\BookLibrary\Infrastructure\http\ServerRequest;
 use EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory;
 use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
 use EfTech\BookLibrary\Infrastructure\Validator\Assert;
+use EfTech\BookLibrary\Service\SearchAuthorsService;
 use EfTech\BookLibrary\Service\SearchAuthorsService\AuthorDto;
 use EfTech\BookLibrary\Service\SearchAuthorsService\SearchAuthorsCriteria;
-use EfTech\BookLibrary\Service\SearchAuthorsService;
-use Exception;
 use JsonException;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 /** Контроллер поиска авторов
  *
@@ -33,6 +31,7 @@ class GetAuthorsCollectionController implements ControllerInterface
 
     /**
      * @param LoggerInterface $logger
+     * @param SearchAuthorsService $searchAuthorsService
      */
     public function __construct(LoggerInterface $logger, SearchAuthorsService $searchAuthorsService)
     {
@@ -41,10 +40,10 @@ class GetAuthorsCollectionController implements ControllerInterface
     }
 
     /** Валидирует параметры запроса
-     * @param ServerRequest $serverRequest - объект серверного http запроса
+     * @param ServerRequestInterface $serverRequest - объект серверного http запроса
      * @return string|null - строка с ошибкой или нулл если ошибки нет
      */
-    private function validateQueryParams(ServerRequest $serverRequest): ?string
+    private function validateQueryParams(ServerRequestInterface $serverRequest): ?string
     {
         $paramsValidation = [
             'surname' => 'incorrect author surname',
@@ -57,12 +56,11 @@ class GetAuthorsCollectionController implements ControllerInterface
     }
 
     /**
-     * @param ServerRequest $request - серверный объект запроса
-     * @return HttpResponse - объект http ответа
+     * @param ServerRequestInterface $request - серверный объект запроса
+     * @return ResponseInterface - объект http ответа
      * @throws JsonException
-     * @throws Exception
      */
-    public function __invoke(ServerRequest $request): HttpResponse
+    public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
         $this->logger->info("Ветка authors");
 
@@ -99,7 +97,7 @@ class GetAuthorsCollectionController implements ControllerInterface
 
     /** Подготавливает данные для ответа
      * @param array $foundAuthors
-     * @return array|Author
+     * @return array
      */
     protected function buildResult(array $foundAuthors)
     {
