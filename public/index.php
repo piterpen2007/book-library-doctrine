@@ -6,8 +6,6 @@ use EfTech\BookLibrary\Config\AppConfig;
 use EfTech\BookLibrary\Infrastructure\DI\ContainerInterface;
 use EfTech\BookLibrary\Infrastructure\DI\SymfonyDiContainerInit;
 use EfTech\BookLibrary\Infrastructure\HttpApplication\App;
-use EfTech\BookLibrary\Infrastructure\DI\Container;
-use EfTech\BookLibrary\Infrastructure\http\ServerRequestFactory;
 use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
 use EfTech\BookLibrary\Infrastructure\Router\RouterInterface;
 use EfTech\BookLibrary\Infrastructure\View\RenderInterface;
@@ -40,4 +38,4 @@ $httpResponse = (new App(
             __DIR__ . '/../var/cache/di-symfony/EfTechBookLibraryCachedContainer.php'
         )
     )
-))->dispath(ServerRequestFactory::createFromGlobals($_SERVER, file_get_contents('php://input')));
+))->dispath();
