@@ -12,10 +12,10 @@ use EfTech\BookLibrary\Infrastructure\Logger\Adapter\NullAdapter;
 use EfTech\BookLibrary\Infrastructure\Logger\AdapterInterface;
 use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
 use EfTech\BookLibrary\Infrastructure\Router\RouterInterface;
-use EfTech\BookLibrary\Infrastructure\Uri\Uri;
 use EfTech\BookLibrary\Infrastructure\View\RenderInterface;
 use Exception;
 use JsonException;
+use Nyholm\Psr7\Uri;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -232,7 +232,7 @@ class UnitTest extends TestCase
             'GET',
             '1.1',
             $in['uri'],
-            Uri::createFromString($in['uri']),
+            new Uri($in['uri']),
             ['Content-Type' => 'application/json'],
             null
         );

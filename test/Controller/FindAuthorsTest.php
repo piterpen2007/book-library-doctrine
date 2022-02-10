@@ -8,10 +8,10 @@ use EfTech\BookLibrary\Infrastructure\DataLoader\JsonDataLoader;
 use EfTech\BookLibrary\Infrastructure\http\ServerRequest;
 use EfTech\BookLibrary\Infrastructure\Logger\Adapter\NullAdapter;
 use EfTech\BookLibrary\Infrastructure\Logger\Logger;
-use EfTech\BookLibrary\Infrastructure\Uri\Uri;
 use EfTech\BookLibrary\Repository\AuthorJsonFileRepository;
 use EfTech\BookLibrary\Service\SearchAuthorsService;
 use JsonException;
+use Nyholm\Psr7\Uri;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -30,7 +30,7 @@ class FindAuthorsTest extends TestCase
             'GET',
             '1.1',
             '/authors?surname=Паланик',
-            Uri::createFromString('http://book-library-fedyancev.ru:8083/authors?surname=Паланик'),
+            new Uri('http://book-library-fedyancev.ru:8083/authors?surname=Паланик'),
             ['Content-Type' => 'application/json'],
             null
         );

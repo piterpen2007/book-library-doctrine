@@ -12,7 +12,7 @@
             "source": {
                 "type": "git",
                 "url": "git@git.effective-team.ru:rnd/educational-projects/interns/2021-flow-1/fedyancev.d.a/framework.git",
-                "reference": "c990d8684b3bc5113face97b6a03827c893bfa7c"
+                "reference": "8323ffce750e0092dfae6a7b6bba1e3c516a2b78"
             },
             "require": {
                 "ext-json": "*",
@@ -28,6 +28,7 @@
                 "psr/container-implementation": "1.1"
             },
             "require-dev": {
+                "nyholm/psr7": "^1.5",
                 "phpunit/phpunit": "9.*",
                 "squizlabs/php_codesniffer": "^3.6"
             },
@@ -62,7 +63,7 @@
             "support": {
                 "email": "popkin@yandex.ru"
             },
-            "time": "2022-02-10T08:30:28+00:00"
+            "time": "2022-02-10T08:39:46+00:00"
         },
         {
             "name": "nyholm/psr7",

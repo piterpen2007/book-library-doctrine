@@ -8,7 +8,6 @@ use EfTech\BookLibrary\Infrastructure\DI\Container;
 use EfTech\BookLibrary\Infrastructure\DI\ContainerInterface;
 use EfTech\BookLibrary\Infrastructure\DI\SymfonyDiContainerInit;
 
-
 (new AppConsole(
     require __DIR__ . '/../config/console.handlers.php',
     static function (ContainerInterface $di): OutputInterface {

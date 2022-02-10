@@ -6,8 +6,8 @@ use EfTech\BookLibrary\Exception\RuntimeException;
 use EfTech\BookLibrary\Infrastructure\Auth\HttpAuthProvider;
 use EfTech\BookLibrary\Infrastructure\Controller\ControllerInterface;
 use EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory;
-use EfTech\BookLibrary\Infrastructure\Uri\Uri;
 use EfTech\BookLibrary\Infrastructure\ViewTemplate\ViewTemplateInterface;
+use Nyholm\Psr7\Uri;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
@@ -78,8 +78,8 @@ class LoginController implements ControllerInterface
             if ($this->isAuth($authData['login'], $authData['password'])) {
                 $queryParams = $request->getQueryParams();
                 $redirect = array_key_exists('redirect', $queryParams)
-                    ? Uri::createFromString($queryParams['redirect'])
-                    : Uri::createFromString($queryParams['/']);
+                    ? new Uri($queryParams['redirect'])
+                    : new Uri($queryParams['/']);
                 $response = ServerResponseFactory::redirect($redirect);
             } else {
                 $contex['errMsg'] = 'Логин и пароль не подходят';

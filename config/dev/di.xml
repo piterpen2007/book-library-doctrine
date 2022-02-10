@@ -56,6 +56,7 @@
     </service>
     <service id="EfTech\BookLibrary\Infrastructure\DataLoader\DataLoaderInterface"
              class="EfTech\BookLibrary\Infrastructure\DataLoader\JsonDataLoader"/>
+
     <service id="EfTech\BookLibrary\Infrastructure\ViewTemplate\ViewTemplateInterface"
              class="EfTech\BookLibrary\Infrastructure\ViewTemplate\PhtmlTemplate"/>
 
@@ -64,8 +65,7 @@
     </service>
     <service id="EfTech\BookLibrary\Infrastructure\Auth\HttpAuthProvider">
         <argument key="$loginUri" type="service">
-                <service>
-                    <factory class="EfTech\BookLibrary\Infrastructure\Uri\Uri" method="createFromString"/>
+                <service class="Nyholm\Psr7\Uri">
                     <argument key="$uri" type="expression">service('EfTech\\BookLibrary\\Config\\AppConfig').getLoginUri()</argument>
                 </service>
         </argument>
