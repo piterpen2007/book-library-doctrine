@@ -9,6 +9,9 @@ use EfTech\BookLibrary\Infrastructure\HttpApplication\App;
 use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
 use EfTech\BookLibrary\Infrastructure\Router\RouterInterface;
 use EfTech\BookLibrary\Infrastructure\View\RenderInterface;
+use Nyholm\Psr7\Factory\Psr17Factory;
+use Nyholm\Psr7Server\ServerRequestCreator;
+use Psr\Http\Message\ServerRequestInterface;
 
 
 $httpResponse = (new App(
@@ -24,7 +27,6 @@ $httpResponse = (new App(
     static function (ContainerInterface $di): RenderInterface {
         return $di->get(RenderInterface::class);
     },
-
     new SymfonyDiContainerInit(
         new SymfonyDiContainerInit\ContainerParams(
             __DIR__ . '/../config/dev/di.xml',
@@ -38,4 +40,17 @@ $httpResponse = (new App(
             __DIR__ . '/../var/cache/di-symfony/EfTechBookLibraryCachedContainer.php'
         )
     )
-))->dispath();
+))->dispath(
+    (static function (): ServerRequestInterface {
+        $psr17Factory = new Psr17Factory();
+
+        $creator = new ServerRequestCreator(
+            $psr17Factory, // ServerRequestFactory
+            $psr17Factory, // UriFactory
+            $psr17Factory, // UploadedFileFactory
+            $psr17Factory  // StreamFactory
+        );
+
+        return $creator->fromGlobals();
+    })()
+);

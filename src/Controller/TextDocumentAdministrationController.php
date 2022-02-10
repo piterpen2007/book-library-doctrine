@@ -21,6 +21,7 @@ use Throwable;
 
 class TextDocumentAdministrationController implements ControllerInterface
 {
+    private ServerResponseFactory $serverResponseFactory;
     private HttpAuthProvider $httpAuthProvider;
     /** сервис добавления текстового документа
      * @var ArrivalNewTextDocumentService
@@ -51,6 +52,7 @@ class TextDocumentAdministrationController implements ControllerInterface
      * @param SearchAuthorsService $authorsService
      * @param ArrivalNewTextDocumentService $arrivalNewTextDocumentService
      * @param HttpAuthProvider $httpAuthProvider
+     * @param ServerResponseFactory $serverResponseFactory
      */
     public function __construct(
         LoggerInterface $logger,
@@ -58,7 +60,8 @@ class TextDocumentAdministrationController implements ControllerInterface
         ViewTemplateInterface $viewTemplate,
         SearchAuthorsService $authorsService,
         ArrivalNewTextDocumentService $arrivalNewTextDocumentService,
-        HttpAuthProvider $httpAuthProvider
+        HttpAuthProvider $httpAuthProvider,
+        \EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory $serverResponseFactory
     ) {
         $this->logger = $logger;
         $this->searchTextDocumentService = $searchTextDocumentService;
@@ -66,6 +69,7 @@ class TextDocumentAdministrationController implements ControllerInterface
         $this->authorsService = $authorsService;
         $this->arrivalNewTextDocumentService = $arrivalNewTextDocumentService;
         $this->httpAuthProvider = $httpAuthProvider;
+        $this->serverResponseFactory = $serverResponseFactory;
     }
 
 
@@ -107,7 +111,7 @@ class TextDocumentAdministrationController implements ControllerInterface
             $contex
         );
 
-        return ServerResponseFactory::createHtmlResponse($httpCode, $html);
+        return $this->serverResponseFactory->createHtmlResponse($httpCode, $html);
     }
 
     /** Результат создания текстовых документов

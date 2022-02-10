@@ -26,14 +26,15 @@ class FindAuthorsTest extends TestCase
     public function testSearchAuthorsBySurname(): void
     {
         //Arrange
-        $httpRequest = new ServerRequest(
+        $httpRequest = new \Nyholm\Psr7\ServerRequest(
             'GET',
-            '1.1',
-            '/authors?surname=Паланик',
             new Uri('http://book-library-fedyancev.ru:8083/authors?surname=Паланик'),
-            ['Content-Type' => 'application/json'],
-            null
+            ['Content-Type' => 'application/json']
         );
+        $queryParams = [];
+        parse_str($httpRequest->getUri()->getQuery(), $queryParams);
+        $httpRequest = $httpRequest->withQueryParams($queryParams);
+
         $appConfig = AppConfig::createFromArray(require __DIR__ . '/../../config/dev/config.php');
         $logger = new Logger(new NullAdapter());
 

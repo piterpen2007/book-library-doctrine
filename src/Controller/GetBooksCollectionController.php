@@ -18,6 +18,7 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class GetBooksCollectionController implements ControllerInterface
 {
+    private ServerResponseFactory $serverResponseFactory;
     /** Логгер
      * @var LoggerInterface
      */
@@ -32,13 +33,16 @@ class GetBooksCollectionController implements ControllerInterface
     /**
      * @param LoggerInterface $logger
      * @param SearchTextDocumentService $searchTextDocumentService
+     * @param ServerResponseFactory $serverResponseFactory
      */
     public function __construct(
         LoggerInterface $logger,
-        SearchTextDocumentService $searchTextDocumentService
+        SearchTextDocumentService $searchTextDocumentService,
+        \EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory $serverResponseFactory
     ) {
         $this->logger = $logger;
         $this->searchTextDocumentService = $searchTextDocumentService;
+        $this->serverResponseFactory = $serverResponseFactory;
     }
 
 
@@ -84,7 +88,7 @@ class GetBooksCollectionController implements ControllerInterface
                 'message' => $resultOfParamValidation
             ];
         }
-        return ServerResponseFactory::createJsonResponse($httpCode, $result);
+        return $this->serverResponseFactory->createJsonResponse($httpCode, $result);
     }
 
     /** Подготавливает данные для ответа

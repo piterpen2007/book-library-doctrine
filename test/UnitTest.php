@@ -6,7 +6,6 @@ use EfTech\BookLibrary\Config\AppConfig;
 use EfTech\BookLibrary\Config\ContainerExtensions;
 use EfTech\BookLibrary\Infrastructure\DI\ContainerInterface;
 use EfTech\BookLibrary\Infrastructure\DI\SymfonyDiContainerInit;
-use EfTech\BookLibrary\Infrastructure\http\ServerRequest;
 use EfTech\BookLibrary\Infrastructure\HttpApplication\App;
 use EfTech\BookLibrary\Infrastructure\Logger\Adapter\NullAdapter;
 use EfTech\BookLibrary\Infrastructure\Logger\AdapterInterface;
@@ -84,139 +83,139 @@ class UnitTest extends TestCase
                     ]
                 ]
             ],
-//            'Тестирование ситуации когда данные о книгах не корректны. Нет поля year' => [
-//                'in' => [
-//                    'uri' => '/books?title=Мечтают ли андроиды об электроовцах?',
-//                    'diContainer' => (static function (ContainerBuilder $c): ContainerBuilder {
-//                        $appConfigParams = $c->getParameter('app.configs');
-//                        $appConfigParams['pathToBooks'] = __DIR__ . '/data/broken.books.json';
-//                        $c->setParameter('app.configs', $appConfigParams);
-//                        $c->compile();
-//                        return $c;
-//                    })(self::createDiContainer())
-//
-//                ],
-//                'out' => [
-//                    'httpCode' => 503,
-//                    'result' => [
-//                        'status' => 'fail',
-//                        'message' => 'Отсутствуют обязательные элементы: year'
-//                    ]
-//                ]
-//            ],
-//            'Тестирование ситуации с некорректным  данными конфига приложения' => [
-//                'in' => [
-//                    'uri' => '/books?title=Мечтают ли андроиды об электроовцах?',
-//                    'diContainer' => (static function (ContainerBuilder $c): ContainerBuilder {
-//                        $c->getDefinition(AppConfig::class)->setFactory([UnitTest::class, 'bugFactory']);
-//                        $c->compile();
-//                        return $c;
-//                    })(self::createDiContainer())
-//
-//                ],
-//                'out' => [
-//                    'httpCode' => 500,
-//                    'result' => [
-//                        'status' => 'fail',
-//                        'message' => 'system error'
-//                    ]
-//                ]
-//            ],
-//            'Тестирование ситуации с некорректным путем до файла с книгами' => [
-//                'in' => [
-//                    'uri' => '/books?title=Мечтают ли андроиды об электроовцах?',
-//                    'diContainer' => (static function (ContainerBuilder $c): ContainerBuilder {
-//                        $appConfigParams = $c->getParameter('app.configs');
-//                        $appConfigParams['pathToBooks'] = __DIR__ . '/data/unknown.books.json';
-//                        $c->setParameter('app.configs', $appConfigParams);
-//                        $c->compile();
-//                        return $c;
-//                    })(self::createDiContainer())
-//                ],
-//                'out' => [
-//                    'httpCode' => 500,
-//                    'result' => [
-//                        'status' => 'fail',
-//                        'message' => 'Некорректный путь до файла с данными'
-//                    ]
-//                ]
-//            ],
-//            'Тестирование ситуации когда данные о журналах некорректны. Нет поля id' => [
-//                'in' => [
-//                    'uri' => '/books?title=National Geographic Magazine',
-//                    'diContainer' => (static function (ContainerBuilder $c): ContainerBuilder {
-//                        $appConfigParams = $c->getParameter('app.configs');
-//                        $appConfigParams['pathToMagazines'] = __DIR__ . '/data/broken.magazines.json';
-//                        $c->setParameter('app.configs', $appConfigParams);
-//                        $c->compile();
-//                        return $c;
-//                    })(self::createDiContainer())
-//                ],
-//                'out' => [
-//                    'httpCode' => 503,
-//                    'result' => [
-//                        'status' => 'fail',
-//                        'message' => 'Нету id текстового документа'
-//                    ]
-//                ]
-//            ],
-//            'Тестирование ситуации когда данные в авторах некорректны. Нет поля birthday' => [
-//                'in' => [
-//                    'uri' => '/books?title=Мечтают ли андроиды об электроовцах?',
-//                    'diContainer' => (static function (ContainerBuilder $c): ContainerBuilder {
-//                        $appConfigParams = $c->getParameter('app.configs');
-//                        $appConfigParams['pathToAuthor'] = __DIR__ . '/data/broken.authors.json';
-//                        $c->setParameter('app.configs', $appConfigParams);
-//                        $c->compile();
-//                        return $c;
-//                    })(self::createDiContainer())
-//                ],
-//                'out' => [
-//                    'httpCode' => 503,
-//                    'result' => [
-//                        'status' => 'fail',
-//                        'message' => 'Отсутствуют обязательные элементы: birthday'
-//                    ]
-//                ]
-//            ],
-//            'Тестирование ситуации с некорректным путем до файла о авторе' => [
-//                'in' => [
-//                    'uri' => '/books?title=Мечтают ли андроиды об электроовцах?',
-//                    'diContainer' => (static function (ContainerBuilder $c): ContainerBuilder {
-//                        $appConfigParams = $c->getParameter('app.configs');
-//                        $appConfigParams['pathToAuthor'] = __DIR__ . '/data/unknown.authors.json';
-//                        $c->setParameter('app.configs', $appConfigParams);
-//                        $c->compile();
-//                        return $c;
-//                    })(self::createDiContainer())
-//                ],
-//                'out' => [
-//                    'httpCode' => 500,
-//                    'result' => [
-//                        'status' => 'fail',
-//                        'message' => 'Некорректный путь до файла с данными'
-//                    ]
-//                ]
-//            ],
-//            'Тестирование ситуации с некорректным путем до файла до журналов' => [
-//                'in' => [
-//                    'uri' =>  '/books?title=Мечтают ли андроиды об электроовцах?',
-//                    'diContainer' => (static function (ContainerBuilder $c): ContainerBuilder {
-//                        $appConfigParams = $c->getParameter('app.configs');
-//                        $appConfigParams['pathToMagazines'] = __DIR__ . '/data/unknown.magazines.json';
-//                        $c->setParameter('app.configs', $appConfigParams);
-//                        $c->compile();
-//                        return $c;
-//                    })(self::createDiContainer())
-//                ],
-//                'out' => [
-//                    'httpCode' => 500,
-//                    'result' => [
-//                        'status' => 'fail',
-//                        'message' => 'Некорректный путь до файла с данными'
-//                    ]
-//                ]
-//            ]
+            'Тестирование ситуации когда данные о книгах не корректны. Нет поля year' => [
+                'in' => [
+                    'uri' => '/books?title=Мечтают ли андроиды об электроовцах?',
+                    'diContainer' => (static function (ContainerBuilder $c): ContainerBuilder {
+                        $appConfigParams = $c->getParameter('app.configs');
+                        $appConfigParams['pathToBooks'] = __DIR__ . '/data/broken.books.json';
+                        $c->setParameter('app.configs', $appConfigParams);
+                        $c->compile();
+                        return $c;
+                    })(self::createDiContainer())
+
+                ],
+                'out' => [
+                    'httpCode' => 503,
+                    'result' => [
+                        'status' => 'fail',
+                        'message' => 'Отсутствуют обязательные элементы: year'
+                    ]
+                ]
+            ],
+            'Тестирование ситуации с некорректным  данными конфига приложения' => [
+                'in' => [
+                    'uri' => '/books?title=Мечтают ли андроиды об электроовцах?',
+                    'diContainer' => (static function (ContainerBuilder $c): ContainerBuilder {
+                        $c->getDefinition(AppConfig::class)->setFactory([UnitTest::class, 'bugFactory']);
+                        $c->compile();
+                        return $c;
+                    })(self::createDiContainer())
+
+                ],
+                'out' => [
+                    'httpCode' => 500,
+                    'result' => [
+                        'status' => 'fail',
+                        'message' => 'system error'
+                    ]
+                ]
+            ],
+            'Тестирование ситуации с некорректным путем до файла с книгами' => [
+                'in' => [
+                    'uri' => '/books?title=Мечтают ли андроиды об электроовцах?',
+                    'diContainer' => (static function (ContainerBuilder $c): ContainerBuilder {
+                        $appConfigParams = $c->getParameter('app.configs');
+                        $appConfigParams['pathToBooks'] = __DIR__ . '/data/unknown.books.json';
+                        $c->setParameter('app.configs', $appConfigParams);
+                        $c->compile();
+                        return $c;
+                    })(self::createDiContainer())
+                ],
+                'out' => [
+                    'httpCode' => 500,
+                    'result' => [
+                        'status' => 'fail',
+                        'message' => 'Некорректный путь до файла с данными'
+                    ]
+                ]
+            ],
+            'Тестирование ситуации когда данные о журналах некорректны. Нет поля id' => [
+                'in' => [
+                    'uri' => '/books?title=National Geographic Magazine',
+                    'diContainer' => (static function (ContainerBuilder $c): ContainerBuilder {
+                        $appConfigParams = $c->getParameter('app.configs');
+                        $appConfigParams['pathToMagazines'] = __DIR__ . '/data/broken.magazines.json';
+                        $c->setParameter('app.configs', $appConfigParams);
+                        $c->compile();
+                        return $c;
+                    })(self::createDiContainer())
+                ],
+                'out' => [
+                    'httpCode' => 503,
+                    'result' => [
+                        'status' => 'fail',
+                        'message' => 'Нету id текстового документа'
+                    ]
+                ]
+            ],
+            'Тестирование ситуации когда данные в авторах некорректны. Нет поля birthday' => [
+                'in' => [
+                    'uri' => '/books?title=Мечтают ли андроиды об электроовцах?',
+                    'diContainer' => (static function (ContainerBuilder $c): ContainerBuilder {
+                        $appConfigParams = $c->getParameter('app.configs');
+                        $appConfigParams['pathToAuthor'] = __DIR__ . '/data/broken.authors.json';
+                        $c->setParameter('app.configs', $appConfigParams);
+                        $c->compile();
+                        return $c;
+                    })(self::createDiContainer())
+                ],
+                'out' => [
+                    'httpCode' => 503,
+                    'result' => [
+                        'status' => 'fail',
+                        'message' => 'Отсутствуют обязательные элементы: birthday'
+                    ]
+                ]
+            ],
+            'Тестирование ситуации с некорректным путем до файла о авторе' => [
+                'in' => [
+                    'uri' => '/books?title=Мечтают ли андроиды об электроовцах?',
+                    'diContainer' => (static function (ContainerBuilder $c): ContainerBuilder {
+                        $appConfigParams = $c->getParameter('app.configs');
+                        $appConfigParams['pathToAuthor'] = __DIR__ . '/data/unknown.authors.json';
+                        $c->setParameter('app.configs', $appConfigParams);
+                        $c->compile();
+                        return $c;
+                    })(self::createDiContainer())
+                ],
+                'out' => [
+                    'httpCode' => 500,
+                    'result' => [
+                        'status' => 'fail',
+                        'message' => 'Некорректный путь до файла с данными'
+                    ]
+                ]
+            ],
+            'Тестирование ситуации с некорректным путем до файла до журналов' => [
+                'in' => [
+                    'uri' =>  '/books?title=Мечтают ли андроиды об электроовцах?',
+                    'diContainer' => (static function (ContainerBuilder $c): ContainerBuilder {
+                        $appConfigParams = $c->getParameter('app.configs');
+                        $appConfigParams['pathToMagazines'] = __DIR__ . '/data/unknown.magazines.json';
+                        $c->setParameter('app.configs', $appConfigParams);
+                        $c->compile();
+                        return $c;
+                    })(self::createDiContainer())
+                ],
+                'out' => [
+                    'httpCode' => 500,
+                    'result' => [
+                        'status' => 'fail',
+                        'message' => 'Некорректный путь до файла с данными'
+                    ]
+                ]
+            ]
         ];
     }
 
@@ -228,14 +227,15 @@ class UnitTest extends TestCase
      */
     public function testApp(array $in, array $out): void
     {
-        $httpRequest = new ServerRequest(
+        $httpRequest = new \Nyholm\Psr7\ServerRequest(
             'GET',
-            '1.1',
-            $in['uri'],
             new Uri($in['uri']),
-            ['Content-Type' => 'application/json'],
-            null
+            ['Content-Type' => 'application/json']
         );
+        $queryParams = [];
+        parse_str($httpRequest->getUri()->getQuery(), $queryParams);
+        $httpRequest = $httpRequest->withQueryParams($queryParams);
+
         //Arrange и Act
         $diContainer = $in['diContainer'];
         $httpResponse = (new App(

@@ -14,6 +14,7 @@ use Throwable;
 
 class UpdateMoveToArchiveBooksController implements ControllerInterface
 {
+    private ServerResponseFactory $serverResponseFactory;
     /** Сервис архивации документов
      * @var ArchivingTextDocumentService
      */
@@ -21,10 +22,15 @@ class UpdateMoveToArchiveBooksController implements ControllerInterface
 
     /**
      * @param ArchivingTextDocumentService $archivingTextDocumentService
+     * @param ServerResponseFactory $serverResponseFactory
      */
-    public function __construct(ArchivingTextDocumentService $archivingTextDocumentService)
+    public function __construct(
+        ArchivingTextDocumentService $archivingTextDocumentService,
+        \EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory $serverResponseFactory
+    )
     {
         $this->archivingTextDocumentService = $archivingTextDocumentService;
+        $this->serverResponseFactory = $serverResponseFactory;
     }
 
     /**
@@ -48,7 +54,7 @@ class UpdateMoveToArchiveBooksController implements ControllerInterface
             $jsonData = ['status' => 'fail', 'message' => $e->getMessage()];
         }
 
-        return ServerResponseFactory::createJsonResponse($httpCode, $jsonData);
+        return $this->serverResponseFactory->createJsonResponse($httpCode, $jsonData);
     }
 
     /** Подготавливает данные для успешного ответа на основе dto сервиса

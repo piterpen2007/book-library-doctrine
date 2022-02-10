@@ -10,26 +10,39 @@ use EfTech\BookLibrary\Infrastructure\ViewTemplate\ViewTemplateInterface;
 use Nyholm\Psr7\Uri;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\UriFactoryInterface;
 use Throwable;
 
 class LoginController implements ControllerInterface
 {
+    private ServerResponseFactory $serverResponseFactory;
     private HttpAuthProvider $authProvider;
     /** шаблонизатор
      * @var ViewTemplateInterface
      */
     private ViewTemplateInterface $template;
 
+    /** Фабрика для создания ури
+     * @var UriFactoryInterface
+     */
+    private UriFactoryInterface $uriFactory;
+
     /**
      * @param ViewTemplateInterface $template
      * @param HttpAuthProvider $authProvider
+     * @param UriFactoryInterface $uriFactory
+     * @param ServerResponseFactory $serverResponseFactory
      */
     public function __construct(
         ViewTemplateInterface $template,
-        HttpAuthProvider $authProvider
+        HttpAuthProvider $authProvider,
+        UriFactoryInterface $uriFactory,
+        \EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory $serverResponseFactory
     ) {
         $this->template = $template;
         $this->authProvider = $authProvider;
+        $this->uriFactory = $uriFactory;
+        $this->serverResponseFactory = $serverResponseFactory;
     }
 
 
@@ -63,7 +76,7 @@ class LoginController implements ControllerInterface
             __DIR__ . '/../../templates/errors.phtml',
             $contex
         );
-        return ServerResponseFactory::createHtmlResponse($httpCode, $html);
+        return $this->serverResponseFactory->createHtmlResponse($httpCode, $html);
     }
 
     private function doLogin(ServerRequestInterface $request): ResponseInterface
@@ -78,9 +91,9 @@ class LoginController implements ControllerInterface
             if ($this->isAuth($authData['login'], $authData['password'])) {
                 $queryParams = $request->getQueryParams();
                 $redirect = array_key_exists('redirect', $queryParams)
-                    ? new Uri($queryParams['redirect'])
-                    : new Uri($queryParams['/']);
-                $response = ServerResponseFactory::redirect($redirect);
+                    ? $this->uriFactory->createUri(($queryParams['redirect']))
+                    : $this->uriFactory->createUri($queryParams['/']);
+                $response = $this->serverResponseFactory->redirect($redirect);
             } else {
                 $contex['errMsg'] = 'Логин и пароль не подходят';
             }
@@ -91,7 +104,7 @@ class LoginController implements ControllerInterface
         }
         if (null === $response) {
             $html = $this->template->render(__DIR__ . '/../../templates/login.phtml', $contex);
-            $response = ServerResponseFactory::createHtmlResponse(200, $html);
+            $response = $this->serverResponseFactory->createHtmlResponse(200, $html);
         }
         return $response;
     }

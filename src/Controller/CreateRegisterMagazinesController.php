@@ -15,14 +15,20 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class CreateRegisterMagazinesController implements ControllerInterface
 {
+    private ServerResponseFactory $serverResponseFactory;
     private ArrivalNewTextDocumentService $arrivalNewTextDocumentService;
 
     /**
      * @param ArrivalNewTextDocumentService $arrivalNewTextDocumentService
+     * @param ServerResponseFactory $serverResponseFactory
      */
-    public function __construct(ArrivalNewTextDocumentService $arrivalNewTextDocumentService)
+    public function __construct(
+        ArrivalNewTextDocumentService $arrivalNewTextDocumentService,
+        \EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory $serverResponseFactory
+    )
     {
         $this->arrivalNewTextDocumentService = $arrivalNewTextDocumentService;
+        $this->serverResponseFactory = $serverResponseFactory;
     }
 
 
@@ -46,7 +52,7 @@ class CreateRegisterMagazinesController implements ControllerInterface
             $jsonData = ['status' => 'fail','message' => $e->getMessage()];
         }
 
-        return ServerResponseFactory::createJsonResponse($httpCode, $jsonData);
+        return $this->serverResponseFactory->createJsonResponse($httpCode, $jsonData);
     }
 
     /** Запуск сервиса

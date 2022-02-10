@@ -18,6 +18,7 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class GetAuthorsCollectionController implements ControllerInterface
 {
+    private ServerResponseFactory $serverResponseFactory;
     /** Логгер
      * @var LoggerInterface
      */
@@ -32,11 +33,16 @@ class GetAuthorsCollectionController implements ControllerInterface
     /**
      * @param LoggerInterface $logger
      * @param SearchAuthorsService $searchAuthorsService
+     * @param ServerResponseFactory $serverResponseFactory
      */
-    public function __construct(LoggerInterface $logger, SearchAuthorsService $searchAuthorsService)
-    {
+    public function __construct(
+        LoggerInterface $logger,
+        SearchAuthorsService $searchAuthorsService,
+        ServerResponseFactory $serverResponseFactory
+    ) {
         $this->logger = $logger;
         $this->searchAuthorsService = $searchAuthorsService;
+        $this->serverResponseFactory = $serverResponseFactory;
     }
 
     /** Валидирует параметры запроса
@@ -49,7 +55,6 @@ class GetAuthorsCollectionController implements ControllerInterface
             'surname' => 'incorrect author surname',
             'id' => 'incorrect author id'
         ];
-
         $params = array_merge($serverRequest->getQueryParams(), $serverRequest->getAttributes());
 
         return Assert::arrayElementsIsString($paramsValidation, $params);
@@ -83,7 +88,7 @@ class GetAuthorsCollectionController implements ControllerInterface
                 'message' => $resultOfParamValidation
             ];
         }
-        return ServerResponseFactory::createJsonResponse($httpCode, $result);
+        return $this->serverResponseFactory->createJsonResponse($httpCode, $result);
     }
 
     /** Определяет http code

@@ -36,6 +36,13 @@
 
     <instanceof id="EfTech\BookLibrary\Infrastructure\Controller\ControllerInterface" public="true"/>
     <instanceof id="EfTech\BookLibrary\Infrastructure\Console\CommandInterface" public="true"/>
+    <instanceof id="EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory" public="true"/>
+
+    <service id="Nyholm\Psr7\Factory\Psr17Factory"/>
+
+    <service id="Psr\Http\Message\UriFactoryInterface" alias="Nyholm\Psr7\Factory\Psr17Factory"/>
+    <service id="Psr\Http\Message\ResponseFactoryInterface" alias="Nyholm\Psr7\Factory\Psr17Factory"/>
+    <service id="Psr\Http\Message\StreamFactoryInterface" alias="Nyholm\Psr7\Factory\Psr17Factory"/>
 
     <service
             id="EfTech\BookLibrary\Infrastructure\Console\Output\OutputInterface"
