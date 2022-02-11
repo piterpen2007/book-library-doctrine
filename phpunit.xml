@@ -5,13 +5,15 @@
          cacheResultFile="var/cache/phpunit/test-results"
          executionOrder="depends,defects"
          forceCoversAnnotation="false"
+         processIsolation = "true"
          beStrictAboutCoversAnnotation="true"
          beStrictAboutOutputDuringTests="true"
          beStrictAboutTodoAnnotatedTests="true"
          convertDeprecationsToExceptions="true"
          failOnRisky="true"
          failOnWarning="true"
-         verbose="true">
+         verbose="true"
+>
 
     <php>
         <env name="ENV_TYPE" value="DEV"/>

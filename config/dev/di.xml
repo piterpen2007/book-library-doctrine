@@ -36,7 +36,9 @@
 
     <instanceof id="EfTech\BookLibrary\Infrastructure\Controller\ControllerInterface" public="true"/>
     <instanceof id="EfTech\BookLibrary\Infrastructure\Console\CommandInterface" public="true"/>
-    <instanceof id="EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory" public="true"/>
+
+    <service id="EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory" public="true">
+    </service>
 
     <service id="Nyholm\Psr7\Factory\Psr17Factory"/>
 
