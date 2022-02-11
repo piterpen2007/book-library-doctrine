@@ -6,11 +6,13 @@ use EfTech\BookLibrary\Config\AppConfig;
 use EfTech\BookLibrary\Controller\GetAuthorsCollectionController;
 use EfTech\BookLibrary\Infrastructure\DataLoader\JsonDataLoader;
 use EfTech\BookLibrary\Infrastructure\http\ServerRequest;
+use EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory;
 use EfTech\BookLibrary\Infrastructure\Logger\Adapter\NullAdapter;
 use EfTech\BookLibrary\Infrastructure\Logger\Logger;
 use EfTech\BookLibrary\Repository\AuthorJsonFileRepository;
 use EfTech\BookLibrary\Service\SearchAuthorsService;
 use JsonException;
+use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7\Uri;
 use PHPUnit\Framework\TestCase;
 
@@ -37,6 +39,7 @@ class FindAuthorsTest extends TestCase
 
         $appConfig = AppConfig::createFromArray(require __DIR__ . '/../../config/dev/config.php');
         $logger = new Logger(new NullAdapter());
+        $psr17Factory = new Psr17Factory();
 
         $controller = new GetAuthorsCollectionController(
             $logger,
@@ -46,7 +49,8 @@ class FindAuthorsTest extends TestCase
                     $appConfig->getPathToAuthor(),
                     new JsonDataLoader()
                 )
-            )
+            ),
+             new ServerResponseFactory($psr17Factory, $psr17Factory)
         );
 
         //Act
