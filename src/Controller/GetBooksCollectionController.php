@@ -4,7 +4,7 @@ namespace EfTech\BookLibrary\Controller;
 
 use EfTech\BookLibrary\Infrastructure\Controller\ControllerInterface;
 use EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory;
-use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
+use Psr\Log\LoggerInterface;
 use EfTech\BookLibrary\Infrastructure\Validator\Assert;
 use EfTech\BookLibrary\Service\SearchTextDocumentService;
 use EfTech\BookLibrary\Service\SearchTextDocumentService\SearchTextDocumentServiceCriteria;

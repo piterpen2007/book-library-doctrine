@@ -4,11 +4,9 @@ namespace EfTech\BookLibrary\Service;
 
 use EfTech\BookLibrary\Entity\Author;
 use EfTech\BookLibrary\Entity\AuthorRepositoryInterface;
-use EfTech\BookLibrary\Infrastructure\DataLoader\DataLoaderInterface;
-use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
+use Psr\Log\LoggerInterface;
 use EfTech\BookLibrary\Service\SearchAuthorsService\AuthorDto;
 use EfTech\BookLibrary\Service\SearchAuthorsService\SearchAuthorsCriteria;
-use Exception;
 use JsonException;
 
 /**

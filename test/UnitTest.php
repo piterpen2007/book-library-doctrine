@@ -9,7 +9,7 @@ use EfTech\BookLibrary\Infrastructure\DI\SymfonyDiContainerInit;
 use EfTech\BookLibrary\Infrastructure\HttpApplication\App;
 use EfTech\BookLibrary\Infrastructure\Logger\Adapter\NullAdapter;
 use EfTech\BookLibrary\Infrastructure\Logger\AdapterInterface;
-use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
+use Psr\Log\LoggerInterface;
 use EfTech\BookLibrary\Infrastructure\Router\RouterInterface;
 use EfTech\BookLibrary\Infrastructure\View\NullRender;
 use EfTech\BookLibrary\Infrastructure\View\RenderInterface;
@@ -17,7 +17,9 @@ use Exception;
 use JsonException;
 use Nyholm\Psr7\Uri;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
 
 /**
  *  Тестирование приложения
@@ -43,8 +45,14 @@ class UnitTest extends TestCase
                 ContainerExtensions::httpAppContainerExtension()
             )
         );
-        $containerBuilder->removeAlias(AdapterInterface::class);
-        $containerBuilder->setAlias(AdapterInterface::class, NullAdapter::class);
+
+        $containerBuilder->removeAlias(LoggerInterface::class);
+        $containerBuilder->setDefinition(NullLogger::class, new Definition());
+        $containerBuilder->setAlias(LoggerInterface::class,NullLogger::class)->setPublic(true);
+
+        //$containerBuilder->setAlias(AdapterInterface::class, NullAdapter::class);
+
+
 
         $containerBuilder->getDefinition(RenderInterface::class)
             ->setClass(NullRender::class)

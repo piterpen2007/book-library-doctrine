@@ -15,6 +15,7 @@ use JsonException;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7\Uri;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
 
 /**
  * Тестирование контроллера FindAuthors
@@ -38,7 +39,7 @@ class FindAuthorsTest extends TestCase
         $httpRequest = $httpRequest->withQueryParams($queryParams);
 
         $appConfig = AppConfig::createFromArray(require __DIR__ . '/../../config/dev/config.php');
-        $logger = new Logger(new NullAdapter());
+        $logger = new NullLogger();
         $psr17Factory = new Psr17Factory();
 
         $controller = new GetAuthorsCollectionController(

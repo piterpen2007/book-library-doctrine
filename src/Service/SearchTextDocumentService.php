@@ -7,11 +7,10 @@ use EfTech\BookLibrary\Entity\Book;
 use EfTech\BookLibrary\Entity\Magazine;
 use EfTech\BookLibrary\Entity\TextDocumentRepositoryInterface;
 use EfTech\BookLibrary\Exception\RuntimeException;
-use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
+use Psr\Log\LoggerInterface;
 use EfTech\BookLibrary\Service\SearchTextDocumentService\AuthorDto;
 use EfTech\BookLibrary\Service\SearchTextDocumentService\SearchTextDocumentServiceCriteria;
 use EfTech\BookLibrary\Service\SearchTextDocumentService\TextDocumentDto;
-use JsonException;
 
 /**
  *

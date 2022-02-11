@@ -17,8 +17,6 @@ use EfTech\BookLibrary\Controller\LoginController;
 use EfTech\BookLibrary\Controller\TextDocumentAdministrationController;
 use EfTech\BookLibrary\Controller\UpdateMoveToArchiveBooksController;
 use EfTech\BookLibrary\Infrastructure\DI\SymfonyDiContainerInit;
-use EfTech\BookLibrary\Infrastructure\Logger\Logger;
-use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
 use EfTech\BookLibrary\Infrastructure\Router\ChainRouters;
 use EfTech\BookLibrary\Infrastructure\Router\DefaultRouter;
 use EfTech\BookLibrary\Infrastructure\Router\RegExpRouter;
@@ -57,10 +55,6 @@ class DiAppServiceTest extends TestCase
             LoginController::class => [
                 'serviceId' => LoginController::class,
                 'expectedServiceClass' => LoginController::class
-            ],
-            LoggerInterface::class => [
-                'serviceId' => LoggerInterface::class,
-                'expectedServiceClass' => Logger::class
             ],
             CreateRegisterMagazinesController::class => [
                 'serviceId' => CreateRegisterMagazinesController::class,

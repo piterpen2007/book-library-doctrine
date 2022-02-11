@@ -6,7 +6,7 @@ use EfTech\BookLibrary\Config\AppConfig;
 use EfTech\BookLibrary\Infrastructure\DI\ContainerInterface;
 use EfTech\BookLibrary\Infrastructure\DI\SymfonyDiContainerInit;
 use EfTech\BookLibrary\Infrastructure\HttpApplication\App;
-use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
+use Psr\Log\LoggerInterface;
 use EfTech\BookLibrary\Infrastructure\Router\RouterInterface;
 use EfTech\BookLibrary\Infrastructure\View\RenderInterface;
 use Nyholm\Psr7\Factory\Psr17Factory;
