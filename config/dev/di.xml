@@ -36,8 +36,7 @@
     <instanceof id="EfTech\BookLibrary\Infrastructure\Controller\ControllerInterface" public="true"/>
     <instanceof id="EfTech\BookLibrary\Infrastructure\Console\CommandInterface" public="true"/>
 
-    <service id="Psr\Log\NullLogger"/>
-    <service id="Psr\Log\LoggerInterface" alias="Psr\Log\NullLogger" public="true"/>
+
 
 
     <service id="Nyholm\Psr7\Factory\Psr17Factory"/>
