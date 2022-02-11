@@ -2,6 +2,7 @@
 
 namespace EfTech\BookLibrary\Config;
 
+use EfTech\BookLibrary\Infrastructure\http\SymfonyDi\DiHttpExt;
 use EfTech\BookLibrary\Infrastructure\Logger\SymfonyDi\DiLoggerExt;
 use EfTech\BookLibrary\Infrastructure\Router\SymfonyDi\DiRouterExt;
 
@@ -14,7 +15,8 @@ final class ContainerExtensions
     {
         return [
             new DiRouterExt(),
-            new DiLoggerExt()
+            new DiLoggerExt(),
+            new DiHttpExt()
         ];
     }
 
@@ -25,7 +27,8 @@ final class ContainerExtensions
     {
         return [
             new DiRouterExt(),
-            new DiLoggerExt()
+            new DiLoggerExt(),
+            new DiHttpExt()
         ];
     }
 }

@@ -28,17 +28,14 @@
         </bind>
     </defaults>
 
-
     <prototype namespace="EfTech\BookLibrary\" resource="./../../src"/>
     <prototype namespace="EfTech\BookLibrary\Infrastructure\"
                resource="./../../vendor/eff-tech/framework/src"
-               exclude="./../../vendor/eff-tech/framework/src/{Router,Logger}"/>
+               exclude="./../../vendor/eff-tech/framework/src/{Router,Logger,http}"/>
 
     <instanceof id="EfTech\BookLibrary\Infrastructure\Controller\ControllerInterface" public="true"/>
     <instanceof id="EfTech\BookLibrary\Infrastructure\Console\CommandInterface" public="true"/>
 
-    <service id="EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory" public="true">
-    </service>
 
     <service id="Nyholm\Psr7\Factory\Psr17Factory"/>
 

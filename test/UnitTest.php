@@ -11,6 +11,7 @@ use EfTech\BookLibrary\Infrastructure\Logger\Adapter\NullAdapter;
 use EfTech\BookLibrary\Infrastructure\Logger\AdapterInterface;
 use EfTech\BookLibrary\Infrastructure\Logger\LoggerInterface;
 use EfTech\BookLibrary\Infrastructure\Router\RouterInterface;
+use EfTech\BookLibrary\Infrastructure\View\NullRender;
 use EfTech\BookLibrary\Infrastructure\View\RenderInterface;
 use Exception;
 use JsonException;
@@ -44,6 +45,10 @@ class UnitTest extends TestCase
         );
         $containerBuilder->removeAlias(AdapterInterface::class);
         $containerBuilder->setAlias(AdapterInterface::class, NullAdapter::class);
+
+        $containerBuilder->getDefinition(RenderInterface::class)
+            ->setClass(NullRender::class)
+            ->setArguments([]);
         return $containerBuilder;
     }
 
