@@ -5,10 +5,7 @@ namespace EfTech\BookLibraryTest\Controller;
 use EfTech\BookLibrary\Config\AppConfig;
 use EfTech\BookLibrary\Controller\GetAuthorsCollectionController;
 use EfTech\BookLibrary\Infrastructure\DataLoader\JsonDataLoader;
-use EfTech\BookLibrary\Infrastructure\http\ServerRequest;
 use EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory;
-use EfTech\BookLibrary\Infrastructure\Logger\Adapter\NullAdapter;
-use EfTech\BookLibrary\Infrastructure\Logger\Logger;
 use EfTech\BookLibrary\Repository\AuthorJsonFileRepository;
 use EfTech\BookLibrary\Service\SearchAuthorsService;
 use JsonException;
@@ -51,7 +48,7 @@ class FindAuthorsTest extends TestCase
                     new JsonDataLoader()
                 )
             ),
-             new ServerResponseFactory($psr17Factory, $psr17Factory)
+            new ServerResponseFactory($psr17Factory, $psr17Factory)
         );
 
         //Act
