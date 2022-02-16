@@ -95,11 +95,11 @@ class TextDocumentAdministrationController implements ControllerInterface
                 'authors' => $dtoAuthorsCollection
             ];
             $contex = array_merge($viewData, $resultCreationTextDocument);
-            $template = __DIR__ . '/../../templates/textDocument.administration.phtml';
+            $template = 'textDocument.administration.twig';
             $httpCode = 200;
         } catch (Throwable $e) {
             $httpCode = 500;
-            $template = __DIR__ . '/../../templates/errors.phtml';
+            $template = 'errors.twig';
             $contex = [
                 'errors' => [
                     $e->getMessage()

@@ -65,9 +65,6 @@
     <service id="EfTech\BookLibrary\Infrastructure\DataLoader\DataLoaderInterface"
              class="EfTech\BookLibrary\Infrastructure\DataLoader\JsonDataLoader"/>
 
-    <service id="EfTech\BookLibrary\Infrastructure\ViewTemplate\ViewTemplateInterface"
-             class="EfTech\BookLibrary\Infrastructure\ViewTemplate\PhtmlTemplate"/>
-
     <service id="EfTech\BookLibrary\Entity\AuthorRepositoryInterface"
              class="EfTech\BookLibrary\Repository\AuthorJsonFileRepository">
     </service>
