@@ -40,7 +40,8 @@ ALTER TABLE public.authors OWNER TO postgres;
 --
 
 CREATE TABLE public.purchase_price (
-    date date,
+    text_document_id int,
+    date timestamp without  time zone,
     price integer,
     currency character varying(3)
 );

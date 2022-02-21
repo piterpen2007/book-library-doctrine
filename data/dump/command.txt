@@ -1,0 +1,7 @@
+pg_restore -h localhost -U postgres -F t -d book_library_db data/dump/book_library_db.tar
+cat data/dump/book_library_db.sql | psql -h localhost -U postgres book_library_db
+sudo service postgresql restart
+pg_dump -h localhost -U postgres -F t -f data/dump/book_library_db.tar book_library_db
+pg_dump -h localhost -U postgres -F p -f data/dump/book_library_db.sql book_library_db
+172.17.0.1
+192.168.220.185

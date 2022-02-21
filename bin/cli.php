@@ -1,4 +1,4 @@
-#!/usr/nin/env_php
+#!/usr/bin/env_php
 <?php
 require_once __DIR__ . '/../vendor/autoload.php';
 
