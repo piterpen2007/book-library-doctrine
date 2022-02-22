@@ -31,7 +31,7 @@
     <prototype namespace="EfTech\BookLibrary\" resource="./../../src"/>
     <prototype namespace="EfTech\BookLibrary\Infrastructure\"
                resource="./../../vendor/eff-tech/framework/src"
-               exclude="./../../vendor/eff-tech/framework/src/{Router,Logger,http}"/>
+               exclude="./../../vendor/eff-tech/framework/src/{Router,Logger,http,Db}"/>
 
     <instanceof id="EfTech\BookLibrary\Infrastructure\Controller\ControllerInterface" public="true"/>
     <instanceof id="EfTech\BookLibrary\Infrastructure\Console\CommandInterface" public="true"/>
@@ -76,7 +76,7 @@
         </argument>
     </service>
     <service id="EfTech\BookLibrary\Infrastructure\Auth\UserDataStorageInterface"
-             class="EfTech\BookLibrary\Repository\UserJsonFileRepository">
+             class="EfTech\BookLibrary\Repository\UserDbRepository">
     </service>
 
     <service id="EfTech\BookLibrary\Infrastructure\Session\SessionInterface">
@@ -86,6 +86,11 @@
              class="EfTech\BookLibrary\Infrastructure\View\DefaultRender"
              public="true"
     />
+
+
+
+
+
 
 </services>
 </container>

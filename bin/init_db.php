@@ -3,15 +3,17 @@
 $dsn = "pgsql:host=localhost;port=5432;dbname=book_library_db";
 $dbConn = new PDO($dsn,'postgres','');
 
-$dbConnect = pg_connect('host=localhost dbname=book_library_db user=postgres password=Qwerty12');
+//$dbConnect = pg_connect('host=localhost dbname=book_library_db user=postgres password=Qwerty12');
 
-$dbConn->query('DELETE FROM users');
 
 
 /**
  * Импорт данных пользователя
  */
+$dbConn->query('DELETE FROM users');
+
 $userData = json_decode(file_get_contents(__DIR__ . '/../data/users.json'), true, 512, JSON_THROW_ON_ERROR);
+
 foreach ($userData as $authorItem) {
     $sql = "INSERT INTO users(id, login, password) values ({$authorItem['id']}, '{$authorItem['login']}', '{$authorItem['password']}')";
     echo $sql;

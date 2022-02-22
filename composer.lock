@@ -4,11 +4,11 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "24542370ec0fe872689df1d769f4b426",
+    "content-hash": "038730ecde54cfb00ea2fe5d5aa735bf",
     "packages": [
         {
             "name": "eff-tech/framework",
-            "version": "dev-lesson_21-02-2022",
+            "version": "dev-lesson_22-02-2022",
             "source": {
                 "type": "git",
                 "url": "git@git.effective-team.ru:rnd/educational-projects/interns/2021-flow-1/fedyancev.d.a/framework.git",
@@ -3789,7 +3789,8 @@
     "prefer-lowest": false,
     "platform": {
         "php": "^7.4 || ^8.0",
-        "ext-json": "*"
+        "ext-json": "*",
+        "ext-pdo": "*"
     },
     "platform-dev": [],
     "plugin-api-version": "2.2.0"
