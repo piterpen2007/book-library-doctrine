@@ -39,16 +39,21 @@ final class UserDbRepository implements UserRepositoryInterface, UserDataStorage
 EOF;
         $whereParts = [];
         foreach ($criteria as $fieldName => $fieldValue) {
-            $whereParts[] = "$fieldName='$fieldValue'";
+            $whereParts[] = "$fieldName=:$fieldName";
         }
         if (count($whereParts) > 0) {
             $sql .= ' where ' . implode(' and ', $whereParts);
         }
 
-        $dataFromDb = $this->connection->query($sql)->fetchAll();
+        $statement = $this->connection->prepare($sql);
+        if (false === $statement->execute($criteria)) {
+            throw new RuntimeException(
+                'Ошибка выполнения подготовленного запроса в репоиторий пользователя'
+            );
+        }
 
         $foundEntities = [];
-
+        $dataFromDb = $statement->fetchAll();
         foreach ($dataFromDb as $item) {
             $foundEntities[] = new UserDataProvider($item['id'], $item['login'], $item['password']);
         }

@@ -59,7 +59,7 @@
 
 
     <service id="EfTech\BookLibrary\Entity\TextDocumentRepositoryInterface"
-             class="EfTech\BookLibrary\Repository\TextDocumentJsonFileRepository">
+             class="EfTech\BookLibrary\Repository\TextDocumentDbRepository">
 
     </service>
     <service id="EfTech\BookLibrary\Infrastructure\DataLoader\DataLoaderInterface"
