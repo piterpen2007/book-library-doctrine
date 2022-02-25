@@ -75,7 +75,10 @@ class SearchAuthorsService
     {
         $criteriaForRepository = [
             'id' => $searchCriteria->getId(),
-            'surname' => $searchCriteria->getSurname()
+            'name'=> $searchCriteria->getName(),
+            'surname'=> $searchCriteria->getSurname(),
+            'birthday'=> $searchCriteria->getBirthday(),
+            'country'=> $searchCriteria->getCountry()
         ];
 
         return array_filter($criteriaForRepository, static function ($v): bool {

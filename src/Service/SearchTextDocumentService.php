@@ -125,9 +125,16 @@ class SearchTextDocumentService
     private function searchCriteriaToArray(SearchTextDocumentServiceCriteria $searchCriteria): array
     {
         $criteriaForRepository = [
-            'id' => $searchCriteria->getId(),
             'author_surname' => $searchCriteria->getAuthorSurname(),
-            'title' => $searchCriteria->getTitle()
+            'author_id' => $searchCriteria->getAuthorId(),
+            'author_name' => $searchCriteria->getAuthorName(),
+            'author_birthday' => $searchCriteria->getAuthorBirthday(),
+            'author_country' => $searchCriteria->getAuthorCountry(),
+            'id'=> $searchCriteria->getId(),
+            'title' => $searchCriteria->getTitle(),
+            'year' => $searchCriteria->getYear(),
+            'status' => $searchCriteria->getStatus(),
+            'type' => $searchCriteria->getType()
         ];
         return array_filter($criteriaForRepository, static function ($v): bool {
             return null !== $v;

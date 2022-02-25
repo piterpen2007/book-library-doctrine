@@ -53,7 +53,10 @@ class GetAuthorsCollectionController implements ControllerInterface
     {
         $paramsValidation = [
             'surname' => 'incorrect author surname',
-            'id' => 'incorrect author id'
+            'id' => 'incorrect author id',
+            'name' => 'incorrect author name',
+            'birthday' => 'incorrect author birthday',
+            'country' => 'incorrect author country'
         ];
         $params = array_merge($serverRequest->getQueryParams(), $serverRequest->getAttributes());
 
@@ -76,6 +79,9 @@ class GetAuthorsCollectionController implements ControllerInterface
             $foundAuthors = $this->searchAuthorsService->search(
                 (new SearchAuthorsCriteria())
                     ->setId(isset($params['id']) ? (int)$params['id'] : null)
+                    ->setName($params['name'] ?? null)
+                    ->setBirthday($params['birthday'] ?? null)
+                    ->setCountry($params['country'] ?? null)
                     ->setSurname($params['surname'] ?? null)
             );
 

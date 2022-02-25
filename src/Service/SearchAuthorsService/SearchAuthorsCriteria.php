@@ -10,6 +10,18 @@ namespace EfTech\BookLibrary\Service\SearchAuthorsService;
 final class SearchAuthorsCriteria
 {
     /**
+     * @var string|null
+     */
+    private ?string $country = null;
+    /**
+     * @var string|null
+     */
+    private ?string $birthday = null;
+    /**
+     * @var string|null
+     */
+    private ?string $name = null;
+    /**
      *
      *
      * @var string|null
@@ -29,6 +41,60 @@ final class SearchAuthorsCriteria
     public function getSurname(): ?string
     {
         return $this->surname;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCountry(): ?string
+    {
+        return $this->country;
+    }
+
+    /**
+     * @param string|null $country
+     * @return SearchAuthorsCriteria
+     */
+    public function setCountry(?string $country): SearchAuthorsCriteria
+    {
+        $this->country = $country;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getBirthday(): ?string
+    {
+        return $this->birthday;
+    }
+
+    /**
+     * @param string|null $birthday
+     * @return SearchAuthorsCriteria
+     */
+    public function setBirthday(?string $birthday): SearchAuthorsCriteria
+    {
+        $this->birthday = $birthday;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string|null $name
+     * @return SearchAuthorsCriteria
+     */
+    public function setName(?string $name): SearchAuthorsCriteria
+    {
+        $this->name = $name;
+        return $this;
     }
     /**
      * id

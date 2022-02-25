@@ -15,6 +15,9 @@ use EfTech\BookLibrary\Repository\UserRepository\UserDataProvider;
  */
 final class UserDbRepository implements UserRepositoryInterface, UserDataStorageInterface
 {
+    private const ALLOWED_CRITERIA = [
+        'login'
+    ];
 
     private ConnectionInterface $connection;
 
@@ -34,6 +37,7 @@ final class UserDbRepository implements UserRepositoryInterface, UserDataStorage
      */
     public function findBy(array $criteria): array
     {
+        $this->validateCriteria($criteria);
         $sql = <<<EOF
         SELECT id, login, password FROM users 
 EOF;
@@ -74,6 +78,21 @@ EOF;
             throw new RuntimeException('Найдены пользователи с дублирубщимися логинами');
         }
         return (0 === $countEntities) ? null : current($entities);
+    }
+
+    /**
+     *  Валидация критериев поиска
+     *
+     * @param array $criteria
+     * @return void
+     */
+    private function validateCriteria(array $criteria): void
+    {
+        $invalidCriteria = array_diff(array_keys($criteria), self::ALLOWED_CRITERIA);
+        if (count($invalidCriteria) > 0) {
+            $errMsg = 'неподдерживаемые критерии поиска пользователей: ' . implode(', ', $invalidCriteria);
+            throw new RuntimeException($errMsg);
+        }
     }
 
 }

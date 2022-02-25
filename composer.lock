@@ -4,15 +4,15 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9ed01607323f70b7d0c9d45c8dde1016",
+    "content-hash": "fa89f4ec51fc926460ea5f826ae2f496",
     "packages": [
         {
             "name": "eff-tech/framework",
-            "version": "dev-lesson_24-02-2022",
+            "version": "dev-lesson_25-02-2022",
             "source": {
                 "type": "git",
                 "url": "git@git.effective-team.ru:rnd/educational-projects/interns/2021-flow-1/fedyancev.d.a/framework.git",
-                "reference": "2bc0048679dd52921dfc57824ab644c91dc417da"
+                "reference": "175b554dc6be88ff5ce03bc662aec7e148123965"
             },
             "require": {
                 "ext-json": "*",
@@ -67,7 +67,7 @@
             "support": {
                 "email": "popkin@yandex.ru"
             },
-            "time": "2022-02-24T07:18:20+00:00"
+            "time": "2022-02-24T13:11:50+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -1187,12 +1187,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Symfony\\Polyfill\\Ctype\\": ""
-                },
                 "files": [
                     "bootstrap.php"
-                ]
+                ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Ctype\\": ""
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [

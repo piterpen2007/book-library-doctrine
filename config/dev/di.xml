@@ -66,7 +66,7 @@
              class="EfTech\BookLibrary\Infrastructure\DataLoader\JsonDataLoader"/>
 
     <service id="EfTech\BookLibrary\Entity\AuthorRepositoryInterface"
-             class="EfTech\BookLibrary\Repository\AuthorJsonFileRepository">
+             class="EfTech\BookLibrary\Repository\AuthorDbRepository">
     </service>
     <service id="EfTech\BookLibrary\Infrastructure\Auth\HttpAuthProvider">
         <argument key="$loginUri" type="service">

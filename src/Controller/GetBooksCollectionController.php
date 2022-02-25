@@ -54,8 +54,15 @@ class GetBooksCollectionController implements ControllerInterface
     {
         $paramTypeValidation = [
             'author_surname' => "incorrect author surname",
+            'author_id' => "incorrect author id",
+            'author_name' => "incorrect author name",
+            'author_birthday' => "incorrect author birthday",
+            'author_country' => "incorrect author country",
             'title' => 'incorrect book title',
-            'id' => 'incorrect book id'
+            'id' => 'incorrect book id',
+            'year' => 'incorrect book year',
+            'status' => 'incorrect book status',
+            'type' => 'incorrect book type'
         ];
         $queryParams = array_merge($request->getQueryParams(), $request->getAttributes());
         return Assert::arrayElementsIsString($paramTypeValidation, $queryParams);
@@ -77,7 +84,15 @@ class GetBooksCollectionController implements ControllerInterface
                 ->search((new SearchTextDocumentServiceCriteria())
                     ->setAuthorSurname($params['author_surname'] ?? null)
                     ->setId($params['id'] ?? null)
-                    ->setTitle($params['title'] ?? null));
+                    ->setTitle($params['title'] ?? null)
+                    ->setAuthorId(isset($params['author_id']) ? (int)$params['author_id'] : null)
+                    ->setAuthorName($params['author_name'] ?? null)
+                    ->setAuthorBirthday($params['author_birthday'] ?? null)
+                    ->setAuthorCountry($params['author_country'] ?? null)
+                    ->setYear(isset($params['year']) ? (int)$params['year'] : null)
+                    ->setStatus($params['status'] ?? null)
+                    ->setType($params['type'] ?? null)
+                );
 
             $result = $this->buildResult($foundTextDocuments);
             $httpCode = $this->buildHttpCode($foundTextDocuments);
