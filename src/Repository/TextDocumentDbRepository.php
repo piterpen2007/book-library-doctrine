@@ -305,15 +305,13 @@ EOF;
     public function nextId(): int
     {
         $sql = <<<EOF
-SELECT 
-    MAX(id) AS max_id
-FROM text_documents
+SELECT nextval('text_documents_id_seq') AS next_id
 EOF;
 
-        $maxId = current($this->connection->query($sql)->fetchAll())['max_id'];
+        $maxId = current($this->connection->query($sql)->fetchAll())['next_id'];
         $maxId = null === $maxId ?? 0;
 
-        return ((int)$maxId) + 1;
+        return (int)$maxId;
     }
 
     /**
