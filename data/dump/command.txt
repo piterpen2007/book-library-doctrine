@@ -38,8 +38,37 @@ select setval('users_id_seq',max(id) + 1) from users
 
 
 
+//Пример запроса с джоином таблицы самой к себе
+select
+    t.title as text_document_title,
+    a.name as author_name,
+    a.surname as author_surname,
+       string_agg(td.title, ','),
+    count(td.id)
+from text_documents as t
+         JOIN authors as a ON t.author_id = a.id
+         JOIN text_documents td on td.author_id = a.id
+
+group by t.id, a.name, a.surname
 
 
+//Пример запроса
+select t.id        as id,
+       t.title     as title,
+       t.year      as year,
+       t.status    as status,
+       t.type      as type,
+       t.number    as number,
+       a.name      as author_name,
+       a.surname   as author_surname,
+       a.birthday  as author_birthday,
+       a.country   as author_country,
+       pp.price    as purchase_price_price,
+       pp.date     as purchase_price_date,
+       pp.currency as purchase_price_currency
+from text_documents as t
+         LEFT JOIN authors a on a.id = t.author_id
+         LEFT JOIN purchase_price pp on t.id = pp.text_document_id
 
 
 
