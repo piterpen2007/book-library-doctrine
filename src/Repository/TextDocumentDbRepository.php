@@ -308,10 +308,7 @@ EOF;
 SELECT nextval('text_documents_id_seq') AS next_id
 EOF;
 
-        $maxId = current($this->connection->query($sql)->fetchAll())['next_id'];
-        $maxId = null === $maxId ?? 0;
-
-        return (int)$maxId;
+        return (int)current($this->connection->query($sql)->fetchAll())['next_id'];
     }
 
     /**
