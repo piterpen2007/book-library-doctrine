@@ -13,23 +13,47 @@ use EfTech\BookLibrary\Infrastructure\Db\ConnectionInterface;
 use EfTech\BookLibrary\ValueObject\Currency;
 use EfTech\BookLibrary\ValueObject\Money;
 use EfTech\BookLibrary\ValueObject\PurchasePrice;
-use phpDocumentor\Reflection\Types\Static_;
 
 class TextDocumentDbRepository implements TextDocumentRepositoryInterface
 {
-    private const ALLOWED_CRITERIA = [
-        'author_surname',
-        'author_id',
-        'author_name',
-        'author_birthday',
-        'author_country',
-        'id',
-        'title',
-        'year',
-        'status',
-        'number',
-        'type',
+    private const SEARCH_CRITERIA = [
+        'author_surname' => 'a.surname',
+        'author_id' => 'a.id',
+        'author_name' => 'a.name',
+        'author_birthday' => 'a.birthday',
+        'author_country' => 'a.country',
+        'id' => 't.id',
+        'title' => 't.title',
+        'year' => 't.year',
+        'status' => 't.status',
+        'number' => 't.number',
+        'type' => 't.type',
     ];
+    /**
+     *  Базовый sql запрос для поиска текстовых документов
+     */
+    private const BASE_SEARCH_SQL = <<<EOF
+select t.id        as id,
+       t.title     as title,
+       t.year      as year,
+       t.status    as status,
+       t.number    as number,
+       t.type      as type,
+       a.id        as author_id,
+       a.name      as author_name,
+       a.surname   as author_surname,
+       a.birthday  as author_birthday,
+       a.country   as author_country,
+       pp.id       as purchase_price_id,
+       pp.price    as purchase_price_price,
+       pp.currency as purchase_price_currency,
+       pp.date     as purchase_price_date
+from text_documents as t
+         left join text_document_to_author as tdta on t.id = tdta.text_document_id
+         left join authors a on a.id = tdta.author_id
+         left join purchase_price pp on t.id = pp.text_document_id
+EOF;
+
 
     /**
      *  Соединение с бд
@@ -46,199 +70,133 @@ class TextDocumentDbRepository implements TextDocumentRepositoryInterface
         $this->connection = $connection;
     }
 
-    /**
-     * @inheritDoc
-     */
+
     public function findBy(array $criteria): array
     {
-        $this->validateCriteria($criteria);
+        $textDocumentData = $this->loadData($criteria);
 
-        $textDocumentData = $this->loadTextDocumentData($criteria);
-        $authorEntities = $this->loadAuthorEntity($criteria, $textDocumentData);
-        $purchasePrices = $this->loadPurchasePrices($textDocumentData);
-
-        return $this->buildTextDocumentEntities($criteria, $textDocumentData, $authorEntities, $purchasePrices);
+        return $this->buildTextDocument($textDocumentData);
     }
 
     /**
-     * @param array $textDocumentData
-     * @return PurchasePrice[]
+     * Реализация логики создания сущности на основе данных из бд
      *
-     */
-    private function loadPurchasePrices(array $textDocumentData): array
-    {
-        $idListWhereParts = [];
-        $whereParams = [];
-
-        foreach ($textDocumentData as $textDocumentItem) {
-            $idListWhereParts[] = "text_document_id=:id_{$textDocumentItem['id']}";
-            $whereParams["id_{$textDocumentItem['id']}"] = $textDocumentItem['id'];
-        }
-
-        if (0 === count($idListWhereParts)) {
-            return [];
-        }
-
-        $sql = <<<EOF
-SELECT 
-date, price, currency, text_document_id
-FROM purchase_price
-EOF;
-        $sql .= ' WHERE ' . implode(' OR ', $idListWhereParts);
-
-        $stmt = $this->connection->prepare($sql);
-        $stmt->execute($whereParams);
-
-        $purchasePricesData = $stmt->fetchAll();
-
-
-        $foundPurchasePrices = [];
-
-        foreach ($purchasePricesData as $purchasePrice) {
-            $currencyName = 'RUB' === $purchasePrice['currency'] ? 'рубль' : 'неизвестно';
-
-            $obj = new PurchasePrice(
-                DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $purchasePrice['date']),
-                new Money(
-                    $purchasePrice['price'],
-                    new Currency(
-                        $purchasePrice['currency'],
-                        $currencyName
-                    )
-                )
-            );
-            if (false === array_key_exists($purchasePrice['text_document_id'], $foundPurchasePrices)) {
-                $foundPurchasePrices[$purchasePrice['text_document_id']] = [];
-            }
-            $foundPurchasePrices[$purchasePrice['text_document_id']][] = $obj;
-        }
-
-        return $foundPurchasePrices;
-    }
-
-    /**
-     *  Загрузка данных о авторах
-     *
-     * @param array $criteria
-     * @param array $textDocumentData
+     * @param array $data
      * @return array
      */
-    private function loadAuthorEntity(array $criteria, array $textDocumentData): array
+    private function buildTextDocument(array $data): array
     {
-        $whereParts = [];
-        $whereParams = [];
+        $textDocumentData = [];
+        $authors = [];
+        foreach ($data as $row) {
+            if (false === array_key_exists($row['id'], $textDocumentData)) {
+                $yearDate = DateTimeImmutable::createFromFormat('Y-m-d', $row['year']);
 
-        $list = array_map(
-            static function (array $a) {
-                return $a['author_id'];
-            },
-            array_filter(
-                $textDocumentData,
-                static function (array $a) {
-                    return isset($a['author_id']);
+                $textDocumentData[$row['id']] = [
+                    'id' => $row['id'],
+                    'title' => $row['title'],
+                    'year' => $yearDate->format('Y'),
+                    'number' => $row['number'],
+                    'status' => $row['status'],
+                    'authors' => [],
+                    'purchasePrices' => [],
+                    'type' => $row['type']
+                ];
+            }
+            if (null !== $row['author_id']) {
+                if (false === array_key_exists($row['author_id'], $authors)) {
+                    $birthdayDate = DateTimeImmutable::createFromFormat('Y-m-d', $row['author_birthday']);
+                    $authors[$row['author_id']] = new Author(
+                        $row['author_id'],
+                        $row['author_name'],
+                        $row['author_surname'],
+                        $birthdayDate->format('d.m.Y'),
+                        $row['author_country']
+                    );
                 }
-            )
-        );
-
-        $authorIdList = array_unique($list);
-
-        if (count($authorIdList) > 0) {
-            $whereParams = array_combine(
-                array_map(
-                    static function(int $idx) {return ':id_' . $idx;},
-                    range(1, count($authorIdList))
-                ),
-                $authorIdList
-            );
-
-            $whereParts[] = ' id IN (' . implode(', ', array_keys($whereParams)) . ')';
-        }
-
-
-        foreach ($criteria as $criteriaName => $criteriaValue) {
-            if (0 !== strpos($criteriaName, 'author_')) {
-                continue;
+                $textDocumentData[$row['id']]['authors'][$row['author_id']] = $authors[$row['author_id']];
             }
-            $columnName = substr($criteriaName, 7);
+            if (
+                null !== $row['purchase_price_id']
+                &&
+                false === array_key_exists($row['purchase_price_id'], $textDocumentData[$row['id']]['purchasePrices'])
+            ) {
+                $currencyName = 'RUB' === $row['purchase_price_currency'] ? 'рубль' : 'неизвестно';
 
-            $whereParts[] = "$columnName =:$criteriaName";
-            $whereParams[$criteriaName] = $criteriaValue;
-        }
-        if (0 === count($whereParts)) {
-            return [];
-        }
-        $sql = <<<EOF
-SELECT
-    id, 
-    name, 
-    surname, 
-    birthday, 
-    country
-FROM authors
-EOF;
-        $sql .= ' WHERE ' . implode(' AND ', $whereParts);
-
-        $stmt = $this->connection->prepare($sql);
-        $stmt->execute($whereParams);
-        $authorsData = $stmt->fetchAll();
-
-        $foundAuthors = [];
-
-        foreach ($authorsData as $authorItem) {
-            $birthdayAuthor = DateTimeImmutable::createFromFormat('Y-m-d', $authorItem['birthday']);
-            $authorItem['birthday'] = $birthdayAuthor->format('d.m.Y');
-
-
-            $authorObj = Author::createFromArray($authorItem);
-            $foundAuthors[$authorObj->getId()] = $authorObj;
+                $obj = new PurchasePrice(
+                    DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $row['purchase_price_date']),
+                    new Money(
+                        $row['purchase_price_price'],
+                        new Currency(
+                            $row['purchase_price_currency'],
+                            $currencyName
+                        )
+                    )
+                );
+                $textDocumentData[$row['id']]['purchasePrices'][$row['purchase_price_id']] = $obj;
+            }
         }
 
-        return $foundAuthors;
+        $textDocumentEntities = [];
+        foreach ($textDocumentData as $item) {
+            if ('magazine' === $item['type']) {
+                $textDocumentEntities[] = new Magazine(
+                    $item['id'],
+                    $item['title'],
+                    $item['year'],
+                    $item['authors'],
+                    $item['number'],
+                    $item['purchasePrices'],
+                    $item['status']
+                );
+            } elseif ('book' === $item['type']) {
+                $textDocumentEntities[] = new Book(
+                    $item['id'],
+                    $item['title'],
+                    $item['year'],
+                    $item['authors'],
+                    $item['purchasePrices'],
+                    $item['status']
+                );
+            }
+        }
+        return $textDocumentEntities;
     }
 
-
     /**
-     * Загружает данные о текстовых документах
+     * Логика построения sql запроса на основе критериев поиска и получения данных
      *
      * @param array $criteria
      * @return array
      */
-    private function loadTextDocumentData(array $criteria): array
+    private function loadData(array $criteria): array
     {
-        $sql = <<<EOF
-SELECT 
-    id, 
-    title, 
-    year, 
-    author_id, 
-    status,
-    type, 
-    number
-FROM text_documents
-
-EOF;
+        $sql = self::BASE_SEARCH_SQL;
         $whereParts = [];
-        $whereParams = [];
-
-
+        $params = [];
+        $notSupportedSearchCriteria = [];
         foreach ($criteria as $criteriaName => $criteriaValue) {
-            if (0 === strpos($criteriaName, 'author_')) {
-                continue;
+            if (array_key_exists($criteriaName, self::SEARCH_CRITERIA)) {
+                $sqlParts =  self::SEARCH_CRITERIA[$criteriaName];
+                $whereParts[] = "$sqlParts=:$criteriaName";
+                $params[$criteriaName] = $criteriaValue;
+            } else {
+                $notSupportedSearchCriteria[] = $criteriaName;
             }
-            $whereParts[] = "$criteriaName = :$criteriaName";
-            $whereParams[$criteriaName] = $criteriaValue;
+            if (count($notSupportedSearchCriteria) > 0) {
+                $errMsg = 'Неподдерживаемые критерии поиска текстовых документов'
+                    . implode(', ', $notSupportedSearchCriteria);
+                throw new RuntimeException($errMsg);
+            }
         }
-
         if (count($whereParts) > 0) {
             $sql .= ' WHERE ' . implode(' AND ', $whereParts);
         }
-
         $stmt = $this->connection->prepare($sql);
-        $stmt->execute($whereParams);
+        $stmt->execute($params);
 
         return $stmt->fetchAll();
     }
-
     /**
      * @inheritDoc
      */
@@ -251,7 +209,6 @@ SET
     year = :year,
     status = :status,
     number = :number,
-    author_id = :author_id,
     type = :type
 WHERE id = :id
 EOF;
@@ -259,17 +216,14 @@ EOF;
             'id' => $entity->getId(),
             'title' => $entity->getTitle(),
             'year' => "{$entity->getYear()}/01/01",
-            'author_id' => null,
             'status' => $entity->getStatus(),
             'type' => null,
             'number' => null
         ];
 
         if ($entity instanceof Book) {
-            $values['author_id'] = $entity->getAuthor()->getId();
             $values['type'] = 'book';
         } elseif ($entity instanceof Magazine) {
-            $values['author_id'] = null === $entity->getAuthor() ? null : $entity->getAuthor()->getId();
             $values['type'] = 'magazine';
             $values['number'] = $entity->getNumber();
         } else {
@@ -281,6 +235,10 @@ EOF;
 DELETE FROM purchase_price WHERE text_document_id = :text_document_id
 EOF;
         $this->connection->prepare($sql)->execute(['text_document_id' => $entity->getId()]);
+
+        $this->saveTextDocumentToAuthor($entity);
+
+
 
         $sql = <<<EOF
 INSERT INTO purchase_price
@@ -317,26 +275,23 @@ EOF;
     public function add(AbstractTextDocument $entity): AbstractTextDocument
     {
         $sql = <<<EOF
-INSERT INTO text_documents (id, title, year, author_id, status, type, number)
+INSERT INTO text_documents (id, title, year, status, type, number)
 VALUES (
-        :id, :title, :year, :author_id, :status, :type, :number
+        :id, :title, :year, :status, :type, :number
 )
 EOF;
         $values = [
             'id' => $entity->getId(),
             'title' => $entity->getTitle(),
             'year' => "{$entity->getYear()}/01/01",
-            'author_id' => null,
             'status' => $entity->getStatus(),
             'type' => null,
             'number' => null
         ];
 
         if ($entity instanceof Book) {
-            $values['author_id'] = $entity->getAuthor()->getId();
             $values['type'] = 'book';
         } elseif ($entity instanceof Magazine) {
-            $values['author_id'] = null === $entity->getAuthor() ? null : $entity->getAuthor()->getId();
             $values['type'] = 'magazine';
             $values['number'] = $entity->getNumber();
         } else {
@@ -344,77 +299,30 @@ EOF;
         }
         $this->connection->prepare($sql)->execute($values);
 
-        $sql = <<<EOF
-DELETE FROM purchase_price WHERE text_document_id = :text_document_id
-EOF;
+        $this->saveTextDocumentToAuthor($entity);
 
         return $entity;
     }
 
-    /**
-     *  Делает сущности на основе данных из бд
-     *
-     * @param array $criteria
-     * @param array $textDocumentData
-     * @param Author[] $authorEntities
-     * @param PurchasePrice[] $purchasePrices
-     * @return AbstractTextDocument[]
-     */
-    private function buildTextDocumentEntities(
-        array $criteria,
-        array $textDocumentData,
-        array $authorEntities,
-        array $purchasePrices
-    ): array {
-        $textDocumentEntities = [];
-
-        $hasAuthorCriteria =
-            count(
-                array_filter(
-                    array_keys($criteria),
-                    static function (string $key) {
-                        return 0 === strpos($key, 'author_');
-                    }
-                )
-            ) > 0;
-
-        foreach ($textDocumentData as $textDocumentItem) {
-            if ($hasAuthorCriteria && false === array_key_exists($textDocumentItem['author_id'], $authorEntities)) {
-                continue;
-            }
-
-
-            $textDocumentItem['author'] = null === $textDocumentItem['author_id'] ? null :
-                $authorEntities[$textDocumentItem['author_id']];
-
-            $yearDate = DateTimeImmutable::createFromFormat('Y-m-d', $textDocumentItem['year']);
-            $textDocumentItem['year'] = (int)$yearDate->format('Y');
-
-            $textDocumentItem['purchasePrices'] = false === array_key_exists($textDocumentItem['id'], $purchasePrices)
-                ? []
-                : $purchasePrices[$textDocumentItem['id']];
-
-            if ('magazine' === $textDocumentItem['type']) {
-                $textDocumentEntities[] = Magazine::createFromArray($textDocumentItem);
-            } elseif ('book' === $textDocumentItem['type']) {
-                $textDocumentEntities[] = Book::createFromArray($textDocumentItem);
-            }
-        }
-        return $textDocumentEntities;
-    }
-
-    /**
-     *  Валидация критериев поиска
-     *
-     * @param array $criteria
-     * @return void
-     */
-    private function validateCriteria(array $criteria): void
+    private function saveTextDocumentToAuthor(AbstractTextDocument $entity): void
     {
-        $invalidCriteria = array_diff(array_keys($criteria), self::ALLOWED_CRITERIA);
-        if (count($invalidCriteria) > 0) {
-            $errMsg = 'неподдерживаемые критерии поиска текстовых документов: ' . implode(', ', $invalidCriteria);
-            throw new RuntimeException($errMsg);
+
+        $this->connection->prepare('DELETE FROM text_document_to_author WHERE text_document_id = :textDocumentId')
+            ->execute(['textDocumentId' => $entity->getId()]);
+
+        $insertParts = [];
+        $insertParams = [];
+        foreach ($entity->getAuthors() as $index => $author) {
+            $insertParts[] = "(:textDocumentId_$index, :authorId_$index";
+            $insertParams["textDocumentId_$index"] = $entity->getId();
+            $insertParams["authorId_$index"] = $author->getId();
+        }
+        if (count($insertParts) > 0) {
+            $values = implode(',', $insertParts);
+            $sql = <<<EOF
+INSERT INTO text_document_to_author (text_document_id, author_id) VALUES $values
+EOF;
+            $this->connection->prepare($sql)->execute($insertParams);
         }
     }
 }

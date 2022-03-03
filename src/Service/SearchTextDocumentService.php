@@ -3,6 +3,7 @@
 namespace EfTech\BookLibrary\Service;
 
 use EfTech\BookLibrary\Entity\AbstractTextDocument;
+use EfTech\BookLibrary\Entity\Author;
 use EfTech\BookLibrary\Entity\Book;
 use EfTech\BookLibrary\Entity\Magazine;
 use EfTech\BookLibrary\Entity\TextDocumentRepositoryInterface;
@@ -73,21 +74,16 @@ class SearchTextDocumentService
      */
     private function createDto(AbstractTextDocument $textDocument): TextDocumentDto
     {
-        $authorDto = null;
-        if (
-            $textDocument instanceof Book ||
-            ($textDocument instanceof Magazine && null !== $textDocument->getAuthor())
-        ) {
-            $author = $textDocument->getAuthor();
-            $authorDto = new
-            AuthorDto(
-                $author->getId(),
-                $author->getName(),
-                $author->getSurname(),
-                $author->getBirthday(),
-                $author->getCountry()
+        $authors = array_map(static function (Author $a) {
+            return new AuthorDto(
+                $a->getId(),
+                $a->getName(),
+                $a->getSurname(),
+                $a->getBirthday(),
+                $a->getCountry()
             );
-        }
+        }, $textDocument->getAuthors());
+
         return new
         TextDocumentDto(
             $this->getTextDocumentType($textDocument),
@@ -95,7 +91,7 @@ class SearchTextDocumentService
             $textDocument->getTitle(),
             $textDocument->getTitleForPrinting(),
             $textDocument->getYear(),
-            $authorDto,
+            $authors,
             $textDocument instanceof Magazine ? $textDocument->getNumber() : null
         );
     }
@@ -130,7 +126,7 @@ class SearchTextDocumentService
             'author_name' => $searchCriteria->getAuthorName(),
             'author_birthday' => $searchCriteria->getAuthorBirthday(),
             'author_country' => $searchCriteria->getAuthorCountry(),
-            'id'=> $searchCriteria->getId(),
+            'id' => $searchCriteria->getId(),
             'title' => $searchCriteria->getTitle(),
             'year' => $searchCriteria->getYear(),
             'status' => $searchCriteria->getStatus(),

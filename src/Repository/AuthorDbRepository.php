@@ -15,7 +15,8 @@ class AuthorDbRepository implements AuthorRepositoryInterface
         'name',
         'surname',
         'birthday',
-        'country'
+        'country',
+        'list_id'
     ];
     /**
      *  Соединение с бд
@@ -41,8 +42,23 @@ class AuthorDbRepository implements AuthorRepositoryInterface
 
 
         foreach ($criteria as $criteriaName => $criteriaValue) {
-            $whereParts[] = "$criteriaName = :$criteriaName";
-            $whereParams[$criteriaName] = $criteriaValue;
+            if ('list_id' === $criteriaName) {
+                if (false === is_array($criteriaValue)) {
+                    throw new RuntimeException('Некорректный список id авторов');
+                }
+                $idParts = [];
+                foreach ($criteriaValue as $index => $idValue) {
+                    $idParts[] = ":id_$index";
+                    $whereParams["id_$index"] = $idValue;
+                }
+                if (count($idParts) > 0) {
+                    $whereParts[] = 'id IN (' . implode(', ', $idParts) . ')';
+                } else {
+                    $whereParts[] = "$criteriaName = :$criteriaName";
+                    $whereParams[$criteriaName] = $criteriaValue;
+                }
+            }
+
         }
 
 

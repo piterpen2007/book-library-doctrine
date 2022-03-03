@@ -8,6 +8,13 @@ use EfTech\BookLibrary\ValueObject\PurchasePrice;
 
 abstract class AbstractTextDocument
 {
+    /**
+     * Автор текстового документа
+     *
+     * @var Author[]
+     */
+    private array $authors;
+
     public const STATUS_ARCHIVE = 'archive';
     public const STATUS_IN_STOCK = 'inStock';
     /**
@@ -38,9 +45,16 @@ abstract class AbstractTextDocument
      * @param int $year - Год выпуска книги
      * @param array $purchasePrices
      * @param string $status
+     * @param Author[] $authors
      */
-    public function __construct(int $id, string $title, int $year, array $purchasePrices, string $status)
-    {
+    public function __construct(
+        int $id,
+        string $title,
+        int $year,
+        array $purchasePrices,
+        string $status,
+        array $authors
+    ) {
         $this->id = $id;
         $this->title = $title;
         $this->year = $year;
@@ -52,6 +66,12 @@ abstract class AbstractTextDocument
         }
         $this->purchasePrices = $purchasePrices;
         $this->status = $status;
+        foreach ($authors as $author) {
+            if (!$author instanceof Author) {
+                throw new DomainException('Сущность автора имеет неверный формат');
+            }
+        }
+        $this->authors = $authors;
     }
 
     /** Перенос документа в архив
@@ -78,7 +98,6 @@ abstract class AbstractTextDocument
     }
 
 
-
     /** Устанавливает id текстового документа
      *
      * @param int $id
@@ -90,6 +109,17 @@ abstract class AbstractTextDocument
 
         return $this;
     }
+
+    /**
+     *
+     *
+     * @return Author[]
+     */
+    public function getAuthors(): array
+    {
+        return $this->authors;
+    }
+
 
     /**
      * @return int
@@ -153,7 +183,6 @@ abstract class AbstractTextDocument
     {
         return $this->status;
     }
-
 
 
     /** Возвращает заголовок для печати

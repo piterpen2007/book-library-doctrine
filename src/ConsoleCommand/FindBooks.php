@@ -105,7 +105,7 @@ final class FindBooks implements CommandInterface
         if (TextDocumentDto::TYPE_MAGAZINE === $textDocument->getType()) {
             $jsonData['number'] = $textDocument->getNumber();
         }
-        $authorDto = $textDocument->getAuthor();
+        $authorDto = $textDocument->getAuthors();
         if (null !== $authorDto) {
             $jsonData['author'] = [
                 'id' => $authorDto->getId(),
@@ -117,6 +117,7 @@ final class FindBooks implements CommandInterface
         } else {
             $jsonData['author'] = null;
         }
+        $jsonData['authors'] = array_map(static )
         return $jsonData;
     }
 }

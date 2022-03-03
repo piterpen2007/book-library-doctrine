@@ -135,7 +135,7 @@ class GetBooksCollectionController implements ControllerInterface
         if (TextDocumentDto::TYPE_MAGAZINE === $textDocument->getType()) {
             $jsonData['number'] = $textDocument->getNumber();
         }
-        $authorDto = $textDocument->getAuthor();
+        $authorDto = $textDocument->getAuthors();
         if (null !== $authorDto) {
             $jsonData['author'] = [
                 'id' => $authorDto->getId(),

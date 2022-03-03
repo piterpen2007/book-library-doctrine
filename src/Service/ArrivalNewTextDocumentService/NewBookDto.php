@@ -2,6 +2,8 @@
 
 namespace EfTech\BookLibrary\Service\ArrivalNewTextDocumentService;
 
+use EfTech\BookLibrary\Exception\RuntimeException;
+
 final class NewBookDto
 {
     /**
@@ -15,20 +17,25 @@ final class NewBookDto
     /**
      * id автора книги
      *
-     * @var int
+     * @var array
      */
-    private int $authorId;
+    private array $authorIds;
 
     /**
      * @param string $title Заголовок книги
      * @param int $year Год выпуска книги
-     * @param int $authorId id автора книги
+     * @param array $authorIds id автора книги
      */
-    public function __construct(string $title, int $year, int $authorId)
+    public function __construct(string $title, int $year, array $authorIds)
     {
+        foreach ($authorIds as $authorId) {
+            if (false === is_int($authorId)) {
+                throw new RuntimeException('id автора должен быть числом');
+            }
+        }
         $this->title = $title;
         $this->year = $year;
-        $this->authorId = $authorId;
+        $this->authorIds = $authorIds;
     }
 
     /**
@@ -48,10 +55,10 @@ final class NewBookDto
     }
 
     /**
-     * @return int
+     * @return array
      */
-    public function getAuthorId(): int
+    public function getAuthorIds(): array
     {
-        return $this->authorId;
+        return $this->authorIds;
     }
 }

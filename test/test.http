@@ -9,12 +9,13 @@ GET http://book-library-fedyancev.ru:8083/books?title=Мечтают ли анд
    client.assert(response.body[0]['id'] === 10, "id книги не корректен");
    client.assert(response.body[0]['title'] === "Мечтают ли андроиды об электроовцах?", "название книги не корректно");
    client.assert(response.body[0]['year'] === 1966, "год книги не корректен");
-   client.assert(response.body[0]['author'] !== undefined, "нет данных о авторе");
-   client.assert(response.body[0]['author']['id'] === 5, "id автора не корректен");
-   client.assert(response.body[0]['author']['name'] === "Филип", "имя не корректен");
-   client.assert(response.body[0]['author']['surname'] === "Дик", "фамилия не корректен");
-   client.assert(response.body[0]['author']['birthday'] === "16.12.1928", "Дата рождения автора не корректен");
-   client.assert(response.body[0]['author']['country'] === "us", "страна не корректен");
+   client.assert(Array.isArray(response.body['authors']),'Данные о авторе имеют не верный формат')
+   client.assert(response.body['authors'].length === 0, "присутствует информация о авторе");
+   client.assert(response.body[0]['authors'][0]['id'] === 5, "id автора не корректен");
+   client.assert(response.body[0]['authors'][0]['name'] === "Филип", "имя не корректен");
+   client.assert(response.body[0]['authors'][0]['surname'] === "Дик", "фамилия не корректен");
+   client.assert(response.body[0]['authors'][0]['birthday'] === "16.12.1928", "Дата рождения автора не корректен");
+   client.assert(response.body[0]['authors'][0]['country'] === "us", "страна не корректен");
  });
  %}
 
@@ -54,12 +55,13 @@ GET http://book-library-fedyancev.ru:8083/books?author_surname=Дик
    client.assert(response.body[0]['id'] === 10, "id книги не корректен");
    client.assert(response.body[0]['title'] === "Мечтают ли андроиды об электроовцах?", "название книги не корректно");
    client.assert(response.body[0]['year'] === 1966, "год книги не корректен");
-   client.assert(response.body[0]['author'] !== undefined, "нет данных о авторе");
-   client.assert(response.body[0]['author']['id'] === 5, "id автора не корректен");
-   client.assert(response.body[0]['author']['name'] === "Филип", "имя не корректен");
-   client.assert(response.body[0]['author']['surname'] === "Дик", "фамилия не корректен");
-   client.assert(response.body[0]['author']['birthday'] === "16.12.1928", "Дата рождения автора не корректен");
-   client.assert(response.body[0]['author']['country'] === "us", "страна не корректен");
+   client.assert(Array.isArray(response.body['authors']),'Данные о авторе имеют не верный формат')
+   client.assert(response.body['authors'].length === 0, "присутствует информация о авторе");
+   client.assert(response.body[0]['authors'][0]['id'] === 5, "id автора не корректен");
+   client.assert(response.body[0]['authors'][0]['name'] === "Филип", "имя не корректен");
+   client.assert(response.body[0]['authors'][0]['surname'] === "Дик", "фамилия не корректен");
+   client.assert(response.body[0]['authors'][0]['birthday'] === "16.12.1928", "Дата рождения автора не корректен");
+   client.assert(response.body[0]['authors'][0]['country'] === "us", "страна не корректен");
    })
 %}
 
@@ -127,7 +129,8 @@ GET http://book-library-fedyancev.ru:8083/books?title=Логос
    client.assert(response.body[0]['id'] === 17, "id журнала не корректен");
    client.assert(response.body[0]['title'] === "Логос", "название журнала не корректно");
    client.assert(response.body[0]['year'] === 2020, "год журнала не корректен");
-   client.assert(response.body[0]['author'] == null, "присутствует информация о авторе");
+   client.assert(Array.isArray(response.body['authors']),'Данные о авторе имеют не верный формат')
+   client.assert(response.body['authors'].length === 0, "присутствует информация о авторе");
    client.assert(response.body[0]['number'] === 1, "номер не корректен");
  });
  %}
@@ -143,7 +146,8 @@ GET http://book-library-fedyancev.ru:8083/books/17
    client.assert(response.body['id'] === 17, "id журнала не корректен");
    client.assert(response.body['title'] === "Логос", "название журнала не корректно");
    client.assert(response.body['year'] === 2020, "год журнала не корректен");
-   client.assert(response.body['author'] == null, "присутствует информация о авторе");
+   client.assert(Array.isArray(response.body['authors']),'Данные о авторе имеют не верный формат')
+   client.assert(response.body['authors'].length === 0, "присутствует информация о авторе");
    client.assert(response.body['number'] === 1, "номер не корректен");
  });
  %}
@@ -213,7 +217,7 @@ Content-Type: application/json
 {
   "title" : "Текстовой документ",
   "year": 2021,
-  "author_id" : 1
+  "author_id_list" : [1]
 }
 
 > {%
@@ -234,7 +238,7 @@ Content-Type: application/json
 {
   "title" : "Новый журнал",
   "year": 2021,
-  "author_id" : null,
+  "author_id_list" : null,
   "number": 10
 }
 

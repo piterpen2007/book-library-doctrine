@@ -10,30 +10,27 @@ final class Magazine extends AbstractTextDocument
      * @var int Номер журнала
      */
     private int $number;
-    /**
-     * @var ?Author данные о авторе
-     */
-    private ?Author $author;
 
     /**
      * @param int $id
      * @param string $title
      * @param int $year
-     * @param Author|null $author
+     * @param array $authors
      * @param int $number
+     * @param array $purchasePrices
+     * @param string $status
      */
     public function __construct(
         int $id,
         string $title,
         int $year,
-        ?Author $author,
+        array $authors,
         int $number,
         array $purchasePrices,
         string $status
     ) {
-        parent::__construct($id, $title, $year, $purchasePrices, $status);
+        parent::__construct($id, $title, $year, $purchasePrices, $status, $authors);
         $this->number = $number;
-        $this->author = $author;
     }
 
     /**
@@ -52,14 +49,6 @@ final class Magazine extends AbstractTextDocument
     {
         $this->number = $number;
         return $this;
-    }
-
-    /**
-     * @return Author|null
-     */
-    public function getAuthor(): ?Author
-    {
-        return $this->author;
     }
 
     /**
@@ -89,7 +78,7 @@ final class Magazine extends AbstractTextDocument
             'title',
             'year',
             'number',
-            'author',
+            'authors',
             'purchasePrices',
             'status'
         ];
@@ -105,7 +94,7 @@ final class Magazine extends AbstractTextDocument
             $data['id'],
             $data['title'],
             $data['year'],
-            $data['author'],
+            $data['authors'],
             $data['number'],
             $data['purchasePrices'],
             $data['status']

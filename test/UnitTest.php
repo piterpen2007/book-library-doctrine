@@ -48,7 +48,7 @@ class UnitTest extends TestCase
 
         $containerBuilder->removeAlias(LoggerInterface::class);
         $containerBuilder->setDefinition(NullLogger::class, new Definition());
-        $containerBuilder->setAlias(LoggerInterface::class,NullLogger::class)->setPublic(true);
+        $containerBuilder->setAlias(LoggerInterface::class, NullLogger::class)->setPublic(true);
 
         //$containerBuilder->setAlias(AdapterInterface::class, NullAdapter::class);
 
@@ -86,33 +86,15 @@ class UnitTest extends TestCase
                             'title_for_printing' => 'Мечтают ли андроиды об электроовцах? . Дик Филип . 1966',
                             'author' =>
                                 [
+                                    [
                                     'id' => 5,
                                     'name' => 'Филип',
                                     'surname' => 'Дик',
                                     'birthday' => '16.12.1928',
                                     'country' => 'us',
-                                ],
+                                    ]
+                                ]
                         ]
-                    ]
-                ]
-            ],
-            'Тестирование ситуации когда данные о книгах не корректны. Нет поля year' => [
-                'in' => [
-                    'uri' => '/books?title=Мечтают ли андроиды об электроовцах?',
-                    'diContainer' => (static function (ContainerBuilder $c): ContainerBuilder {
-                        $appConfigParams = $c->getParameter('app.configs');
-                        $appConfigParams['pathToBooks'] = __DIR__ . '/data/broken.books.json';
-                        $c->setParameter('app.configs', $appConfigParams);
-                        $c->compile();
-                        return $c;
-                    })(self::createDiContainer())
-
-                ],
-                'out' => [
-                    'httpCode' => 503,
-                    'result' => [
-                        'status' => 'fail',
-                        'message' => 'Отсутствуют обязательные элементы: year'
                     ]
                 ]
             ],
@@ -131,101 +113,6 @@ class UnitTest extends TestCase
                     'result' => [
                         'status' => 'fail',
                         'message' => 'system error'
-                    ]
-                ]
-            ],
-            'Тестирование ситуации с некорректным путем до файла с книгами' => [
-                'in' => [
-                    'uri' => '/books?title=Мечтают ли андроиды об электроовцах?',
-                    'diContainer' => (static function (ContainerBuilder $c): ContainerBuilder {
-                        $appConfigParams = $c->getParameter('app.configs');
-                        $appConfigParams['pathToBooks'] = __DIR__ . '/data/unknown.books.json';
-                        $c->setParameter('app.configs', $appConfigParams);
-                        $c->compile();
-                        return $c;
-                    })(self::createDiContainer())
-                ],
-                'out' => [
-                    'httpCode' => 500,
-                    'result' => [
-                        'status' => 'fail',
-                        'message' => 'Некорректный путь до файла с данными'
-                    ]
-                ]
-            ],
-            'Тестирование ситуации когда данные о журналах некорректны. Нет поля id' => [
-                'in' => [
-                    'uri' => '/books?title=National Geographic Magazine',
-                    'diContainer' => (static function (ContainerBuilder $c): ContainerBuilder {
-                        $appConfigParams = $c->getParameter('app.configs');
-                        $appConfigParams['pathToMagazines'] = __DIR__ . '/data/broken.magazines.json';
-                        $c->setParameter('app.configs', $appConfigParams);
-                        $c->compile();
-                        return $c;
-                    })(self::createDiContainer())
-                ],
-                'out' => [
-                    'httpCode' => 503,
-                    'result' => [
-                        'status' => 'fail',
-                        'message' => 'Нету id текстового документа'
-                    ]
-                ]
-            ],
-            'Тестирование ситуации когда данные в авторах некорректны. Нет поля birthday' => [
-                'in' => [
-                    'uri' => '/books?title=Мечтают ли андроиды об электроовцах?',
-                    'diContainer' => (static function (ContainerBuilder $c): ContainerBuilder {
-                        $appConfigParams = $c->getParameter('app.configs');
-                        $appConfigParams['pathToAuthor'] = __DIR__ . '/data/broken.authors.json';
-                        $c->setParameter('app.configs', $appConfigParams);
-                        $c->compile();
-                        return $c;
-                    })(self::createDiContainer())
-                ],
-                'out' => [
-                    'httpCode' => 503,
-                    'result' => [
-                        'status' => 'fail',
-                        'message' => 'Отсутствуют обязательные элементы: birthday'
-                    ]
-                ]
-            ],
-            'Тестирование ситуации с некорректным путем до файла о авторе' => [
-                'in' => [
-                    'uri' => '/books?title=Мечтают ли андроиды об электроовцах?',
-                    'diContainer' => (static function (ContainerBuilder $c): ContainerBuilder {
-                        $appConfigParams = $c->getParameter('app.configs');
-                        $appConfigParams['pathToAuthor'] = __DIR__ . '/data/unknown.authors.json';
-                        $c->setParameter('app.configs', $appConfigParams);
-                        $c->compile();
-                        return $c;
-                    })(self::createDiContainer())
-                ],
-                'out' => [
-                    'httpCode' => 500,
-                    'result' => [
-                        'status' => 'fail',
-                        'message' => 'Некорректный путь до файла с данными'
-                    ]
-                ]
-            ],
-            'Тестирование ситуации с некорректным путем до файла до журналов' => [
-                'in' => [
-                    'uri' =>  '/books?title=Мечтают ли андроиды об электроовцах?',
-                    'diContainer' => (static function (ContainerBuilder $c): ContainerBuilder {
-                        $appConfigParams = $c->getParameter('app.configs');
-                        $appConfigParams['pathToMagazines'] = __DIR__ . '/data/unknown.magazines.json';
-                        $c->setParameter('app.configs', $appConfigParams);
-                        $c->compile();
-                        return $c;
-                    })(self::createDiContainer())
-                ],
-                'out' => [
-                    'httpCode' => 500,
-                    'result' => [
-                        'status' => 'fail',
-                        'message' => 'Некорректный путь до файла с данными'
                     ]
                 ]
             ]

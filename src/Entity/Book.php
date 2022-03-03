@@ -7,15 +7,10 @@ use EfTech\BookLibrary\Exception;
 final class Book extends AbstractTextDocument
 {
     /**
-     * @var Author данные о авторе
-     */
-    private Author $author;
-
-    /**
      * @param int $id
      * @param string $title
      * @param int $year
-     * @param Author $author
+     * @param Author[] $authors
      * @param array $purchasePrices
      * @param string $status
      */
@@ -23,20 +18,15 @@ final class Book extends AbstractTextDocument
         int $id,
         string $title,
         int $year,
-        Author $author,
+        array $authors,
         array $purchasePrices,
         string $status
     ) {
-        parent::__construct($id, $title, $year, $purchasePrices, $status);
-        $this->author = $author;
-    }
-
-    /** Возвращает автора книги
-     * @return Author
-     */
-    public function getAuthor(): Author
-    {
-        return $this->author;
+        parent::__construct($id, $title, $year, $purchasePrices, $status, $authors);
+        if (0 === count($authors)) {
+            $errMsg = 'У книги должен быть хотя бы один автор';
+            throw new Exception\RuntimeException($errMsg);
+        }
     }
 
 
@@ -57,8 +47,12 @@ final class Book extends AbstractTextDocument
      */
     public function getTitleForPrinting(): string
     {
-        return "{$this->getTitle()} ." .
-            " {$this->getAuthor()->getSurname()} {$this->getAuthor()->getName()} . {$this->getYear()}";
+        $titlesAuthors = [];
+        foreach ($this->getAuthors() as $author) {
+            $titlesAuthors[] = $author->getSurname() . ' ' . $author->getName();
+        }
+        $titlesAuthorsTxt = implode(', ', $titlesAuthors);
+        return "{$this->getTitle()} ." . $titlesAuthorsTxt . " {$this->getYear()}";
     }
 
 
@@ -68,7 +62,7 @@ final class Book extends AbstractTextDocument
             'id',
             'title',
             'year',
-            'author',
+            'authors',
             'purchasePrices',
             'status'
         ];
@@ -86,7 +80,7 @@ final class Book extends AbstractTextDocument
             $data['id'],
             $data['title'],
             $data['year'],
-            $data['author'],
+            $data['authors'],
             $data['purchasePrices'],
             $data['status']
         );

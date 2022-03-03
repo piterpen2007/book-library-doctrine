@@ -2,6 +2,8 @@
 
 namespace EfTech\BookLibrary\Service\SearchTextDocumentService;
 
+use EfTech\BookLibrary\Exception\RuntimeException;
+
 /** Структура информации о печатных изданиях
  *
  */
@@ -42,9 +44,9 @@ final class TextDocumentDto
     /**
      *
      *
-     * @var AuthorDto|null
+     * @var AuthorDto[]
      */
-    private ?AuthorDto $author;
+    private array $authors;
     /**
      *
      *
@@ -64,7 +66,7 @@ final class TextDocumentDto
      * @param string $title
      * @param string $titleForPrinting
      * @param int $year
-     * @param AuthorDto|null $author
+     * @param AuthorDto[] $authors
      * @param int|null $number
      */
     public function __construct(
@@ -73,14 +75,19 @@ final class TextDocumentDto
         string $title,
         string $titleForPrinting,
         int $year,
-        ?AuthorDto $author,
+        array $authors,
         ?int $number
     ) {
+        foreach ($authors as $author) {
+            if (!($author instanceof AuthorDto)) {
+                throw new RuntimeException('Не корректный формат данных dto автора');
+            }
+        }
         $this->id = $id;
         $this->title = $title;
         $this->year = $year;
         $this->type = $type;
-        $this->author = $author;
+        $this->authors = $authors;
         $this->number = $number;
         $this->titleForPrinting = $titleForPrinting;
     }
@@ -123,11 +130,11 @@ final class TextDocumentDto
     /**
      *
      *
-     * @return AuthorDto|null
+     * @return AuthorDto[]
      */
-    public function getAuthor(): ?AuthorDto
+    public function getAuthors(): array
     {
-        return $this->author;
+        return $this->authors;
     }
     /**
      * ,

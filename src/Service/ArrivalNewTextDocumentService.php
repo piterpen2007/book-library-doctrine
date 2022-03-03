@@ -3,6 +3,7 @@
 namespace EfTech\BookLibrary\Service;
 
 use EfTech\BookLibrary\Entity\AbstractTextDocument;
+use EfTech\BookLibrary\Entity\Author;
 use EfTech\BookLibrary\Entity\AuthorRepositoryInterface;
 use EfTech\BookLibrary\Entity\Book;
 use EfTech\BookLibrary\Entity\Magazine;
@@ -41,22 +42,11 @@ final class ArrivalNewTextDocumentService
 
     public function registerBook(NewBookDto $bookDto): ResultRegisteringTextDocumentDto
     {
-        $authorId = $bookDto->getAuthorId();
-
-        $authorsCollection = $this->authorRepository->findBy(['id' => $authorId]);
-
-        if (1 !== count($authorsCollection)) {
-            throw new RuntimeException(
-                'Нельзя зарегистрировать книгу с author_id = ' . $authorId . '. Автор с данным id  не найден.'
-            );
-        }
-        $author = current($authorsCollection);
-
         $entity = new Book(
             $this->textDocumentRepository->nextId(),
             $bookDto->getTitle(),
             $bookDto->getYear(),
-            $author,
+            $this->loadAuthorEntities($bookDto->getAuthorIds()),
             [],
             AbstractTextDocument::STATUS_IN_STOCK
         );
@@ -71,26 +61,38 @@ final class ArrivalNewTextDocumentService
         );
     }
 
-    public function registerMagazine(NewMagazineDto $magazineDto): ResultRegisteringTextDocumentDto
+    /**
+     * Загрузка сущностей по их идентификатором
+     *
+     * @param array $authorIdList
+     * @return array
+     */
+    private function loadAuthorEntities(array $authorIdList): array
     {
-        $authorId = $magazineDto->getAuthorId();
-        if (null !== $authorId) {
-            $authorsCollection = $this->authorRepository->findBy(['id' => $authorId]);
-            if (1 !== count($authorsCollection)) {
-                throw new RuntimeException(
-                    'Нельзя зарегистрировать журнал с author_id = ' . $authorId . '. Автор с данным id  не найден.'
-                );
-            }
-            $author = current($authorsCollection);
-        } else {
-            $author = null;
+        if (0 === count($authorIdList)) {
+            return [];
         }
 
+        $authorsCollection = $this->authorRepository->findBy(['list_id' => $authorIdList]);
+
+        if (count($authorsCollection) !== count($authorIdList)) {
+            $actualCurrentIdList = array_map(static function (Author $a) {
+                return $a->getId();
+            }, $authorsCollection);
+            $unFoundId = implode(',', array_diff($authorIdList, $actualCurrentIdList));
+            $errMsg = "нельзя зарегестрировать текстовый документ с author_id='$unFoundId'. Авторы не найдены";
+            throw new RuntimeException($errMsg);
+        }
+
+        return $authorsCollection;
+    }
+    public function registerMagazine(NewMagazineDto $magazineDto): ResultRegisteringTextDocumentDto
+    {
         $entity = new Magazine(
             $this->textDocumentRepository->nextId(),
             $magazineDto->getTitle(),
             $magazineDto->getYear(),
-            $author,
+            $this->loadAuthorEntities($magazineDto->getAuthorIds()),
             $magazineDto->getNumber(),
             [],
             AbstractTextDocument::STATUS_IN_STOCK
