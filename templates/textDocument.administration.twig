@@ -36,8 +36,8 @@
             {% endif %}
         </div>
         <div>
-            <label for="book_author_id">Автор</label>
-            <select name="author_id" id="book_author_id">
+            <label for="book_author_id_list">Автор</label>
+            <select name="author_id_list[]" id="book_author_id_list" multiple>
                 {% for author in authors %}
                     <option {% if bookData.author_id == author.getId %}selected{% endif %} value="{{ author.getId }}">
                         {{ author.getSurname }} {{ author.getName }}
@@ -82,9 +82,8 @@
         {% endif %}
     </div>
     <div>
-        <label for="magazine_author_id">Автор</label>
-        <select name="author_id" id="magazine_author_id">
-            <option value="null">Отсутствует</option>
+        <label for="magazine_author_id_list">Автор</label>
+        <select name="author_id_list[]" id="magazine_author_id_list" multiple>
             {% for author in authors %}
                 <option {% if magazineData.author_id == author.getId %}selected{% endif %} value="{{ author.getId }}">
                     {{ author.getSurname }} {{ author.getName }}

@@ -8,31 +8,58 @@ use EfTech\BookLibrary\Entity\AuthorRepositoryInterface;
 use EfTech\BookLibrary\Exception\RuntimeException;
 use EfTech\BookLibrary\Infrastructure\Db\ConnectionInterface;
 
-class AuthorDbRepository implements AuthorRepositoryInterface
+/**
+ * Реализация репозитория для сущности TextDocument. Данные хранятся в BD
+ */
+final class AuthorDbRepository implements AuthorRepositoryInterface
 {
+    /**
+     * Поддерживаемые критерии поиска
+     */
     private const ALLOWED_CRITERIA = [
         'id',
         'name',
-        'surname',
         'birthday',
+        'surname',
         'country',
-        'list_id'
+        'list_id',
     ];
+
     /**
-     *  Соединение с бд
+     * Валидация критериев поиска
+     *
+     * @param array $criteria - Входные критерии
+     *
+     * @return void
+     */
+    private function validateCriteria(array $criteria): void
+    {
+        $invalidCriteria = array_diff(array_keys($criteria), self::ALLOWED_CRITERIA);
+
+        if (0 < count($invalidCriteria)) {
+            $errMsg = 'Неподдерживаемые критерии поиска авторов ' . implode(', ', $invalidCriteria);
+            throw new RuntimeException($errMsg);
+        }
+    }
+
+    /**
+     * Соединение с БД
      *
      * @var ConnectionInterface
      */
     private ConnectionInterface $connection;
 
     /**
-     * @param ConnectionInterface $connection
+     * @param ConnectionInterface $connection - Соединение с БД
      */
     public function __construct(ConnectionInterface $connection)
     {
         $this->connection = $connection;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function findBy(array $criteria): array
     {
         $this->validateCriteria($criteria);
@@ -40,67 +67,48 @@ class AuthorDbRepository implements AuthorRepositoryInterface
         $whereParts = [];
         $whereParams = [];
 
-
         foreach ($criteria as $criteriaName => $criteriaValue) {
             if ('list_id' === $criteriaName) {
                 if (false === is_array($criteriaValue)) {
-                    throw new RuntimeException('Некорректный список id авторов');
+                    throw new RuntimeException('list_id должен быть массивом');
                 }
+
                 $idParts = [];
                 foreach ($criteriaValue as $index => $idValue) {
                     $idParts[] = ":id_$index";
                     $whereParams["id_$index"] = $idValue;
                 }
-                if (count($idParts) > 0) {
-                    $whereParts[] = 'id IN (' . implode(', ', $idParts) . ')';
-                } else {
-                    $whereParts[] = "$criteriaName = :$criteriaName";
-                    $whereParams[$criteriaName] = $criteriaValue;
+                if (0 < count($idParts)) {
+                    $whereParts[] = 'id in (' . implode(', ', $idParts) . ')';
                 }
+            } else {
+                $whereParts[] = "$criteriaName=:$criteriaName";
+                $whereParams[$criteriaName] = $criteriaValue;
             }
-
         }
-
 
         $sql = <<<EOF
-SELECT 
-    id, name, surname, birthday, country
+SELECT
+id, name, surname, birthday, country
 FROM authors
 EOF;
-
-        if (count($whereParts) > 0) {
-            $sql .= ' WHERE ' . implode(' AND ', $whereParts);
+        if (0 < count($whereParts)) {
+            $sql .= ' where ' . implode(' and ', $whereParts);
         }
 
-        $stmt = $this->connection->prepare($sql);
-        $stmt->execute($whereParams);
-
-        $authorsData = $stmt->fetchAll();
+        $statement = $this->connection->prepare($sql);
+        $statement->execute($whereParams);
+        $authorsData = $statement->fetchAll();
 
         $foundAuthors = [];
 
-        foreach ($authorsData as $authorItem) {
-            $birthdayAuthor = DateTimeImmutable::createFromFormat('Y-m-d', $authorItem['birthday']);
-            $authorItem['birthday'] = $birthdayAuthor->format('d.m.Y');
-            $authorObj = Author::createFromArray($authorItem);
+        foreach ($authorsData as $authorsItem) {
+            $birthdayAuthor = DateTimeImmutable::createFromFormat('Y-m-d', $authorsItem['birthday']);
+            $authorsItem['birthday'] = $birthdayAuthor->format('d.m.Y');
+            $authorObj = Author::createFromArray($authorsItem);
             $foundAuthors[$authorObj->getId()] = $authorObj;
         }
 
         return $foundAuthors;
-    }
-
-    /**
-     *  Валидация критериев поиска
-     *
-     * @param array $criteria
-     * @return void
-     */
-    private function validateCriteria(array $criteria): void
-    {
-        $invalidCriteria = array_diff(array_keys($criteria), self::ALLOWED_CRITERIA);
-        if (count($invalidCriteria) > 0) {
-            $errMsg = 'неподдерживаемые критерии поиска авторов: ' . implode(', ', $invalidCriteria);
-            throw new RuntimeException($errMsg);
-        }
     }
 }

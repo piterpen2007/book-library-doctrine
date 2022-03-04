@@ -59,7 +59,7 @@ class CreateRegisterBooksController implements ControllerInterface
         $requestDto = new NewBookDto(
             $requestData['title'],
             $requestData['year'],
-            $requestData['author_id'],
+            $requestData['author_id_list'],
         );
 
         return $this->arrivalNewTextDocumentService->registerBook($requestDto);
@@ -104,10 +104,19 @@ class CreateRegisterBooksController implements ControllerInterface
                 $err[] = 'Год издания книги не может быть меньше или равен нуля';
             }
 
-            if (false === array_key_exists('author_id', $requestData)) {
-                $err[] = 'Отсутствует информация о id автора книги';
-            } elseif (false === is_int($requestData['author_id'])) {
-                $err[] = 'Id автора должно быть целым числом';
+            if (false === array_key_exists('author_id_list', $requestData)) {
+                $err[] = 'Отсутствует информация о авторах книги';
+            } elseif (false === is_array($requestData['author_id_list'])) {
+                $err[] = 'список id авторов книги должен быть массивом';
+            } elseif (0 === count($requestData['author_id_list'])) {
+                $err[] = 'массив авторов не должен быть пустым';
+            } else {
+                foreach ($requestData['author_id_list'] as $authorId) {
+                    if (false === is_int($authorId)) {
+                        $err[] = 'список id авторов книги содержит некорректный id';
+                        break;
+                    }
+                }
             }
         }
 

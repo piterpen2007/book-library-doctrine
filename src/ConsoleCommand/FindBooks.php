@@ -105,19 +105,16 @@ final class FindBooks implements CommandInterface
         if (TextDocumentDto::TYPE_MAGAZINE === $textDocument->getType()) {
             $jsonData['number'] = $textDocument->getNumber();
         }
-        $authorDto = $textDocument->getAuthors();
-        if (null !== $authorDto) {
-            $jsonData['author'] = [
-                'id' => $authorDto->getId(),
-                'name' => $authorDto->getName(),
-                'surname' => $authorDto->getSurname(),
-                'birthday' => $authorDto->getBirthday(),
-                'country' => $authorDto->getCountry(),
-                ];
-        } else {
-            $jsonData['author'] = null;
-        }
-        $jsonData['authors'] = array_map(static )
+        $jsonData['authors'] = array_values(array_map(static function (SearchTextDocumentService\AuthorDto $dto) {
+            return  [
+                'id' => $dto->getId(),
+                'name' => $dto->getName(),
+                'surname' => $dto->getSurname(),
+                'birthday' => $dto->getBirthday(),
+                'country' => $dto->getCountry(),
+            ];
+        }, $textDocument->getAuthors()));
+
         return $jsonData;
     }
 }

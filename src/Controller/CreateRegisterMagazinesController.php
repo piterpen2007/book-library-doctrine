@@ -64,7 +64,7 @@ class CreateRegisterMagazinesController implements ControllerInterface
         $requestDto = new NewMagazineDto(
             $requestData['title'],
             $requestData['year'],
-            $requestData['author_id'],
+            $requestData['author_id_list'],
             $requestData['number'],
         );
 
@@ -110,10 +110,17 @@ class CreateRegisterMagazinesController implements ControllerInterface
                 $err[] = 'Год издания журнала не может быть меньше или равен нуля';
             }
 
-            if (false === array_key_exists('author_id', $requestData)) {
-                $err[] = 'Отсутствует информация о id автора журнала';
-            } elseif (null !== $requestData['author_id'] && false === is_int($requestData['author_id'])) {
-                $err[] = 'Id автора должно быть целым числом либо иметь значение null';
+            if (false === is_array($requestData['author_id_list'])) {
+                $err[] = 'список id авторов книги должен быть массивом';
+            } elseif (0 === count($requestData['author_id_list'])) {
+                $err[] = 'массив авторов не должен быть пустым';
+            } else {
+                foreach ($requestData['author_id_list'] as $authorId) {
+                    if (false === is_int($authorId)) {
+                        $err[] = 'список id авторов книги содержит некорректный id';
+                        break;
+                    }
+                }
             }
 
             if (false === array_key_exists('number', $requestData)) {

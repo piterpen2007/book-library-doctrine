@@ -81,17 +81,18 @@ class GetBooksCollectionController implements ControllerInterface
         if (null === $resultOfParamValidation) {
             $params = array_merge($request->getQueryParams(), $request->getAttributes());
             $foundTextDocuments = $this->searchTextDocumentService
-                ->search((new SearchTextDocumentServiceCriteria())
-                    ->setAuthorSurname($params['author_surname'] ?? null)
-                    ->setId($params['id'] ?? null)
-                    ->setTitle($params['title'] ?? null)
-                    ->setAuthorId(isset($params['author_id']) ? (int)$params['author_id'] : null)
-                    ->setAuthorName($params['author_name'] ?? null)
-                    ->setAuthorBirthday($params['author_birthday'] ?? null)
-                    ->setAuthorCountry($params['author_country'] ?? null)
-                    ->setYear(isset($params['year']) ? (int)$params['year'] : null)
-                    ->setStatus($params['status'] ?? null)
-                    ->setType($params['type'] ?? null)
+                ->search(
+                    (new SearchTextDocumentServiceCriteria())
+                        ->setAuthorSurname($params['author_surname'] ?? null)
+                        ->setId($params['id'] ?? null)
+                        ->setTitle($params['title'] ?? null)
+                        ->setAuthorId(isset($params['author_id']) ? (int)$params['author_id'] : null)
+                        ->setAuthorName($params['author_name'] ?? null)
+                        ->setAuthorBirthday($params['author_birthday'] ?? null)
+                        ->setAuthorCountry($params['author_country'] ?? null)
+                        ->setYear(isset($params['year']) ? (int)$params['year'] : null)
+                        ->setStatus($params['status'] ?? null)
+                        ->setType($params['type'] ?? null)
                 );
 
             $result = $this->buildResult($foundTextDocuments);
@@ -118,6 +119,7 @@ class GetBooksCollectionController implements ControllerInterface
         }
         return $result;
     }
+
     /**
      *
      * @param TextDocumentDto $textDocument
@@ -127,26 +129,25 @@ class GetBooksCollectionController implements ControllerInterface
     final protected function serializeTextDocument(TextDocumentDto $textDocument): array
     {
         $jsonData = [
-                'id' => $textDocument->getId(),
-                'title' => $textDocument->getTitle(),
-                'year' => $textDocument->getYear(),
-                'title_for_printing' => $textDocument->getTitleForPrinting()
+            'id' => $textDocument->getId(),
+            'title' => $textDocument->getTitle(),
+            'year' => $textDocument->getYear(),
+            'title_for_printing' => $textDocument->getTitleForPrinting()
         ];
         if (TextDocumentDto::TYPE_MAGAZINE === $textDocument->getType()) {
             $jsonData['number'] = $textDocument->getNumber();
         }
-        $authorDto = $textDocument->getAuthors();
-        if (null !== $authorDto) {
-            $jsonData['author'] = [
-                'id' => $authorDto->getId(),
-                'name' => $authorDto->getName(),
-                'surname' => $authorDto->getSurname(),
-                'birthday' => $authorDto->getBirthday(),
-                'country' => $authorDto->getCountry(),
+        $jsonData['authors'] = array_values(
+            array_map(static function (SearchTextDocumentService\AuthorDto $dto) {
+                return [
+                    'id' => $dto->getId(),
+                    'name' => $dto->getName(),
+                    'surname' => $dto->getSurname(),
+                    'birthday' => $dto->getBirthday(),
+                    'country' => $dto->getCountry(),
                 ];
-        } else {
-            $jsonData['author'] = null;
-        }
+            }, $textDocument->getAuthors())
+        );
         return $jsonData;
     }
 

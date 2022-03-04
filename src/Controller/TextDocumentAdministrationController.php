@@ -61,7 +61,7 @@ class TextDocumentAdministrationController implements ControllerInterface
         SearchAuthorsService $authorsService,
         ArrivalNewTextDocumentService $arrivalNewTextDocumentService,
         HttpAuthProvider $httpAuthProvider,
-        \EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory $serverResponseFactory
+        ServerResponseFactory $serverResponseFactory
     ) {
         $this->logger = $logger;
         $this->searchTextDocumentService = $searchTextDocumentService;
@@ -175,23 +175,41 @@ class TextDocumentAdministrationController implements ControllerInterface
         if (count($errYear) > 0) {
             $errs = array_merge($errs, $errYear);
         }
-        $this->validateBookAuthor($dataToCreate);
-
+        $errsAuthors = $this->validateAuthorIdList($dataToCreate, false);
+        if (count($errsAuthors) > 0) {
+            $errs = array_merge($errs, $errsAuthors);
+        }
 
         return $errs;
     }
 
+    /**
+     * Извлекает данные в авторах
+     *
+     * @param array $dataToCreate
+     * @return array
+     */
+    private function extractAuthorIdList(array $dataToCreate): array
+    {
+        $authorIdList = array_key_exists('author_id_list', $dataToCreate) ? $dataToCreate['author_id_list'] : [];
+        return array_map(
+            static function (string $authorId) {
+                return (int)$authorId;
+            },
+            $authorIdList
+        );
+    }
     /** Создаёт книгу
      * @param array $dataToCreate
      * @return void
      */
-    private function createBook(array $dataToCreate)
+    private function createBook(array $dataToCreate): void
     {
         $this->arrivalNewTextDocumentService->registerBook(
             new NewBookDto(
                 $dataToCreate['title'],
                 (int)$dataToCreate['year'],
-                (int)$dataToCreate['author_id']
+                $this->extractAuthorIdList($dataToCreate)
             )
         );
     }
@@ -213,7 +231,10 @@ class TextDocumentAdministrationController implements ControllerInterface
         if (count($errYear) > 0) {
             $errs = array_merge($errs, $errYear);
         }
-        $this->validateMagazineBookAuthor($dataToCreate);
+        $errsAuthors = $this->validateAuthorIdList($dataToCreate, true);
+        if (count($errsAuthors) > 0) {
+            $errs = array_merge($errs, $errsAuthors);
+        }
 
         $errNumber = $this->validateNumber($dataToCreate);
         if (count($errNumber) > 0) {
@@ -222,14 +243,6 @@ class TextDocumentAdministrationController implements ControllerInterface
 
 
         return $errs;
-    }
-    private function validateBookAuthor(array $dataToCreate): void
-    {
-        if (false === array_key_exists('author_id', $dataToCreate)) {
-            throw new RuntimeException('Нет данных о авторе');
-        } elseif (false === is_string($dataToCreate['author_id'])) {
-            throw new RuntimeException('Данные о авторе должны быть строкой');
-        }
     }
 
     private function validateYear(array $dataToCreate): array
@@ -289,13 +302,13 @@ class TextDocumentAdministrationController implements ControllerInterface
      * @param array $dataToCreate
      * @return void
      */
-    private function createMagazine(array $dataToCreate)
+    private function createMagazine(array $dataToCreate): void
     {
         $this->arrivalNewTextDocumentService->registerMagazine(
             new NewMagazineDto(
                 $dataToCreate['title'],
                 (int)$dataToCreate['year'],
-                'null' === $dataToCreate['author_id'] ? null : (int)$dataToCreate['author_id'],
+                $this->extractAuthorIdList($dataToCreate),
                 (int)$dataToCreate['number']
             )
         );
@@ -323,15 +336,34 @@ class TextDocumentAdministrationController implements ControllerInterface
         return $errs;
     }
 
-    private function validateMagazineBookAuthor(array $dataToCreate): void
+    /**
+     * Валидирует список авторов
+     *
+     * @param array $dataToCreate
+     * @param bool $allowEmpty
+     * @return array
+     */
+    private function validateAuthorIdList(array $dataToCreate, bool $allowEmpty): array
     {
-        if (false === array_key_exists('author_id', $dataToCreate)) {
-            throw new RuntimeException('Нет данных о авторе');
-        } elseif (false === is_string($dataToCreate['author_id'])) {
-            throw new RuntimeException('Данные о авторе должны быть строкой');
+        $existsAuthorIdList = array_key_exists('author_id_list', $dataToCreate);
+        $errs = [];
+
+        if (false === $existsAuthorIdList) {
+            if (false === $allowEmpty) {
+                $errs[] = 'Отсутствуют данные о авторах';
+            }
+        } elseif (false === is_array($dataToCreate['author_id_list'])) {
+            throw new RuntimeException('Данные о авторе должны быть массивом');
+        } else {
+            foreach ($dataToCreate['author_id_list'] as $authorId) {
+                if (1 !== preg_match('/^[0-9]+$/', $authorId)) {
+                    throw new RuntimeException('Данные о id автора имеютневерный формат');
+                }
+            }
+            if (false === $allowEmpty && 0 === count($dataToCreate['author_id_list'])) {
+                $errs[] = 'Необходимо выбрать хотя бы одного автора';
+            }
         }
-        if (!('null' === $dataToCreate['author_id'] || 1 === preg_match('/^\d+$/', $dataToCreate['author_id']))) {
-            throw new RuntimeException('Данные о авторе имеют не корректный формат');
-        }
+        return $errs;
     }
 }

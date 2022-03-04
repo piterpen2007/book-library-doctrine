@@ -229,16 +229,10 @@ EOF;
         } else {
             throw new RuntimeException('Текстовой документ данного типа не может быть добавлен');
         }
+
         $this->connection->prepare($sql)->execute($values);
 
-        $sql = <<<EOF
-DELETE FROM purchase_price WHERE text_document_id = :text_document_id
-EOF;
-        $this->connection->prepare($sql)->execute(['text_document_id' => $entity->getId()]);
-
         $this->saveTextDocumentToAuthor($entity);
-
-
 
         $sql = <<<EOF
 INSERT INTO purchase_price
@@ -313,12 +307,12 @@ EOF;
         $insertParts = [];
         $insertParams = [];
         foreach ($entity->getAuthors() as $index => $author) {
-            $insertParts[] = "(:textDocumentId_$index, :authorId_$index";
+            $insertParts[] = "(:textDocumentId_$index, :authorId_$index)";
             $insertParams["textDocumentId_$index"] = $entity->getId();
             $insertParams["authorId_$index"] = $author->getId();
         }
         if (count($insertParts) > 0) {
-            $values = implode(',', $insertParts);
+            $values = implode(', ', $insertParts);
             $sql = <<<EOF
 INSERT INTO text_document_to_author (text_document_id, author_id) VALUES $values
 EOF;
