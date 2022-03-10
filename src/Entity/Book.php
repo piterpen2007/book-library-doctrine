@@ -2,6 +2,7 @@
 
 namespace EfTech\BookLibrary\Entity;
 
+use EfTech\BookLibrary\Entity\TextDocument\Status;
 use EfTech\BookLibrary\Exception;
 
 final class Book extends AbstractTextDocument
@@ -20,7 +21,7 @@ final class Book extends AbstractTextDocument
         int $year,
         array $authors,
         array $purchasePrices,
-        string $status
+        Status $status
     ) {
         parent::__construct($id, $title, $year, $purchasePrices, $status, $authors);
         if (0 === count($authors)) {

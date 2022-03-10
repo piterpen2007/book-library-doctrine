@@ -7,6 +7,7 @@ use EfTech\BookLibrary\Entity\AbstractTextDocument;
 use EfTech\BookLibrary\Entity\Author;
 use EfTech\BookLibrary\Entity\Book;
 use EfTech\BookLibrary\Entity\Magazine;
+use EfTech\BookLibrary\Entity\TextDocument\Status;
 use EfTech\BookLibrary\Entity\TextDocumentRepositoryInterface;
 use EfTech\BookLibrary\Exception\RuntimeException;
 use EfTech\BookLibrary\Infrastructure\Db\ConnectionInterface;
@@ -16,19 +17,102 @@ use EfTech\BookLibrary\ValueObject\PurchasePrice;
 
 class TextDocumentDbRepository implements TextDocumentRepositoryInterface
 {
+    /**
+     *  Ключом является имя статуса текстового документа
+     *
+     * @var array|null
+     *
+     */
+    private ?array $textDocumentStatusMap = null;
+    /**
+     * Справочник валюты
+     *
+     * @var array|null
+     */
+    private ?array $currencyMap = null;
+
+    /**
+     * Возвращает справочник валюты
+     *
+     * @return array|null
+     */
+    private function getCurrencyMap(): ?array
+    {
+        if (null === $this->currencyMap) {
+            $rows = $this->connection
+                ->query('SELECT id, name FROM currency')
+                ->fetchAll();
+
+            $this->currencyMap = [];
+            foreach ($rows as $row) {
+                $this->currencyMap[$row['name']] = $row;
+            }
+        }
+        return $this->currencyMap;
+    }
+
+    /**
+     * @return array|null
+     */
+    private function getTextDocumentStatusMap(): ?array
+    {
+        if (null === $this->textDocumentStatusMap) {
+            $rows = $this->connection
+                ->query('SELECT id, name FROM text_document_status')
+                ->fetchAll();
+
+            $this->textDocumentStatusMap = [];
+            foreach ($rows as $row) {
+                $this->textDocumentStatusMap[$row['name']] = $row;
+            }
+        }
+        return $this->textDocumentStatusMap;
+    }
+
+    /**
+     * Возвращает данные о валюте с заднным именем
+     *
+     * @param string $name
+     * @return array
+     */
+    private function getCurrency(string $name): array
+    {
+        $map = $this->getCurrencyMap();
+
+        if (false === array_key_exists($name, $map)) {
+            throw new RuntimeException('Нет валюты с именем ' . $name);
+        }
+        return $map[$name];
+    }
+    /** Возвращает данные о статусе с заданным именем
+     * @param string $name
+     * @return array
+     */
+    private function getTextDocumentStatus(string $name): array
+    {
+        $map = $this->getTextDocumentStatusMap();
+
+        if (false === array_key_exists($name, $map)) {
+            throw new RuntimeException('У текстового документа нет статуса с именем ' . $name);
+        }
+        return $map[$name];
+    }
+
+
     private const SEARCH_CRITERIA = [
         'author_surname' => 'a.surname',
         'author_id' => 'a.id',
         'author_name' => 'a.name',
         'author_birthday' => 'a.birthday',
-        'author_country' => 'a.country',
+        'author_country' => 'cntr.code2 ',
         'id' => 't.id',
         'title' => 't.title',
         'year' => 't.year',
-        'status' => 't.status',
+        'status' => 'tds.name',
         'number' => 't.number',
         'type' => 't.type',
     ];
+
     /**
      *  Базовый sql запрос для поиска текстовых документов
      */
@@ -36,22 +120,29 @@ class TextDocumentDbRepository implements TextDocumentRepositoryInterface
 select t.id        as id,
        t.title     as title,
        t.year      as year,
-       t.status    as status,
+       tds.name    as status,
        t.number    as number,
        t.type      as type,
        a.id        as author_id,
        a.name      as author_name,
        a.surname   as author_surname,
        a.birthday  as author_birthday,
-       a.country   as author_country,
+       cntr.code2  as author_country_code2,
+       cntr.code3  as author_country_code3,
+       cntr.code  as author_country_code,
+       cntr.name  as author_country_name,
        pp.id       as purchase_price_id,
        pp.price    as purchase_price_price,
-       pp.currency as purchase_price_currency,
+       crnc.name   as purchase_price_currency_name,
+       crnc.code   as purchase_price_currency_code,
        pp.date     as purchase_price_date
 from text_documents as t
+         join text_document_status as tds on t.status_id = tds.id
          left join text_document_to_author as tdta on t.id = tdta.text_document_id
          left join authors a on a.id = tdta.author_id
-         left join purchase_price pp on t.id = pp.text_document_id
+         left join country as cntr on a.country_id = cntr.id
+         left join purchase_price as pp on t.id = pp.text_document_id
+         left join currency as crnc on pp.currency_id = crnc.id
 EOF;
 
 
@@ -97,7 +188,7 @@ EOF;
                     'title' => $row['title'],
                     'year' => $yearDate->format('Y'),
                     'number' => $row['number'],
-                    'status' => $row['status'],
+                    'status' => new Status($row['status']),
                     'authors' => [],
                     'purchasePrices' => [],
                     'type' => $row['type']
@@ -105,12 +196,11 @@ EOF;
             }
             if (null !== $row['author_id']) {
                 if (false === array_key_exists($row['author_id'], $authors)) {
-                    $birthdayDate = DateTimeImmutable::createFromFormat('Y-m-d', $row['author_birthday']);
                     $authors[$row['author_id']] = new Author(
                         $row['author_id'],
                         $row['author_name'],
                         $row['author_surname'],
-                        $birthdayDate->format('d.m.Y'),
+                        DateTimeImmutable::createFromFormat('Y-m-d', $row['author_birthday']),
                         $row['author_country']
                     );
                 }
@@ -177,7 +267,7 @@ EOF;
         $notSupportedSearchCriteria = [];
         foreach ($criteria as $criteriaName => $criteriaValue) {
             if (array_key_exists($criteriaName, self::SEARCH_CRITERIA)) {
-                $sqlParts =  self::SEARCH_CRITERIA[$criteriaName];
+                $sqlParts = self::SEARCH_CRITERIA[$criteriaName];
                 $whereParts[] = "$sqlParts=:$criteriaName";
                 $params[$criteriaName] = $criteriaValue;
             } else {
@@ -197,6 +287,7 @@ EOF;
 
         return $stmt->fetchAll();
     }
+
     /**
      * @inheritDoc
      */
@@ -207,7 +298,7 @@ UPDATE text_documents
 SET 
     title = :title,
     year = :year,
-    status = :status,
+    status_id = :statusId,
     number = :number,
     type = :type
 WHERE id = :id
@@ -216,7 +307,7 @@ EOF;
             'id' => $entity->getId(),
             'title' => $entity->getTitle(),
             'year' => "{$entity->getYear()}/01/01",
-            'status' => $entity->getStatus(),
+            'statusId' => $this->getTextDocumentStatus($entity->getStatus())['id'],
             'type' => null,
             'number' => null
         ];
@@ -236,8 +327,8 @@ EOF;
 
         $sql = <<<EOF
 INSERT INTO purchase_price
-        (date, price, currency, text_document_id)
-VALUES (:date, :price, :currency, :textDocumentId)
+        (date, price, currency_id, text_document_id)
+VALUES (:date, :price, :currencyId, :textDocumentId)
 EOF;
 
         $stmt = $this->connection->prepare($sql);
@@ -246,7 +337,7 @@ EOF;
             $values = [
                 'date' => $purchasePrice->getDate()->format('Y-m-d H:i:s'),
                 'price' => $purchasePrice->getMoney()->getAmount(),
-                'currency' => $purchasePrice->getMoney()->getCurrency()->getCode(),
+                'currency_id' => $this->getCurrency($purchasePrice->getMoney()->getCurrency()->getCode()),
                 'textDocumentId' => $entity->getId()
             ];
             $stmt->execute($values);
@@ -269,16 +360,16 @@ EOF;
     public function add(AbstractTextDocument $entity): AbstractTextDocument
     {
         $sql = <<<EOF
-INSERT INTO text_documents (id, title, year, status, type, number)
+INSERT INTO text_documents (id, title, year, status_id, type, number)
 VALUES (
-        :id, :title, :year, :status, :type, :number
+        :id, :title, :year, :statusId, :type, :number
 )
 EOF;
         $values = [
             'id' => $entity->getId(),
             'title' => $entity->getTitle(),
             'year' => "{$entity->getYear()}/01/01",
-            'status' => $entity->getStatus(),
+            'statusId' => $this->getTextDocumentStatus($entity->getStatus())['id'],
             'type' => null,
             'number' => null
         ];
@@ -300,7 +391,6 @@ EOF;
 
     private function saveTextDocumentToAuthor(AbstractTextDocument $entity): void
     {
-
         $this->connection->prepare('DELETE FROM text_document_to_author WHERE text_document_id = :textDocumentId')
             ->execute(['textDocumentId' => $entity->getId()]);
 

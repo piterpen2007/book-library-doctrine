@@ -2,8 +2,9 @@
 
 namespace EfTech\BookLibrary\Entity;
 
+use DateTimeImmutable;
 use EfTech\BookLibrary\Exception;
-use JsonSerializable;
+use EfTech\BookLibrary\ValueObject\Country;
 
 /**
  * Автор
@@ -23,22 +24,22 @@ final class Author
      */
     private string $surname;
     /**
-     * @var string Дата рождения автора
+     * @var DateTimeImmutable Дата рождения автора
      */
-    private string $birthday;
+    private DateTimeImmutable $birthday;
     /**
-     * @var string Страна рождения автора
+     * @var Country Страна рождения автора
      */
-    private string $country;
+    private Country $country;
 
     /**
      * @param int $id
      * @param string $name
      * @param string $surname
-     * @param string $birthday
-     * @param string $country
+     * @param DateTimeImmutable $birthday
+     * @param Country $country
      */
-    public function __construct(int $id, string $name, string $surname, string $birthday, string $country)
+    public function __construct(int $id, string $name, string $surname, DateTimeImmutable $birthday, Country $country)
     {
         $this->id = $id;
         $this->name = $name;
@@ -102,15 +103,15 @@ final class Author
     }
 
     /**
-     * @return string
+     * @return DateTimeImmutable
      */
-    public function getBirthday(): string
+    public function getBirthday(): DateTimeImmutable
     {
         return $this->birthday;
     }
 
     /**
-     * @param string $birthday
+     * @param DateTimeImmutable $birthday
      * @return Author
      */
     public function setBirthday(string $birthday): Author
@@ -120,18 +121,18 @@ final class Author
     }
 
     /**
-     * @return string
+     * @return Country
      */
-    public function getCountry(): string
+    public function getCountry(): Country
     {
         return $this->country;
     }
 
     /**
-     * @param string $country
+     * @param Country $country
      * @return Author
      */
-    public function setCountry(string $country): Author
+    public function setCountry(Country $country): Author
     {
         $this->country = $country;
         return $this;

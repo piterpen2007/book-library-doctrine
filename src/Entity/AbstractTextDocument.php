@@ -2,6 +2,7 @@
 
 namespace EfTech\BookLibrary\Entity;
 
+use EfTech\BookLibrary\Entity\TextDocument\Status;
 use EfTech\BookLibrary\Exception\DomainException;
 use EfTech\BookLibrary\Exception\RuntimeException;
 use EfTech\BookLibrary\ValueObject\PurchasePrice;
@@ -34,9 +35,9 @@ abstract class AbstractTextDocument
      */
     private array $purchasePrices;
     /** Статус текстовго документа
-     * @var string
+     * @var Status
      */
-    private string $status;
+    private Status $status;
 
     /** Конструктор класса
      *
@@ -52,7 +53,7 @@ abstract class AbstractTextDocument
         string $title,
         int $year,
         array $purchasePrices,
-        string $status,
+        Status $status,
         array $authors
     ) {
         $this->id = $id;
@@ -79,12 +80,12 @@ abstract class AbstractTextDocument
      */
     public function moveToArchive(): self
     {
-        if ('archive' === $this->status) {
+        if (Status::STATUS_ARCHIVE === $this->status->getName()) {
             throw new RuntimeException(
                 "Текстовый документ с id {$this->getId()} уже находится в архиве"
             );
         }
-        $this->status = self::STATUS_ARCHIVE;
+        $this->status = new Status(Status::STATUS_ARCHIVE);
         return $this;
     }
 
@@ -177,9 +178,9 @@ abstract class AbstractTextDocument
     }
 
     /**
-     * @return string
+     * @return Status
      */
-    public function getStatus(): string
+    public function getStatus(): Status
     {
         return $this->status;
     }

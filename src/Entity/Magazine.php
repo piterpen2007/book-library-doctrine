@@ -2,6 +2,7 @@
 
 namespace EfTech\BookLibrary\Entity;
 
+use EfTech\BookLibrary\Entity\TextDocument\Status;
 use EfTech\BookLibrary\Exception;
 
 final class Magazine extends AbstractTextDocument
@@ -18,7 +19,7 @@ final class Magazine extends AbstractTextDocument
      * @param array $authors
      * @param int $number
      * @param array $purchasePrices
-     * @param string $status
+     * @param Status $status
      */
     public function __construct(
         int $id,
@@ -27,7 +28,7 @@ final class Magazine extends AbstractTextDocument
         array $authors,
         int $number,
         array $purchasePrices,
-        string $status
+        Status $status
     ) {
         parent::__construct($id, $title, $year, $purchasePrices, $status, $authors);
         $this->number = $number;

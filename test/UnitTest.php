@@ -83,8 +83,8 @@ class UnitTest extends TestCase
                             'id' => 10,
                             'title' => 'Мечтают ли андроиды об электроовцах?',
                             'year' => 1966,
-                            'title_for_printing' => 'Мечтают ли андроиды об электроовцах? . Дик Филип . 1966',
-                            'author' =>
+                            'title_for_printing' => 'Мечтают ли андроиды об электроовцах? .Дик Филип 1966',
+                            'authors' =>
                                 [
                                     [
                                     'id' => 5,
