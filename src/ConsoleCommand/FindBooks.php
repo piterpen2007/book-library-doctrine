@@ -110,7 +110,7 @@ final class FindBooks implements CommandInterface
                 'id' => $dto->getId(),
                 'name' => $dto->getName(),
                 'surname' => $dto->getSurname(),
-                'birthday' => $dto->getBirthday(),
+                'birthday' => $dto->getBirthday()->format('d.m.Y'),
                 'country' => $dto->getCountry(),
             ];
         }, $textDocument->getAuthors()));

@@ -2,12 +2,15 @@
 
 namespace EfTech\BookLibrary\Entity\TextDocument;
 
-use EfTech\BookLibrary\Exception\RuntimeException;
+use EfTech\BookLibrary\Exception;
 
-class Status
+/**
+ * Статус
+ */
+final class Status
 {
     /**
-     * Статус в наличие
+     * Статус в наличии
      */
     public const STATUS_IN_STOCK = 'inStock';
 
@@ -16,11 +19,13 @@ class Status
      */
     public const STATUS_ARCHIVE = 'archive';
 
+    /**
+     * Допустимые статусы
+     */
     private const ALLOWED_STATUS = [
         self::STATUS_IN_STOCK => self::STATUS_IN_STOCK,
-        self::STATUS_ARCHIVE => self::STATUS_ARCHIVE
+        self::STATUS_ARCHIVE  => self::STATUS_ARCHIVE,
     ];
-
 
     /**
      * Статус
@@ -30,35 +35,47 @@ class Status
     private string $name;
 
     /**
-     * @param string $name
-     * @param string $code
+     * @param string $name - Название статуса
      */
-    public function __construct(string $name, string $code)
+    public function __construct(string $name)
     {
-        if (1 !== preg_match('/[A-Z]{3}/', $code)) {
-            $this->validate($name);
-        }
+        $this->validate($name);
         $this->name = $name;
-
     }
 
     /**
      * Валидация статуса
      *
-     * @param string $name
+     * @param string $name - Название статуса
+     *
+     * @return void
      */
-    private function validate(string $name)
+    private function validate(string $name): void
     {
         if (false === array_key_exists($name, self::ALLOWED_STATUS)) {
-            throw new RuntimeException('Некорректный статус текстового документа: ' . $name);
+            throw new Exception\RuntimeException('Некорректный статус текстового документа');
         }
     }
 
     /**
+     * Возвращает наименование статуса
+     *
      * @return string
      */
     public function getName(): string
     {
         return $this->name;
     }
+
+    /**
+     * Каст к string
+     *
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return $this->name;
+    }
+
+
 }

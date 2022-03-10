@@ -129,7 +129,7 @@ class GetAuthorsCollectionController implements ControllerInterface
             'id' => $authorDto->getId(),
             'name' => $authorDto->getName(),
             'surname' => $authorDto->getSurname(),
-            'birthday' => $authorDto->getBirthday(),
+            'birthday' => $authorDto->getBirthday()->format('d.m.Y'),
             'country' => $authorDto->getCountry(),
         ];
     }
