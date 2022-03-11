@@ -84,6 +84,7 @@ class TextDocumentDbRepository implements TextDocumentRepositoryInterface
         }
         return $map[$name];
     }
+
     /** Возвращает данные о статусе с заданным именем
      * @param string $name
      * @return array
@@ -120,21 +121,29 @@ class TextDocumentDbRepository implements TextDocumentRepositoryInterface
 select t.id        as id,
        t.title     as title,
        t.year      as year,
+       
        tds.name    as status,
-       t.number    as number,
+       
+       tdm.number  as number,
+       tdb.isbn    as isbn,
        t.type      as type,
+       
        a.id        as author_id,
        a.name      as author_name,
        a.surname   as author_surname,
        a.birthday  as author_birthday,
+       
        cntr.code2  as author_country_code2,
        cntr.code3  as author_country_code3,
        cntr.code  as author_country_code,
        cntr.name  as author_country_name,
+       
        pp.id       as purchase_price_id,
        pp.price    as purchase_price_price,
+       
        crnc.name   as purchase_price_currency_name,
        crnc.code   as purchase_price_currency_code,
+       
        pp.date     as purchase_price_date
 from text_documents as t
          join text_document_status as tds on t.status_id = tds.id
@@ -143,6 +152,8 @@ from text_documents as t
          left join country as cntr on a.country_id = cntr.id
          left join purchase_price as pp on t.id = pp.text_document_id
          left join currency as crnc on pp.currency_id = crnc.id
+         left join text_document_books as tdb on t.id = tdb.id
+         left join text_document_magazines tdm on t.id = tdm.id
 EOF;
 
 
@@ -299,7 +310,6 @@ SET
     title = :title,
     year = :year,
     status_id = :statusId,
-    number = :number,
     type = :type
 WHERE id = :id
 EOF;
@@ -308,15 +318,15 @@ EOF;
             'title' => $entity->getTitle(),
             'year' => "{$entity->getYear()}/01/01",
             'statusId' => $this->getTextDocumentStatus($entity->getStatus())['id'],
-            'type' => null,
-            'number' => null
+            'type' => null
         ];
 
         if ($entity instanceof Book) {
+            $this->updateBook($entity);
             $values['type'] = 'book';
         } elseif ($entity instanceof Magazine) {
+            $this->updateMagazine($entity);
             $values['type'] = 'magazine';
-            $values['number'] = $entity->getNumber();
         } else {
             throw new RuntimeException('Текстовой документ данного типа не может быть добавлен');
         }
@@ -345,6 +355,39 @@ EOF;
         return $entity;
     }
 
+    /**
+     * Обновление данных о книге
+     *
+     * @param Book $book
+     * @return void
+     *
+     */
+    private function updateBook(Book $book): void
+    {
+    }
+
+
+    /**
+     * Обновление данных о журнале
+     *
+     * @param Magazine $magazine
+     * @return void
+     */
+    private function updateMagazine(Magazine $magazine): void
+    {
+        $sql = <<<EOF
+UPDATE text_document_magazines
+SET number = :number
+WHERE id = :id
+EOF;
+        $this->connection->prepare($sql)->execute(
+            [
+                'number' => $magazine->getNumber(),
+                'id' => $magazine->getId()
+            ]
+        );
+    }
+
     public function nextId(): int
     {
         $sql = <<<EOF
@@ -360,9 +403,9 @@ EOF;
     public function add(AbstractTextDocument $entity): AbstractTextDocument
     {
         $sql = <<<EOF
-INSERT INTO text_documents (id, title, year, status_id, type, number)
+INSERT INTO text_documents (id, title, year, status_id, type)
 VALUES (
-        :id, :title, :year, :statusId, :type, :number
+        :id, :title, :year, :statusId, :type
 )
 EOF;
         $values = [
@@ -371,24 +414,35 @@ EOF;
             'year' => "{$entity->getYear()}/01/01",
             'statusId' => $this->getTextDocumentStatus($entity->getStatus())['id'],
             'type' => null,
-            'number' => null
         ];
 
         if ($entity instanceof Book) {
             $values['type'] = 'book';
         } elseif ($entity instanceof Magazine) {
             $values['type'] = 'magazine';
-            $values['number'] = $entity->getNumber();
         } else {
             throw new RuntimeException('Текстовой документ данного типа не может быть добавлен');
         }
         $this->connection->prepare($sql)->execute($values);
+
+        if ($entity instanceof Magazine) {
+            $this->createMagazine($entity);
+        } elseif ($entity instanceof Book) {
+            $this->createBook($entity);
+        }
 
         $this->saveTextDocumentToAuthor($entity);
 
         return $entity;
     }
 
+
+    /**
+     *
+     *
+     * @param AbstractTextDocument $entity
+     * @return void
+     */
     private function saveTextDocumentToAuthor(AbstractTextDocument $entity): void
     {
         $this->connection->prepare('DELETE FROM text_document_to_author WHERE text_document_id = :textDocumentId')
@@ -409,4 +463,33 @@ EOF;
             $this->connection->prepare($sql)->execute($insertParams);
         }
     }
+
+    /**
+     * Сохраняет специфичные для книги данные в бд
+     *
+     * @param Book $book
+     * @return void
+     */
+    private function createBook(Book $book)
+    {
+        $sql = <<<EOF
+INSERT INTO text_document_books (id, isbn) VALUES (:id, :isbn)
+EOF;
+$this->connection->prepare($sql)->execute(['id'=>$book->getId(),'isbn'=> null]);
+    }
+
+    /**
+     * Сохраняет специфичные для магазина данные в бд
+     *
+     * @param Magazine $magazine
+     * @return void
+     */
+    private function createMagazine(Magazine $magazine)
+    {
+        $sql = <<<EOF
+INSERT INTO text_document_magazines (id, number) VALUES (:id, :number)
+EOF;
+        $this->connection->prepare($sql)->execute(['id'=>$magazine->getId(),'number'=> $magazine->getNumber()]);
+    }
+
 }

@@ -83,6 +83,47 @@ create index  if not exists text_document_to_author_text_document_id_idx on text
 
 
 
+alter table text_documents drop constraint text_documents_text_document_status_id_fk;
+
+alter table text_documents alter column status_id drop not null;
+
+alter table text_documents
+    add constraint text_documents_text_document_status_id_fk
+        foreign key (status_id) references text_document_status(id)
+            on update cascade on delete SET NULL
+
+
+alter table authors
+    add constraint authors_country_id_fk
+        foreign key (country_id) references country (id)
+            on update cascade on delete restrict;
+
+
+alter table text_documents
+    add constraint text_documents_text_document_status_id_fk
+        foreign key (status_id) references text_document_status(id)
+            on update cascade on delete restrict;
+
+alter table purchase_price
+    add constraint purchase_price_text_documents_id_fk
+        foreign key (text_document_id) references text_documents(id)
+            on update cascade on delete cascade;
+
+
+alter table text_document_to_author
+    add constraint text_document_to_author_text_documents_id_fk
+        foreign key (text_document_id) references text_documents (id)
+            on update cascade on delete cascade;
+
+alter table text_document_to_author
+    add constraint text_document_to_author_authors_id_fk
+        foreign key (author_id) references authors (id)
+            on update cascade on delete restrict;
+
+alter table purchase_price
+    add constraint purchase_price_currency_id_fk
+        foreign key (currency_id) references currency (id)
+            on update cascade on delete restrict;
 
 
 
@@ -92,8 +133,20 @@ create index  if not exists text_document_to_author_text_document_id_idx on text
 
 
 
+insert into text_document_books (id, isbn)
+(
+ select t.id, null
+ from text_documents as t
+ where type = 'book'
+);
 
 
+insert into text_document_magazines (id, number)
+    (
+        select t.id, t.number
+        from text_documents as t
+        where type = 'magazine'
+    );
 
 
 
