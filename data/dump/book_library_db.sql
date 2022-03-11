@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 14.2
--- Dumped by pg_dump version 14.2
+-- Dumped from database version 12.9 (Ubuntu 12.9-0ubuntu0.20.04.1)
+-- Dumped by pg_dump version 12.9 (Ubuntu 12.9-0ubuntu0.20.04.1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -16,6 +16,20 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+DROP INDEX public.users_login_unq;
+DROP INDEX public.text_documents_year_idx;
+DROP INDEX public.text_documents_type_idx;
+DROP INDEX public.text_documents_title_idx;
+DROP INDEX public.text_document_to_author_text_document_id_idx;
+DROP INDEX public.text_document_to_author_text_document_id_author_id_idx;
+DROP INDEX public.text_document_to_author_author_id_idx;
+DROP INDEX public.text_document_status_name_unq;
+DROP INDEX public.currency_name_unq;
+DROP INDEX public.currency_code_unq;
+DROP INDEX public.country_code_unq;
+DROP INDEX public.country_code3_unq;
+DROP INDEX public.country_code2_idx;
+DROP INDEX public.authors_surname_idx;
 ALTER TABLE ONLY public.users DROP CONSTRAINT user_id_pk;
 ALTER TABLE ONLY public.text_documents DROP CONSTRAINT text_documents_id_pk;
 ALTER TABLE ONLY public.text_document_status DROP CONSTRAINT text_document_status_pkey;
@@ -299,6 +313,104 @@ ALTER TABLE ONLY public.text_documents
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT user_id_pk PRIMARY KEY (id);
+
+
+--
+-- Name: authors_surname_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX authors_surname_idx ON public.authors USING btree (surname);
+
+
+--
+-- Name: country_code2_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX country_code2_idx ON public.country USING btree (code2);
+
+
+--
+-- Name: country_code3_unq; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX country_code3_unq ON public.country USING btree (code3);
+
+
+--
+-- Name: country_code_unq; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX country_code_unq ON public.country USING btree (code);
+
+
+--
+-- Name: currency_code_unq; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX currency_code_unq ON public.currency USING btree (code);
+
+
+--
+-- Name: currency_name_unq; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX currency_name_unq ON public.currency USING btree (name);
+
+
+--
+-- Name: text_document_status_name_unq; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX text_document_status_name_unq ON public.text_document_status USING btree (name);
+
+
+--
+-- Name: text_document_to_author_author_id_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX text_document_to_author_author_id_idx ON public.text_document_to_author USING btree (author_id);
+
+
+--
+-- Name: text_document_to_author_text_document_id_author_id_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX text_document_to_author_text_document_id_author_id_idx ON public.text_document_to_author USING btree (text_document_id, author_id);
+
+
+--
+-- Name: text_document_to_author_text_document_id_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX text_document_to_author_text_document_id_idx ON public.text_document_to_author USING btree (text_document_id);
+
+
+--
+-- Name: text_documents_title_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX text_documents_title_idx ON public.text_documents USING btree (title);
+
+
+--
+-- Name: text_documents_type_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX text_documents_type_idx ON public.text_documents USING btree (type);
+
+
+--
+-- Name: text_documents_year_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX text_documents_year_idx ON public.text_documents USING btree (year);
+
+
+--
+-- Name: users_login_unq; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX users_login_unq ON public.users USING btree (login);
 
 
 --
