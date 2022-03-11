@@ -73,8 +73,9 @@ from text_documents as t
 
 
 
-
-
+//Создание индексов
+create index  if not exists text_documents_type_idx on text_documents(type);
+create index  if not exists text_document_to_author_text_document_id_idx on text_document_to_author(text_document_id);
 
 
 
