@@ -2,6 +2,8 @@
 
 namespace EfTech\BookLibrary\Service\SearchTextDocumentService;
 
+use DateTimeImmutable;
+
 /** Структура информации о авторах
  *
  */
@@ -28,9 +30,9 @@ final class AuthorDto
     /**
      *
      *
-     * @var string
+     * @var DateTimeImmutable
      */
-    private string $birthday;
+    private DateTimeImmutable $birthday;
     /**
      *
      *
@@ -41,10 +43,10 @@ final class AuthorDto
      * @param int $id - id автора
      * @param string $name - имя автора
      * @param string $surname - фамилия автора
-     * @param string $birthday - день рождение автора
+     * @param DateTimeImmutable $birthday - день рождение автора
      * @param string $country - страна автора
      */
-    public function __construct(int $id, string $name, string $surname, string $birthday, string $country)
+    public function __construct(int $id, string $name, string $surname, DateTimeImmutable $birthday, string $country)
     {
         $this->id = $id;
         $this->name = $name;
@@ -82,9 +84,9 @@ final class AuthorDto
     /**
      *
      *
-     * @return string
+     * @return DateTimeImmutable
      */
-    public function getBirthday(): string
+    public function getBirthday(): DateTimeImmutable
     {
         return $this->birthday;
     }

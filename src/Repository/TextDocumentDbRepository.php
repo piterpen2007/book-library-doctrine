@@ -11,6 +11,7 @@ use EfTech\BookLibrary\Entity\TextDocument\Status;
 use EfTech\BookLibrary\Entity\TextDocumentRepositoryInterface;
 use EfTech\BookLibrary\Exception\RuntimeException;
 use EfTech\BookLibrary\Infrastructure\Db\ConnectionInterface;
+use EfTech\BookLibrary\ValueObject\Country;
 use EfTech\BookLibrary\ValueObject\Currency;
 use EfTech\BookLibrary\ValueObject\Money;
 use EfTech\BookLibrary\ValueObject\PurchasePrice;
@@ -212,7 +213,12 @@ EOF;
                         $row['author_name'],
                         $row['author_surname'],
                         DateTimeImmutable::createFromFormat('Y-m-d', $row['author_birthday']),
-                        $row['author_country']
+                        new Country(
+                            $row['author_country_code2'],
+                            $row['author_country_code3'],
+                            $row['author_country_code'],
+                            $row['author_country_name'],
+                        )
                     );
                 }
                 $textDocumentData[$row['id']]['authors'][$row['author_id']] = $authors[$row['author_id']];
@@ -222,15 +228,14 @@ EOF;
                 &&
                 false === array_key_exists($row['purchase_price_id'], $textDocumentData[$row['id']]['purchasePrices'])
             ) {
-                $currencyName = 'RUB' === $row['purchase_price_currency'] ? 'рубль' : 'неизвестно';
-
                 $obj = new PurchasePrice(
                     DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $row['purchase_price_date']),
                     new Money(
                         $row['purchase_price_price'],
                         new Currency(
-                            $row['purchase_price_currency'],
-                            $currencyName
+                            $row['purchase_price_currency_code'],
+                            $row['purchase_price_currency_name'],
+                            $row['purchase_price_currency_description'],
                         )
                     )
                 );
@@ -305,20 +310,23 @@ EOF;
     public function save(AbstractTextDocument $entity): AbstractTextDocument
     {
         $sql = <<<EOF
-UPDATE text_documents
+UPDATE text_documents as t
 SET 
     title = :title,
     year = :year,
-    status_id = :statusId,
+    status_id = :s.id,
     type = :type
-WHERE id = :id
+FROM text_document_status AS s
+WHERE t.id=:id AND s.name = :statusName;
+
 EOF;
         $values = [
-            'id' => $entity->getId(),
-            'title' => $entity->getTitle(),
-            'year' => "{$entity->getYear()}/01/01",
-            'statusId' => $this->getTextDocumentStatus($entity->getStatus())['id'],
-            'type' => null
+            'id'         => $entity->getId(),
+            'title'      => $entity->getTitle(),
+            'year'       => "{$entity->getYear()}/01/01",
+            'statusName' => $entity->getStatus()->getName(),
+            'type'       => null,
+            'number'     => null,
         ];
 
         if ($entity instanceof Book) {
@@ -338,7 +346,16 @@ EOF;
         $sql = <<<EOF
 INSERT INTO purchase_price
         (date, price, currency_id, text_document_id)
-VALUES (:date, :price, :currencyId, :textDocumentId)
+    (
+        SELECT
+            ':date',
+            :price,
+            c.id,
+            :textDocumentId
+        FROM
+            currency AS c
+        WHERE
+            c.name = :currencyName)
 EOF;
 
         $stmt = $this->connection->prepare($sql);
@@ -347,7 +364,7 @@ EOF;
             $values = [
                 'date' => $purchasePrice->getDate()->format('Y-m-d H:i:s'),
                 'price' => $purchasePrice->getMoney()->getAmount(),
-                'currency_id' => $this->getCurrency($purchasePrice->getMoney()->getCurrency()->getCode()),
+                'currencyId' => $this->getCurrency($purchasePrice->getMoney()->getCurrency()->getName()),
                 'textDocumentId' => $entity->getId()
             ];
             $stmt->execute($values);
@@ -403,17 +420,27 @@ EOF;
     public function add(AbstractTextDocument $entity): AbstractTextDocument
     {
         $sql = <<<EOF
-INSERT INTO text_documents (id, title, year, status_id, type)
-VALUES (
-        :id, :title, :year, :statusId, :type
-)
+INSERT INTO text_documents(id, title, year, status_id, type, number) (
+    SELECT
+        :id,
+        :title,
+        :year,
+        s.id,
+        :type,
+        :number
+    FROM
+        text_document_status AS s
+    WHERE
+        s.name = :statusName);
+
 EOF;
         $values = [
-            'id' => $entity->getId(),
-            'title' => $entity->getTitle(),
-            'year' => "{$entity->getYear()}/01/01",
-            'statusId' => $this->getTextDocumentStatus($entity->getStatus())['id'],
-            'type' => null,
+            'id'       => $entity->getId(),
+            'title'    => $entity->getTitle(),
+            'year'     => "{$entity->getYear()}/01/01",
+            'statusName' => $entity->getStatus()->getName(),
+            'type'     => null,
+            'number'   => null,
         ];
 
         if ($entity instanceof Book) {

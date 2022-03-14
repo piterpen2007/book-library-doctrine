@@ -52,16 +52,6 @@ final class Magazine extends AbstractTextDocument
         return $this;
     }
 
-    /**
-     * @param Author|null $author
-     * @return Magazine
-     */
-    public function setAuthor(?Author $author): Magazine
-    {
-        $this->author = $author;
-        return $this;
-    }
-
     /** Выводит заголовок для печати
      *
      * @return string

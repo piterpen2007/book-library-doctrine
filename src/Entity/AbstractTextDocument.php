@@ -15,9 +15,6 @@ abstract class AbstractTextDocument
      * @var Author[]
      */
     private array $authors;
-
-    public const STATUS_ARCHIVE = 'archive';
-    public const STATUS_IN_STOCK = 'inStock';
     /**
      * @var int id книги
      */
@@ -45,7 +42,7 @@ abstract class AbstractTextDocument
      * @param string $title - Заголовок книги
      * @param int $year - Год выпуска книги
      * @param array $purchasePrices
-     * @param string $status
+     * @param Status $status
      * @param Author[] $authors
      */
     public function __construct(
@@ -168,10 +165,10 @@ abstract class AbstractTextDocument
     }
 
     /**
-     * @param string $status
+     * @param Status $status
      * @return AbstractTextDocument
      */
-    public function setStatus(string $status): AbstractTextDocument
+    public function setStatus(Status $status): AbstractTextDocument
     {
         $this->status = $status;
         return $this;

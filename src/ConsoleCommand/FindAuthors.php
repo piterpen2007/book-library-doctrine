@@ -88,6 +88,7 @@ final class FindAuthors implements CommandInterface
     private function buildJsonData(array $dtoCollection): array
     {
         $result = [];
+        /** @var AuthorDto $authorDto */
         foreach ($dtoCollection as $authorDto) {
             $result[] = [
                 'id' => $authorDto->getId(),

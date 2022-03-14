@@ -114,7 +114,7 @@ final class Author
      * @param DateTimeImmutable $birthday
      * @return Author
      */
-    public function setBirthday(string $birthday): Author
+    public function setBirthday(DateTimeImmutable $birthday): Author
     {
         $this->birthday = $birthday;
         return $this;

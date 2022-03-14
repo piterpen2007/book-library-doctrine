@@ -7,13 +7,14 @@ use EfTech\BookLibrary\Exception;
 
 final class Book extends AbstractTextDocument
 {
+
     /**
      * @param int $id
      * @param string $title
      * @param int $year
      * @param Author[] $authors
      * @param array $purchasePrices
-     * @param string $status
+     * @param Status $status
      */
     public function __construct(
         int $id,
@@ -30,17 +31,6 @@ final class Book extends AbstractTextDocument
         }
     }
 
-
-    /**
-     * Устанавливает автора книги
-     * @param Author $author
-     * @return Book
-     */
-    public function setAuthor(Author $author): Book
-    {
-        $this->author = $author;
-        return $this;
-    }
 
     /** Выводит заголовок для печати
      *
