@@ -3,6 +3,7 @@
 namespace EfTech\BookLibrary\Controller;
 
 use EfTech\BookLibrary\Infrastructure\Controller\ControllerInterface;
+use EfTech\BookLibrary\Infrastructure\Db\ConnectionInterface;
 use EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory;
 use EfTech\BookLibrary\Service\ArrivalNewTextDocumentService;
 use EfTech\BookLibrary\Service\ArrivalNewTextDocumentService\NewMagazineDto;
@@ -17,24 +18,28 @@ class CreateRegisterMagazinesController implements ControllerInterface
 {
     private ServerResponseFactory $serverResponseFactory;
     private ArrivalNewTextDocumentService $arrivalNewTextDocumentService;
-
+    private ConnectionInterface $connection;
     /**
      * @param ArrivalNewTextDocumentService $arrivalNewTextDocumentService
      * @param ServerResponseFactory $serverResponseFactory
+     * @param ConnectionInterface $connection
      */
     public function __construct(
         ArrivalNewTextDocumentService $arrivalNewTextDocumentService,
-        \EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory $serverResponseFactory
+        \EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory $serverResponseFactory,
+        \EfTech\BookLibrary\Infrastructure\Db\ConnectionInterface $connection
     )
     {
         $this->arrivalNewTextDocumentService = $arrivalNewTextDocumentService;
         $this->serverResponseFactory = $serverResponseFactory;
+        $this->connection = $connection;
     }
 
 
     public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
         try {
+            $this->connection->beginTransaction();
             $requestData = json_decode($request->getBody(), true, 512, JSON_THROW_ON_ERROR);
             $validationResult = $this->validateData($requestData);
 
@@ -47,7 +52,9 @@ class CreateRegisterMagazinesController implements ControllerInterface
                 $httpCode = 400;
                 $jsonData = ['status' => 'fail','message' => implode('.', $validationResult)];
             }
+            $this->connection->commit();
         } catch (\Throwable $e) {
+            $this->connection->rollBack();
             $httpCode = 500;
             $jsonData = ['status' => 'fail','message' => $e->getMessage()];
         }

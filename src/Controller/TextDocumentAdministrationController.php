@@ -5,6 +5,7 @@ namespace EfTech\BookLibrary\Controller;
 use EfTech\BookLibrary\Exception\RuntimeException;
 use EfTech\BookLibrary\Infrastructure\Auth\HttpAuthProvider;
 use EfTech\BookLibrary\Infrastructure\Controller\ControllerInterface;
+use EfTech\BookLibrary\Infrastructure\Db\ConnectionInterface;
 use EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory;
 use Psr\Log\LoggerInterface;
 use EfTech\BookLibrary\Infrastructure\ViewTemplate\ViewTemplateInterface;
@@ -45,6 +46,8 @@ class TextDocumentAdministrationController implements ControllerInterface
      */
     private SearchTextDocumentService $searchTextDocumentService;
 
+    private ConnectionInterface $connection;
+
     /**
      * @param LoggerInterface $logger Логер
      * @param SearchTextDocumentService $searchTextDocumentService Сервис поиска текстового документа
@@ -53,6 +56,7 @@ class TextDocumentAdministrationController implements ControllerInterface
      * @param ArrivalNewTextDocumentService $arrivalNewTextDocumentService
      * @param HttpAuthProvider $httpAuthProvider
      * @param ServerResponseFactory $serverResponseFactory
+     * @param ConnectionInterface $connection
      */
     public function __construct(
         LoggerInterface $logger,
@@ -61,7 +65,8 @@ class TextDocumentAdministrationController implements ControllerInterface
         SearchAuthorsService $authorsService,
         ArrivalNewTextDocumentService $arrivalNewTextDocumentService,
         HttpAuthProvider $httpAuthProvider,
-        ServerResponseFactory $serverResponseFactory
+        ServerResponseFactory $serverResponseFactory,
+        ConnectionInterface $connection
     ) {
         $this->logger = $logger;
         $this->searchTextDocumentService = $searchTextDocumentService;
@@ -70,6 +75,7 @@ class TextDocumentAdministrationController implements ControllerInterface
         $this->arrivalNewTextDocumentService = $arrivalNewTextDocumentService;
         $this->httpAuthProvider = $httpAuthProvider;
         $this->serverResponseFactory = $serverResponseFactory;
+        $this->connection = $connection;
     }
 
 
@@ -205,13 +211,24 @@ class TextDocumentAdministrationController implements ControllerInterface
      */
     private function createBook(array $dataToCreate): void
     {
-        $this->arrivalNewTextDocumentService->registerBook(
-            new NewBookDto(
-                $dataToCreate['title'],
-                (int)$dataToCreate['year'],
-                $this->extractAuthorIdList($dataToCreate)
-            )
-        );
+        try {
+            $this->connection->beginTransaction();
+            $this->arrivalNewTextDocumentService->registerBook(
+                new NewBookDto(
+                    $dataToCreate['title'],
+                    (int)$dataToCreate['year'],
+                    $this->extractAuthorIdList($dataToCreate)
+                )
+            );
+            $this->connection->commit();
+        } catch (Throwable $e) {
+            $this->connection->rollBack();
+            throw new RuntimeException(
+                'Ошибка при создании книги' . $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
+        }
     }
 
     /** Логика валидации данных магазина
@@ -304,14 +321,23 @@ class TextDocumentAdministrationController implements ControllerInterface
      */
     private function createMagazine(array $dataToCreate): void
     {
-        $this->arrivalNewTextDocumentService->registerMagazine(
-            new NewMagazineDto(
-                $dataToCreate['title'],
-                (int)$dataToCreate['year'],
-                $this->extractAuthorIdList($dataToCreate),
-                (int)$dataToCreate['number']
-            )
-        );
+        try {
+            $this->arrivalNewTextDocumentService->registerMagazine(
+                new NewMagazineDto(
+                    $dataToCreate['title'],
+                    (int)$dataToCreate['year'],
+                    $this->extractAuthorIdList($dataToCreate),
+                    (int)$dataToCreate['number']
+                )
+            );
+        } catch (Throwable $e) {
+            $this->connection->rollBack();
+            throw new RuntimeException(
+                'Ошибка при создании журнала' . $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
+        }
     }
 
     private function validateNumber(array $dataToCreate): array
