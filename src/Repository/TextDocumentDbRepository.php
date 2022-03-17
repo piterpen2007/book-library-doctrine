@@ -420,14 +420,13 @@ EOF;
     public function add(AbstractTextDocument $entity): AbstractTextDocument
     {
         $sql = <<<EOF
-INSERT INTO text_documents(id, title, year, status_id, type, number) (
+INSERT INTO text_documents(id, title, year, status_id, type) (
     SELECT
         :id,
         :title,
         :year,
         s.id,
-        :type,
-        :number
+        :type
     FROM
         text_document_status AS s
     WHERE
