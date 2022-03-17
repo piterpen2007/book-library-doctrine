@@ -2,6 +2,7 @@
 
 namespace EfTech\BookLibrary\Entity;
 
+use DateTimeImmutable;
 use EfTech\BookLibrary\Entity\TextDocument\Status;
 use EfTech\BookLibrary\Exception;
 
@@ -15,7 +16,7 @@ final class Magazine extends AbstractTextDocument
     /**
      * @param int $id
      * @param string $title
-     * @param int $year
+     * @param DateTimeImmutable $year
      * @param array $authors
      * @param int $number
      * @param array $purchasePrices
@@ -24,7 +25,7 @@ final class Magazine extends AbstractTextDocument
     public function __construct(
         int $id,
         string $title,
-        int $year,
+        DateTimeImmutable $year,
         array $authors,
         int $number,
         array $purchasePrices,
@@ -58,7 +59,7 @@ final class Magazine extends AbstractTextDocument
      */
     public function getTitleForPrinting(): string
     {
-        return "{$this->getTitle()} . {$this->getYear()} . Номер:  {$this->getNumber()}";
+        return "{$this->getTitle()} . {$this->getYear()->format('Y')} . Номер:  {$this->getNumber()}";
     }
 
 

@@ -2,6 +2,7 @@
 
 namespace EfTech\BookLibrary\Service;
 
+use DateTimeImmutable;
 use EfTech\BookLibrary\Entity\Author;
 use EfTech\BookLibrary\Entity\AuthorRepositoryInterface;
 use EfTech\BookLibrary\Entity\Book;
@@ -82,7 +83,7 @@ final class ArrivalNewTextDocumentService
         $entity = new Book(
             $this->textDocumentRepository->nextId(),
             $bookDto->getTitle(),
-            $bookDto->getYear(),
+            DateTimeImmutable::createFromFormat('Y', $bookDto->getYear()),
             $this->loadAuthorEntities($bookDto->getAuthorIds()),
             [],
             new Status(Status::STATUS_IN_STOCK)
@@ -108,7 +109,7 @@ final class ArrivalNewTextDocumentService
         $entity = new Magazine(
             $this->textDocumentRepository->nextId(),
             $magazineDto->getTitle(),
-            $magazineDto->getYear(),
+            DateTimeImmutable::createFromFormat('Y', $magazineDto->getYear()),
             $this->loadAuthorEntities($magazineDto->getAuthorIds()),
             $magazineDto->getNumber(),
             [],

@@ -198,7 +198,7 @@ EOF;
                 $textDocumentData[$row['id']] = [
                     'id' => $row['id'],
                     'title' => $row['title'],
-                    'year' => $yearDate->format('Y'),
+                    'year' => $yearDate,
                     'number' => $row['number'],
                     'status' => new Status($row['status']),
                     'authors' => [],
@@ -323,7 +323,7 @@ EOF;
         $values = [
             'id'         => $entity->getId(),
             'title'      => $entity->getTitle(),
-            'year'       => "{$entity->getYear()}/01/01",
+            'year'       => $entity->getYear()->format('Y-m-d'),
             'statusName' => $entity->getStatus()->getName(),
             'type'       => null,
             'number'     => null,
@@ -437,7 +437,7 @@ EOF;
         $values = [
             'id'       => $entity->getId(),
             'title'    => $entity->getTitle(),
-            'year'     => "{$entity->getYear()}/01/01",
+            'year'     => $entity->getYear()->format('Y-m-d'),
             'statusName' => $entity->getStatus()->getName(),
             'type'     => null,
             'number'   => null,
