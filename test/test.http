@@ -13,7 +13,7 @@ GET http://book-library-fedyancev.ru:8083/books?title=Мечтают ли анд
    client.assert(response.body[0]['authors'][0]['name'] === "Филип", "имя не корректен");
    client.assert(response.body[0]['authors'][0]['surname'] === "Дик", "фамилия не корректен");
    client.assert(response.body[0]['authors'][0]['birthday'] === "16.12.1928", "Дата рождения автора не корректен");
-   client.assert(response.body[0]['authors'][0]['country'] === "us", "страна не корректен");
+   client.assert(response.body[0]['authors'][0]['country'] === "US", "страна не корректен");
  });
  %}
 
@@ -57,7 +57,7 @@ GET http://book-library-fedyancev.ru:8083/books?author_surname=Дик
    client.assert(response.body[0]['authors'][0]['name'] === "Филип", "имя не корректен");
    client.assert(response.body[0]['authors'][0]['surname'] === "Дик", "фамилия не корректен");
    client.assert(response.body[0]['authors'][0]['birthday'] === "16.12.1928", "Дата рождения автора не корректен");
-   client.assert(response.body[0]['authors'][0]['country'] === "us", "страна не корректен");
+   client.assert(response.body[0]['authors'][0]['country'] === "US", "страна не корректен");
    })
 %}
 
@@ -73,7 +73,7 @@ GET http://book-library-fedyancev.ru:8083/authors?surname=Паланик
       client.assert(response.body[0]['name'] === "Чак", "имя не корректен");
       client.assert(response.body[0]['surname'] === "Паланик", "фамилия не корректен");
       client.assert(response.body[0]['birthday'] === "21.02.1962", "Дата рождения автора не корректен");
-      client.assert(response.body[0]['country'] === "us", "страна не корректен");
+      client.assert(response.body[0]['country'] === "US", "страна не корректен");
   })
 %}
 
@@ -169,7 +169,7 @@ GET http://book-library-fedyancev.ru:8083/authors/1
       client.assert(response.body['name'] === "Чак", "имя не корректен");
       client.assert(response.body['surname'] === "Паланик", "фамилия не корректен");
       client.assert(response.body['birthday'] === "21.02.1962", "Дата рождения автора не корректен");
-      client.assert(response.body['country'] === "us", "страна не корректен");
+      client.assert(response.body['country'] === "US", "страна не корректен");
   })
 %}
 
@@ -218,7 +218,7 @@ Content-Type: application/json
    client.assert(response.contentType.mimeType === "application/json", 'Проверяю application/json. Фактическое знаение: ' + response.contentType.mimeType);
    client.assert(response.body.hasOwnProperty('id'), "Отсутствует id книги");
    client.assert(response.body['status'] === "inStock", "статус книги не корректен");
-   client.assert(response.body['title_for_printing'] === 'Текстовой документ .Кормильцев Илья, Паланик Чак, Эллис Брет 2021', "название книги не корректно");
+   client.assert(response.body['title_for_printing'] === 'Текстовой документ .Кормильцев Илья, Эллис Брет, Паланик Чак 2021', "название книги не корректно");
  });
  %}
 

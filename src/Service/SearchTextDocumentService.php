@@ -90,7 +90,7 @@ class SearchTextDocumentService
             $textDocument->getId(),
             $textDocument->getTitle(),
             $textDocument->getTitleForPrinting(),
-            $textDocument->getYear(),
+            $textDocument->getYear()->format('Y'),
             $authors,
             $textDocument instanceof Magazine ? $textDocument->getNumber() : null
         );

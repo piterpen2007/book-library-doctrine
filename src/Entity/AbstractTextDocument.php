@@ -2,6 +2,7 @@
 
 namespace EfTech\BookLibrary\Entity;
 
+use DateTimeImmutable;
 use EfTech\BookLibrary\Entity\TextDocument\Status;
 use EfTech\BookLibrary\Exception\DomainException;
 use EfTech\BookLibrary\Exception\RuntimeException;
@@ -24,9 +25,9 @@ abstract class AbstractTextDocument
      */
     private string $title;
     /**
-     * @var int Год выпуска книги
+     * @var DateTimeImmutable Год выпуска книги
      */
-    private int $year;
+    private DateTimeImmutable $year;
     /** Данные о закупочных ценах
      * @var PurchasePrice[]
      */
@@ -40,7 +41,7 @@ abstract class AbstractTextDocument
      *
      * @param int $id - id книги
      * @param string $title - Заголовок книги
-     * @param int $year - Год выпуска книги
+     * @param DateTimeImmutable $year - Год выпуска книги
      * @param array $purchasePrices
      * @param Status $status
      * @param Author[] $authors
@@ -48,7 +49,7 @@ abstract class AbstractTextDocument
     public function __construct(
         int $id,
         string $title,
-        int $year,
+        DateTimeImmutable $year,
         array $purchasePrices,
         Status $status,
         array $authors
@@ -147,18 +148,18 @@ abstract class AbstractTextDocument
     }
 
     /**
-     * @return int
+     * @return DateTimeImmutable
      */
-    final public function getYear(): int
+    final public function getYear(): DateTimeImmutable
     {
         return $this->year;
     }
 
     /**
-     * @param int $year
+     * @param DateTimeImmutable $year
      * @return AbstractTextDocument
      */
-    public function setYear(int $year): AbstractTextDocument
+    public function setYear(DateTimeImmutable $year): AbstractTextDocument
     {
         $this->year = $year;
         return $this;

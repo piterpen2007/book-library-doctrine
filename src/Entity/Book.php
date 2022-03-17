@@ -2,6 +2,7 @@
 
 namespace EfTech\BookLibrary\Entity;
 
+use DateTimeImmutable;
 use EfTech\BookLibrary\Entity\TextDocument\Status;
 use EfTech\BookLibrary\Exception;
 
@@ -11,7 +12,7 @@ final class Book extends AbstractTextDocument
     /**
      * @param int $id
      * @param string $title
-     * @param int $year
+     * @param DateTimeImmutable $year
      * @param Author[] $authors
      * @param array $purchasePrices
      * @param Status $status
@@ -19,7 +20,7 @@ final class Book extends AbstractTextDocument
     public function __construct(
         int $id,
         string $title,
-        int $year,
+        DateTimeImmutable $year,
         array $authors,
         array $purchasePrices,
         Status $status
@@ -43,7 +44,7 @@ final class Book extends AbstractTextDocument
             $titlesAuthors[] = $author->getSurname() . ' ' . $author->getName();
         }
         $titlesAuthorsTxt = implode(', ', $titlesAuthors);
-        return "{$this->getTitle()} ." . $titlesAuthorsTxt . " {$this->getYear()}";
+        return "{$this->getTitle()} ." . $titlesAuthorsTxt . " {$this->getYear()->format('Y')}";
     }
 
 
