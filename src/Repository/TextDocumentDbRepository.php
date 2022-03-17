@@ -420,26 +420,24 @@ EOF;
     public function add(AbstractTextDocument $entity): AbstractTextDocument
     {
         $sql = <<<EOF
-INSERT INTO text_documents(id, title, year, status_id, type) (
-    SELECT
-        :id,
-        :title,
-        :year,
-        s.id,
-        :type
-    FROM
-        text_document_status AS s
-    WHERE
-        s.name = :statusName);
-
+INSERT INTO text_documents (id, title, year, status_id, type)
+    (
+        SELECT :id,
+               :title,
+               :year,
+               tds.id,
+               :type
+        FROM text_document_status AS tds
+        WHERE tds.name = :statusName
+    )
 EOF;
+
         $values = [
-            'id'       => $entity->getId(),
-            'title'    => $entity->getTitle(),
-            'year'     => $entity->getYear()->format('Y-m-d'),
+            'id'         => $entity->getId(),
+            'title'      => $entity->getTitle(),
+            'year'       => $entity->getYear()->format('Y-m-d'),
             'statusName' => $entity->getStatus()->getName(),
-            'type'     => null,
-            'number'   => null,
+            'type'       => null
         ];
 
         if ($entity instanceof Book) {
@@ -449,17 +447,19 @@ EOF;
         } else {
             throw new RuntimeException('Текстовой документ данного типа не может быть добавлен');
         }
+
         $this->connection->prepare($sql)->execute($values);
 
-        if ($entity instanceof Magazine) {
-            $this->createMagazine($entity);
-        } elseif ($entity instanceof Book) {
+        if ($entity instanceof Book) {
             $this->createBook($entity);
+        } elseif ($entity instanceof Magazine) {
+            $this->createMagazine($entity);
         }
 
         $this->saveTextDocumentToAuthor($entity);
 
         return $entity;
+
     }
 
 
