@@ -192,6 +192,9 @@ db.local.di.config
 
 
 
+.\vendor\bin\doctrine orm:convert-mapping --from-database --namespace='App\Entity' xml  ./src/config/xml
+
+.\vendor\bin\doctrine orm:convert-mapping --from-database --namespace='App\Entity' annotation ./src/Entity
 
 
 
