@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "469cf8a6754e65ef2efcace8eae17b16",
+    "content-hash": "205567d166013221ba7d1a8a3172f30e",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -1115,7 +1115,7 @@
         },
         {
             "name": "eff-tech/framework",
-            "version": "dev-lesson_17-03-2022",
+            "version": "dev-lesson_21-03-2022",
             "source": {
                 "type": "git",
                 "url": "git@git.effective-team.ru:rnd/educational-projects/interns/2021-flow-1/fedyancev.d.a/framework.git",

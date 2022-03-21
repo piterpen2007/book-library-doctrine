@@ -2,21 +2,35 @@
 
 namespace EfTech\BookLibrary\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
  * Пользователь системы
+ *
+ *
+ *
+ * @ORM\Entity()
+ * @ORM\Table(name="users")
  */
 class User
 {
     /** id пользователя
+     *
+     * @ORM\Id()
+     * @ORM\Column(name="id", type="integer", nullable=false)
      * @var int
      */
     private int $id;
 
     /** Логин пользователя в системе
+     *
+     * @ORM\Column(name="login",type="string", length=50, nullable=false)
      * @var string
      */
     private string $login;
     /** Пароль пользователя
+     *
+     * @ORM\Column(name="password",type="string", length=60, nullable=false)
      * @var string
      */
     private string $password;

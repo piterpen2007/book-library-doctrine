@@ -181,6 +181,14 @@ db.local.di.config
             <e_db:option name="a2">2</e_db:option>
             <e_db:option name="a3">3</e_db:option>
         </e_db:connect>
+
+
+
+        <e_db:orm>
+                    <e_db:path>%kernel.project_dir%src/Entity</e_db:path>
+                    <e_db:isDevMode>true</e_db:isDevMode>
+                    <e_db:proxyDir>%kernel.project_dir%var/cache/doctrine/proxy</e_db:proxyDir>
+                </e_db:orm>
     </e_db:config>
 </container>
 
