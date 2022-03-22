@@ -5,29 +5,47 @@ namespace EfTech\BookLibrary\Entity;
 use DateTimeImmutable;
 use EfTech\BookLibrary\Exception;
 use EfTech\BookLibrary\ValueObject\Country;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
+ *
+ * @ORM\Entity(repositoryClass=\EfTech\BookLibrary\Repository\AuthorDoctrineRepository::class)
+ * @ORM\Table(name="authors")
+ *
  * Автор
  */
 final class Author
 {
     /**
+     * @ORM\Id
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\GeneratedValue(strategy="SEQUENCE")
+     * @ORM\SequenceGenerator(sequenceName="authors_id_seq")
      * @var int id автора
      */
     private int $id;
     /**
+     * @ORM\Column(name="name", type="string", length=255, nullable=false)
+     *
      * @var string Имя автора
      */
     private string $name;
     /**
+     * @ORM\Column(name="surname", type="string", length=255, nullable=false)
+     *
      * @var string Фамилия автора
      */
     private string $surname;
     /**
+     * @ORM\Column(name="birthday", type="date_immutable", nullable=false)
+     *
      * @var DateTimeImmutable Дата рождения автора
      */
     private DateTimeImmutable $birthday;
     /**
+     * @ORM\ManyToOne(targetEntity=\EfTech\BookLibrary\ValueObject\Country::class)
+     * @ORM\JoinColumn(name="country_id", referencedColumnName="id")
+     *
      * @var Country Страна рождения автора
      */
     private Country $country;

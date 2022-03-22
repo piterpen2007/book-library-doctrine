@@ -3,14 +3,28 @@
 namespace EfTech\BookLibrary\ValueObject;
 
 use EfTech\BookLibrary\Exception\RuntimeException;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @ORM\Entity
+ * @ORM\Table(name="country")
+ *
  *  Страна
  */
 class Country
 {
     /**
+     * @ORM\Id
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\GeneratedValue(strategy="SEQUENCE")
+     * @ORM\SequenceGenerator(sequenceName="country_id_seq")
+     *
+     */
+    private ?int $id = null;
+    /**
      * Уникальны код страны из двух символов. Символы это латинские буквы
+     *
+     * @ORM\Column(name="code2", type="string", length=2, nullable=false)
      *
      * @var string
      */
@@ -19,6 +33,7 @@ class Country
     /**
      * Уникальны код страны из трех символов. Символы это латинские буквы
      *
+     * @ORM\Column(name="code3", type="string", length=3, nullable=false)
      * @var string
      */
     private string $code3;
@@ -26,12 +41,16 @@ class Country
     /**
      * Уникальны код страны из двух символов. Символы это цифры
      *
+     * @ORM\Column(name="code", type="string", length=3, nullable=false)
+     *
      * @var string
      */
     private string $code;
 
     /**
      * Название страны
+     *
+     * @ORM\Column(name="name", type="string", length=100, nullable=false)
      *
      * @var string
      */

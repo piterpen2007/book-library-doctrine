@@ -53,9 +53,11 @@
     <service id="EfTech\BookLibrary\Infrastructure\DataLoader\DataLoaderInterface"
              class="EfTech\BookLibrary\Infrastructure\DataLoader\JsonDataLoader"/>
 
-    <service id="EfTech\BookLibrary\Entity\AuthorRepositoryInterface"
-             class="EfTech\BookLibrary\Repository\AuthorDbRepository">
+    <service id="EfTech\BookLibrary\Entity\AuthorRepositoryInterface">
+        <factory service="Doctrine\ORM\EntityManagerInterface" method="getRepository"/>
+        <argument key="$className">EfTech\BookLibrary\Entity\Author</argument>
     </service>
+
     <service id="EfTech\BookLibrary\Infrastructure\Auth\HttpAuthProvider">
         <argument key="$loginUri" type="service">
                 <service class="Nyholm\Psr7\Uri">
