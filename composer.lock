@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "205567d166013221ba7d1a8a3172f30e",
+    "content-hash": "3ed2776a67088422158d630b8b907386",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -1115,11 +1115,11 @@
         },
         {
             "name": "eff-tech/framework",
-            "version": "dev-lesson_21-03-2022",
+            "version": "dev-lesson_22-03-2022",
             "source": {
                 "type": "git",
                 "url": "git@git.effective-team.ru:rnd/educational-projects/interns/2021-flow-1/fedyancev.d.a/framework.git",
-                "reference": "13460a288cafaf4edfec1d5f96e6a150fe65cc42"
+                "reference": "a0f1c5bef235a4344548a492190f2a46ba4729a2"
             },
             "require": {
                 "doctrine/annotations": "^1.13",
@@ -1178,7 +1178,7 @@
             "support": {
                 "email": "popkin@yandex.ru"
             },
-            "time": "2022-03-17T12:37:18+00:00"
+            "time": "2022-03-21T13:10:05+00:00"
         },
         {
             "name": "friendsofphp/proxy-manager-lts",
