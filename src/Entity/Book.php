@@ -41,7 +41,7 @@ final class Book extends AbstractTextDocument
     {
         $titlesAuthors = [];
         foreach ($this->getAuthors() as $author) {
-            $titlesAuthors[] = $author->getSurname() . ' ' . $author->getName();
+            $titlesAuthors[] = $author->getFullName()->getSurname() . ' ' . $author->getFullName()->getName();
         }
         $titlesAuthorsTxt = implode(', ', $titlesAuthors);
         return "{$this->getTitle()} ." . $titlesAuthorsTxt . " {$this->getYear()->format('Y')}";

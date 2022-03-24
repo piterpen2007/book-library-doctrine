@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  *
  *
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="\EfTech\BookLibrary\Repository\UserDoctrineRepository::class")
  * @ORM\Table(name="users")
  */
 class User

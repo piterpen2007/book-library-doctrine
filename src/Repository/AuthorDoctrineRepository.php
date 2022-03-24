@@ -8,9 +8,21 @@ use EfTech\BookLibrary\Entity\AuthorRepositoryInterface;
 class AuthorDoctrineRepository extends EntityRepository implements
     AuthorRepositoryInterface
 {
+    private const REPLACED_CRITERIA = [
+        'surname' => 'fullName.surname',
+        'name' => 'fullName.name',
+    ];
     public function findBy(array $criteria, ?array $orderBy = null, $limit = null, $offset = null): array
     {
-        return parent::findBy($criteria, $orderBy, $limit, $offset);
-    }
+        $preparedCriteria = [];
 
+        foreach ($criteria as $key => $value) {
+            if (array_key_exists($key, self::REPLACED_CRITERIA)) {
+                $preparedCriteria[self::REPLACED_CRITERIA[$key]] = $value;
+            } else {
+                $preparedCriteria[$key] = $value;
+            }
+        }
+        return parent::findBy($preparedCriteria, $orderBy, $limit, $offset);
+    }
 }

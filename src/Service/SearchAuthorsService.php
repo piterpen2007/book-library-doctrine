@@ -60,8 +60,8 @@ class SearchAuthorsService
     {
         return new AuthorDto(
             $author->getId(),
-            $author->getName(),
-            $author->getSurname(),
+            $author->getFullName()->getName(),
+            $author->getFullName()->getSurname(),
             $author->getBirthday(),
             $author->getCountry()
         );

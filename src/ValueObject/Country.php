@@ -7,7 +7,16 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="country")
+ * @ORM\Table(
+ *
+ *     name="country",
+ *     uniqueConstraints = {
+ *           @ORM\UniqueConstraint(name="country_code2_idx", columns={"code2"}),
+ *           @ORM\UniqueConstraint(name="country_code3_unq", columns={"code3"}),
+ *           @ORM\UniqueConstraint(name="country_code_unq", columns={"code"})
+ *     }
+ *
+ * )
  *
  *  Страна
  */
@@ -153,6 +162,4 @@ class Country
     {
         return $this->code2;
     }
-
-
 }

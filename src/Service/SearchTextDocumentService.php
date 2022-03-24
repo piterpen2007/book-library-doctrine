@@ -77,8 +77,8 @@ class SearchTextDocumentService
         $authors = array_map(static function (Author $a) {
             return new AuthorDto(
                 $a->getId(),
-                $a->getName(),
-                $a->getSurname(),
+                $a->getFullName()->getName(),
+                $a->getFullName()->getSurname(),
                 $a->getBirthday(),
                 $a->getCountry()
             );

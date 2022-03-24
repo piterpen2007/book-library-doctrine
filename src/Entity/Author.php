@@ -6,12 +6,17 @@ use DateTimeImmutable;
 use EfTech\BookLibrary\Exception;
 use EfTech\BookLibrary\ValueObject\Country;
 use Doctrine\ORM\Mapping as ORM;
+use EfTech\BookLibrary\ValueObject\FullName;
 
 /**
  *
  * @ORM\Entity(repositoryClass=\EfTech\BookLibrary\Repository\AuthorDoctrineRepository::class)
- * @ORM\Table(name="authors")
- *
+ * @ORM\Table(
+ *     name="authors",
+ *     indexes= {
+ *           @ORM\Index(name="authors_surname_idx", columns={"surname"})
+ *     }
+ * )
  * Автор
  */
 final class Author
@@ -24,18 +29,6 @@ final class Author
      * @var int id автора
      */
     private int $id;
-    /**
-     * @ORM\Column(name="name", type="string", length=255, nullable=false)
-     *
-     * @var string Имя автора
-     */
-    private string $name;
-    /**
-     * @ORM\Column(name="surname", type="string", length=255, nullable=false)
-     *
-     * @var string Фамилия автора
-     */
-    private string $surname;
     /**
      * @ORM\Column(name="birthday", type="date_immutable", nullable=false)
      *
@@ -51,19 +44,32 @@ final class Author
     private Country $country;
 
     /**
+     *
+     * @ORM\Embedded(class=\EfTech\BookLibrary\ValueObject\FullName::class, columnPrefix="false")
+     * @var FullName
+     */
+    private FullName $fullName;
+
+    /**
      * @param int $id
-     * @param string $name
-     * @param string $surname
+     * @param FullName $fullName
      * @param DateTimeImmutable $birthday
      * @param Country $country
      */
-    public function __construct(int $id, string $name, string $surname, DateTimeImmutable $birthday, Country $country)
+    public function __construct(int $id, FullName $fullName, DateTimeImmutable $birthday, Country $country)
     {
         $this->id = $id;
-        $this->name = $name;
-        $this->surname = $surname;
+        $this->fullName = $fullName;
         $this->birthday = $birthday;
         $this->country = $country;
+    }
+
+    /**
+     * @return FullName
+     */
+    public function getFullName(): FullName
+    {
+        return $this->fullName;
     }
 
     /**
@@ -81,42 +87,6 @@ final class Author
     public function setId(int $id): Author
     {
         $this->id = $id;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     * @return Author
-     */
-    public function setName(string $name): Author
-    {
-        $this->name = $name;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSurname(): string
-    {
-        return $this->surname;
-    }
-
-    /**
-     * @param string $surname
-     * @return Author
-     */
-    public function setSurname(string $surname): Author
-    {
-        $this->surname = $surname;
         return $this;
     }
 
@@ -154,29 +124,5 @@ final class Author
     {
         $this->country = $country;
         return $this;
-    }
-
-
-    /**
-     * @param array $data
-     * @return Author
-     */
-    public static function createFromArray(array $data): Author
-    {
-        $requiredFields = [
-            'id',
-            'name',
-            'surname',
-            'birthday',
-            'country'
-        ];
-
-        $missingFields = array_diff($requiredFields, array_keys($data));
-
-        if (count($missingFields) > 0) {
-            $errMsg = sprintf('Отсутствуют обязательные элементы: %s', implode(',', $missingFields));
-            throw new Exception\invalidDataStructureException($errMsg);
-        }
-        return new Author($data['id'], $data['name'], $data['surname'], $data['birthday'], $data['country']);
     }
 }

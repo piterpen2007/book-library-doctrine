@@ -190,6 +190,7 @@ php ./bin/doctrine-migration.php migrations:migrate
 
 php ./bin/doctrine-migration.php migrations:generate
 
+php .\bin\doctrine.php orm:schema-tool:update --dump-sql
 
 
 create table if not exists text_document_status

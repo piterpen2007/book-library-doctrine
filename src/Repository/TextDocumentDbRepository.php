@@ -13,6 +13,7 @@ use EfTech\BookLibrary\Exception\RuntimeException;
 use EfTech\BookLibrary\Infrastructure\Db\ConnectionInterface;
 use EfTech\BookLibrary\ValueObject\Country;
 use EfTech\BookLibrary\ValueObject\Currency;
+use EfTech\BookLibrary\ValueObject\FullName;
 use EfTech\BookLibrary\ValueObject\Money;
 use EfTech\BookLibrary\ValueObject\PurchasePrice;
 
@@ -210,8 +211,7 @@ EOF;
                 if (false === array_key_exists($row['author_id'], $authors)) {
                     $authors[$row['author_id']] = new Author(
                         $row['author_id'],
-                        $row['author_name'],
-                        $row['author_surname'],
+                        new FullName($row['author_name'], $row['author_surname']),
                         DateTimeImmutable::createFromFormat('Y-m-d', $row['author_birthday']),
                         new Country(
                             $row['author_country_code2'],
@@ -459,7 +459,6 @@ EOF;
         $this->saveTextDocumentToAuthor($entity);
 
         return $entity;
-
     }
 
 
@@ -501,7 +500,7 @@ EOF;
         $sql = <<<EOF
 INSERT INTO text_document_books (id, isbn) VALUES (:id, :isbn)
 EOF;
-$this->connection->prepare($sql)->execute(['id'=>$book->getId(),'isbn'=> null]);
+        $this->connection->prepare($sql)->execute(['id' => $book->getId(),'isbn' => null]);
     }
 
     /**
@@ -515,7 +514,6 @@ $this->connection->prepare($sql)->execute(['id'=>$book->getId(),'isbn'=> null]);
         $sql = <<<EOF
 INSERT INTO text_document_magazines (id, number) VALUES (:id, :number)
 EOF;
-        $this->connection->prepare($sql)->execute(['id'=>$magazine->getId(),'number'=> $magazine->getNumber()]);
+        $this->connection->prepare($sql)->execute(['id' => $magazine->getId(),'number' => $magazine->getNumber()]);
     }
-
 }

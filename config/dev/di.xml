@@ -65,8 +65,9 @@
                 </service>
         </argument>
     </service>
-    <service id="EfTech\BookLibrary\Infrastructure\Auth\UserDataStorageInterface"
-             class="EfTech\BookLibrary\Repository\UserDbRepository">
+    <service id="EfTech\BookLibrary\Infrastructure\Auth\UserDataProviderInterface">
+        <factory service="Doctrine\ORM\EntityManagerInterface" method="getRepository"/>
+        <argument key="$className">EfTech\BookLibrary\Repository\UserRepository\UserDataProvider</argument>
     </service>
 
     <service id="EfTech\BookLibrary\Infrastructure\Session\SessionInterface">
