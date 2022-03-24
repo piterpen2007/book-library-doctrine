@@ -62,7 +62,7 @@ final class Author
 
     /**
      *
-     * @ORM\Embedded(class=\EfTech\BookLibrary\ValueObject\FullName::class, columnPrefix="false")
+     * @ORM\Embedded(class=\EfTech\BookLibrary\ValueObject\FullName::class, columnPrefix=false)
      * @var FullName
      */
     private FullName $fullName;
