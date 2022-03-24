@@ -3,11 +3,31 @@
 namespace EfTech\BookLibrary\Entity;
 
 use DateTimeImmutable;
+use Doctrine\ORM\Mapping as ORM;
 use EfTech\BookLibrary\Entity\TextDocument\Status;
 use EfTech\BookLibrary\Exception;
 
-final class Book extends AbstractTextDocument
+/**
+ * Книги
+ *
+ * @ORM\Entity
+ * @ORM\Table(
+ *     name="text_document_books",
+ *     uniqueConstraints={
+ *          @ORM\UniqueConstraint(name="text_document_books_isbn_unq", columns={"isbn"})
+ *      }
+ * )
+ */
+class Book extends AbstractTextDocument
 {
+
+    /**
+     * Международный серийный книжный номер
+     *
+     * @var string|null
+     * @ORM\Column(type="string",name="isbn", length=13, nullable=false)
+     */
+    private ?string $isbn;
 
     /**
      * @param int $id
@@ -16,6 +36,7 @@ final class Book extends AbstractTextDocument
      * @param Author[] $authors
      * @param array $purchasePrices
      * @param Status $status
+     * @param string|null $isbn
      */
     public function __construct(
         int $id,
@@ -23,13 +44,26 @@ final class Book extends AbstractTextDocument
         DateTimeImmutable $year,
         array $authors,
         array $purchasePrices,
-        Status $status
+        Status $status,
+        ?string $isbn = null
     ) {
         parent::__construct($id, $title, $year, $purchasePrices, $status, $authors);
         if (0 === count($authors)) {
             $errMsg = 'У книги должен быть хотя бы один автор';
             throw new Exception\RuntimeException($errMsg);
         }
+        $this->isbn = $isbn;
+    }
+
+    /**
+     * Международный серийный книжный номер
+     *
+     *
+     * @return string|null
+     */
+    public function getIsbn(): ?string
+    {
+        return $this->isbn;
     }
 
 
@@ -47,34 +81,4 @@ final class Book extends AbstractTextDocument
         return "{$this->getTitle()} ." . $titlesAuthorsTxt . " {$this->getYear()->format('Y')}";
     }
 
-
-    public static function createFromArray(array $data): Book
-    {
-        $requiredFields = [
-            'id',
-            'title',
-            'year',
-            'authors',
-            'purchasePrices',
-            'status'
-        ];
-
-
-        $missingFields = array_diff($requiredFields, array_keys($data));
-
-        if (count($missingFields) > 0) {
-            $errMsg = sprintf('Отсутствуют обязательные элементы: %s', implode(',', $missingFields));
-            throw new Exception\InvalidDataStructureException($errMsg);
-        }
-
-
-        return new Book(
-            $data['id'],
-            $data['title'],
-            $data['year'],
-            $data['authors'],
-            $data['purchasePrices'],
-            $data['status']
-        );
-    }
 }

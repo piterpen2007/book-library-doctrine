@@ -3,13 +3,23 @@
 namespace EfTech\BookLibrary\Entity;
 
 use DateTimeImmutable;
+use Doctrine\ORM\Mapping as ORM;
 use EfTech\BookLibrary\Entity\TextDocument\Status;
 use EfTech\BookLibrary\Exception;
 
-final class Magazine extends AbstractTextDocument
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="text_document_magazines")
+ *
+ * Магазин
+ */
+class Magazine extends AbstractTextDocument
 {
     /**
+     *
+     *
      * @var int Номер журнала
+     * @ORM\Column(type="integer", name="number", nullable=false)
      */
     private int $number;
 
@@ -62,34 +72,4 @@ final class Magazine extends AbstractTextDocument
         return "{$this->getTitle()} . {$this->getYear()->format('Y')} . Номер:  {$this->getNumber()}";
     }
 
-
-    public static function createFromArray(array $data): Magazine
-    {
-        $requiredFields = [
-            'id',
-            'title',
-            'year',
-            'number',
-            'authors',
-            'purchasePrices',
-            'status'
-        ];
-
-        $missingFields = array_diff($requiredFields, array_keys($data));
-
-        if (count($missingFields) > 0) {
-            $errMsg = sprintf('Отсутствуют обязательные элементы: %s', implode(',', $missingFields));
-            throw new Exception\invalidDataStructureException($errMsg);
-        }
-
-        return new Magazine(
-            $data['id'],
-            $data['title'],
-            $data['year'],
-            $data['authors'],
-            $data['number'],
-            $data['purchasePrices'],
-            $data['status']
-        );
-    }
 }

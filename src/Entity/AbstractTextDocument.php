@@ -3,32 +3,65 @@
 namespace EfTech\BookLibrary\Entity;
 
 use DateTimeImmutable;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use EfTech\BookLibrary\Entity\TextDocument\Status;
 use EfTech\BookLibrary\Exception\DomainException;
 use EfTech\BookLibrary\Exception\RuntimeException;
 use EfTech\BookLibrary\ValueObject\PurchasePrice;
+use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * @ORM\Entity(repositoryClass=\EfTech\BookLibrary\Repository\TextDocumentDoctrineRepository::class)
+ * @ORM\Table(
+ *     name="text_documents",
+ *     indexes={
+ *          @ORM\Index(name="text_documents_title_idx", columns={"title"}),
+ *          @ORM\Index(name="text_documents_year_idx", columns={"year"}),
+ *          @ORM\Index(name="text_documents_type_idx", columns={"type"})
+ *     }
+ * )
+ *
+ *  Текстовый документ
+ * @ORM\InheritanceType("JOINED")
+ * @ORM\DiscriminatorColumn(name="type",type="string",length=30)
+ * @ORM\DiscriminatorMap({
+ *          "book" = \EfTech\BookLibrary\Entity\Book::class,
+ *          "magazine" = \EfTech\BookLibrary\Entity\Magazine::class
+ *     })
+ *
+ */
 abstract class AbstractTextDocument
 {
     /**
      * Автор текстового документа
+     * @ORM\ManyToMany(targetEntity=\EfTech\BookLibrary\Entity\Author::class, mappedBy="textDocuments")
      *
-     * @var Author[]
+     * @var Author[]|Collection
      */
-    private array $authors;
+    private Collection $authors;
     /**
      * @var int id книги
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="SEQUENCE")
+     * @ORM\SequenceGenerator(sequenceName="text_documents_id_seq")
+     * @ORM\Column(type="integer",name="id",nullable=false)
      */
     private int $id;
     /**
+     * @ORM\Column(type="string",name="title", length=255, nullable=false)
      * @var string Заголовок книги
      */
     private string $title;
     /**
+     * @ORM\Column(type="date_immutable",name="year",nullable=false)
+     *
      * @var DateTimeImmutable Год выпуска книги
      */
     private DateTimeImmutable $year;
     /** Данные о закупочных ценах
+     *
+     *
      * @var PurchasePrice[]
      */
     private array $purchasePrices;
@@ -44,7 +77,7 @@ abstract class AbstractTextDocument
      * @param DateTimeImmutable $year - Год выпуска книги
      * @param array $purchasePrices
      * @param Status $status
-     * @param Author[] $authors
+     * @param Collection $authors
      */
     public function __construct(
         int $id,
@@ -70,7 +103,7 @@ abstract class AbstractTextDocument
                 throw new DomainException('Сущность автора имеет неверный формат');
             }
         }
-        $this->authors = $authors;
+        $this->authors = new ArrayCollection($authors);
     }
 
     /** Перенос документа в архив
@@ -116,7 +149,7 @@ abstract class AbstractTextDocument
      */
     public function getAuthors(): array
     {
-        return $this->authors;
+        return $this->authors->toArray();
     }
 
 
@@ -189,6 +222,4 @@ abstract class AbstractTextDocument
      */
     abstract public function getTitleForPrinting(): string;
 
-
-    abstract public static function createFromArray(array $data): AbstractTextDocument;
 }

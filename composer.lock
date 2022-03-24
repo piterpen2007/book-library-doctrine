@@ -1119,7 +1119,7 @@
             "source": {
                 "type": "git",
                 "url": "git@git.effective-team.ru:rnd/educational-projects/interns/2021-flow-1/fedyancev.d.a/framework.git",
-                "reference": "863b0664fbe55a09e3463c814e33508a9fa4f544"
+                "reference": "b68a00d108a6f95f91ecab5ef110529ca1796f4e"
             },
             "require": {
                 "doctrine/annotations": "^1.13",
@@ -1178,7 +1178,7 @@
             "support": {
                 "email": "popkin@yandex.ru"
             },
-            "time": "2022-03-22T09:01:37+00:00"
+            "time": "2022-03-24T02:08:44+00:00"
         },
         {
             "name": "friendsofphp/proxy-manager-lts",

@@ -1,12 +1,15 @@
 <?php
-
 namespace EfTech\BookLibrary\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use EfTech\BookLibrary\Entity\UserRepositoryInterface;
-use EfTech\BookLibrary\Exception\RuntimeException;
+use EfTech\BookLibrary\Exception;
 use EfTech\BookLibrary\Infrastructure\Auth\UserDataStorageInterface;
+use EfTech\BookLibrary\Repository\UserRepository\UserDataProvider;
 
+/**
+ * Реализация репозитория для сущности User. Данные хранятся в BD
+ */
 class UserDoctrineRepository extends EntityRepository implements UserDataStorageInterface, UserRepositoryInterface
 {
     /**
@@ -18,7 +21,7 @@ class UserDoctrineRepository extends EntityRepository implements UserDataStorage
         $countEntities = count($entities);
 
         if ($countEntities > 1) {
-            throw new RuntimeException('Найдены пользователи с дублирующимися логинами');
+            throw new Exception\RuntimeException('Найдены пользователи с дублирующимися логинами');
         }
 
         return 0 === $countEntities ? null : current($entities);
@@ -32,3 +35,4 @@ class UserDoctrineRepository extends EntityRepository implements UserDataStorage
         return parent::findBy($criteria, $orderBy, $limit, $offset);
     }
 }
+

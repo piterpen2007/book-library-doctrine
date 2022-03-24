@@ -3,22 +3,26 @@
 namespace EfTech\BookLibrary\Entity;
 
 use DateTimeImmutable;
-use EfTech\BookLibrary\Exception;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use EfTech\BookLibrary\ValueObject\Country;
 use Doctrine\ORM\Mapping as ORM;
 use EfTech\BookLibrary\ValueObject\FullName;
 
 /**
+ * Автор
  *
  * @ORM\Entity(repositoryClass=\EfTech\BookLibrary\Repository\AuthorDoctrineRepository::class)
- * @ORM\Table(
+ *
+ * @ORM\Table (
  *     name="authors",
- *     indexes= {
- *           @ORM\Index(name="authors_surname_idx", columns={"surname"})
+ *     indexes={
+ *          @ORM\Index(name="authors_surname_idx", columns={"surname"})
  *     }
  * )
- * Автор
+ *
  */
+
 final class Author
 {
     /**
@@ -44,6 +48,19 @@ final class Author
     private Country $country;
 
     /**
+     * Текстовые документы созданные авторами
+     * @ORM\ManyToMany(targetEntity=\EfTech\BookLibrary\Entity\AbstractTextDocument::class, inversedBy="authors")
+     * @ORM\JoinTable(
+     *     name="text_document_to_author",
+     *     joinColumns={@ORM\JoinColumn(name="author_id",referencedColumnName="id")},
+     *     inverseJoinColumns={@ORM\JoinColumn(name="text_document_id",referencedColumnName="id")}
+     * )
+     *
+     * @var Collection|AbstractTextDocument[]
+     */
+    private Collection $textDocuments;
+
+    /**
      *
      * @ORM\Embedded(class=\EfTech\BookLibrary\ValueObject\FullName::class, columnPrefix="false")
      * @var FullName
@@ -55,14 +72,31 @@ final class Author
      * @param FullName $fullName
      * @param DateTimeImmutable $birthday
      * @param Country $country
+     * @param array $textDocuments
      */
-    public function __construct(int $id, FullName $fullName, DateTimeImmutable $birthday, Country $country)
+    public function __construct(
+        int $id,
+        FullName $fullName,
+        DateTimeImmutable $birthday,
+        Country $country,
+        array $textDocuments = []
+    )
     {
         $this->id = $id;
         $this->fullName = $fullName;
         $this->birthday = $birthday;
         $this->country = $country;
+        $this->textDocuments = new ArrayCollection($textDocuments);
     }
+
+    /**
+     * @return array
+     */
+    public function getTextDocuments(): array
+    {
+        return $this->textDocuments->toArray();
+    }
+
 
     /**
      * @return FullName

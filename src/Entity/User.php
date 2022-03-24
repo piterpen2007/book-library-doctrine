@@ -5,37 +5,44 @@ namespace EfTech\BookLibrary\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Пользователь системы
+ * Класс, реализующий логику создания пользователя
  *
  * @ORM\MappedSuperclass()
  */
 class User
 {
-    /** id пользователя
+    /**
+     * Идентификатор пользователя
+     *
+     * @var int
      *
      * @ORM\Id()
      * @ORM\Column(name="id", type="integer", nullable=false)
-     * @var int
      */
     private int $id;
 
-    /** Логин пользователя в системе
+    /**
+     * Логин пользователя
      *
-     * @ORM\Column(name="login",type="string", length=50, nullable=false)
      * @var string
+     *
+     * @ORM\Column(name="login", type="string", nullable=false, length=50)
      */
     private string $login;
-    /** Пароль пользователя
+
+    /**
+     * Пароль пользователя
      *
-     * @ORM\Column(name="password",type="string", length=60, nullable=false)
      * @var string
+     *
+     * @ORM\Column(name="password", type="string", nullable=false, length=100)
      */
     private string $password;
 
     /**
-     * @param int $id id пользователя
-     * @param string $login Логин пользователя в системе
-     * @param string $password Пароль пользователя
+     * @param int    $id       - Идентификатор пользователя
+     * @param string $login    - Логин пользователя
+     * @param string $password - Пароль пользователя
      */
     public function __construct(int $id, string $login, string $password)
     {
@@ -45,6 +52,8 @@ class User
     }
 
     /**
+     * Возвращает идентификатор пользователя
+     *
      * @return int
      */
     public function getId(): int
@@ -53,6 +62,8 @@ class User
     }
 
     /**
+     * Возвращает логин пользователя
+     *
      * @return string
      */
     public function getLogin(): string
@@ -61,6 +72,8 @@ class User
     }
 
     /**
+     * Возвращает пароль пользователя
+     *
      * @return string
      */
     public function getPassword(): string
@@ -68,3 +81,4 @@ class User
         return $this->password;
     }
 }
+

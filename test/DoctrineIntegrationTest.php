@@ -58,7 +58,8 @@ class DoctrineIntegrationTest extends TestCase
         /** @var EntityManagerInterface $em */
         $em = $diContainer->get(EntityManagerInterface::class);
         //act
-        $user = $em->getRepository(User::class)->findOneBy(['login' => 'admin']);
+        $user = $em->getRepository(User::class);
+        $user->findOneBy(['login' => 'admin']);
 
         //Assert
         $this->assertInstanceOf(User::class, $user);
