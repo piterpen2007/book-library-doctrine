@@ -192,6 +192,9 @@ php ./bin/doctrine-migration.php migrations:generate
 
 php .\bin\doctrine.php orm:schema-tool:update --dump-sql
 
+ php .\bin\doctrine.php orm:validate-schema
+
+
 
 create table if not exists text_document_status
 (
