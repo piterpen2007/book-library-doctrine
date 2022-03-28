@@ -2,30 +2,53 @@
 
 namespace EfTech\BookLibrary\ValueObject;
 
+use Doctrine\ORM\Mapping as ORM;
 use EfTech\BookLibrary\Exception\DomainException;
 
 /**
+ *
+ *
  * Валюта
+ *
+ * @ORM\Entity
+ * @ORM\Table (
+ *     name="currency",
+ *     uniqueConstraints={
+ *          @ORM\UniqueConstraint(name="currency_code_unq", columns={"code"}),
+ *           @ORM\UniqueConstraint(name="currency_name_unq", columns={"name"})
+ *     }
+ * )
+ *
  */
-final class Currency
+class Currency
 {
+    /**
+     * @ORM\Id
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\GeneratedValue(strategy="SEQUENCE")
+     * @ORM\SequenceGenerator(sequenceName="currency_id_seq")
+     *
+     */
+    private ?int $id = null;
+
     /**
      * Код валюты
      *
+     * @ORM\Column (name="code",type="string",length=3, nullable=false)
      * @var string
      */
     private string $code;
 
     /**
      * Описание валюты
-     *
+     * @ORM\Column (name="description", type="string", length=255 , nullable=false)
      * @var string
      */
     private string $description;
 
     /**
      * Имя валюты
-     *
+     * @ORM\Column (name="name", type="string", length=3 , nullable=false)
      * @var string
      */
     private string $name;

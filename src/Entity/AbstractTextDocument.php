@@ -65,8 +65,15 @@ abstract class AbstractTextDocument
      * @var PurchasePrice[]
      */
     private array $purchasePrices;
+
+
     /** Статус текстовго документа
+     *
+     *
      * @var Status
+     * @ORM\ManyToOne(targetEntity=\EfTech\BookLibrary\Entity\TextDocument\Status::class)
+     * @ORM\JoinColumn(name="status_id",referencedColumnName="id")
+     *
      */
     private Status $status;
 

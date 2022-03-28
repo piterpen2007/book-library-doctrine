@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Events;
 use EfTech\BookLibrary\Config\ContainerExtensions;
+use EfTech\BookLibrary\Entity\AbstractTextDocument;
 use EfTech\BookLibrary\Entity\User;
 use EfTech\BookLibrary\Infrastructure\DI\SymfonyDiContainerInit;
 use PHPUnit\Framework\TestCase;
@@ -104,5 +105,41 @@ class DoctrineIntegrationTest extends TestCase
         //Assert
         $this->assertInstanceOf(LifecycleEventArgs::class, $eventSubscriber->args);
         $this->assertEquals($user, $eventSubscriber->args->getEntity());
+    }
+
+    public function testLearningDql(): void
+    {
+        //Arrange
+        $diContainerFactory = new SymfonyDiContainerInit(
+            new SymfonyDiContainerInit\ContainerParams(
+                __DIR__ . '/../config/dev/di.xml',
+                [
+                    'kernel.project_dir' => __DIR__ . '/../'
+                ],
+                ContainerExtensions::httpAppContainerExtension()
+            )
+        );
+        $diContainer = $diContainerFactory();
+        /** @var EntityManagerInterface $em */
+        $em = $diContainer->get(EntityManagerInterface::class);
+
+        $dql = <<<EOF
+SELECT t
+FROM \EfTech\BookLibrary\Entity\AbstractTextDocument AS t 
+JOIN t.authors as a
+JOIN a.country as c
+WHERE a.fullName.surname = :authorSurname
+EOF;
+        $query = $em->createQuery($dql);
+
+        $query->setParameter('authorSurname', 'Дик');
+        /** @var AbstractTextDocument $entity */
+        $entity = $query->getSingleResult();
+
+        $this->assertEquals('Мечтают ли андройды о электроовцах', $entity->getTitle());
+        $this->assertEquals(
+            'Дик',
+            current($entity->getAuthors())->getFullName()->getSurname()
+        );
     }
 }

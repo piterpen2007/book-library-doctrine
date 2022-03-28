@@ -2,13 +2,30 @@
 
 namespace EfTech\BookLibrary\Entity\TextDocument;
 
+use Doctrine\ORM\Mapping as ORM;
 use EfTech\BookLibrary\Exception;
 
 /**
  * Статус
+ *
+ * @ORM\Entity
+ * @ORM\Table(
+ *     name="text_document_status",
+ *     uniqueConstraints={
+ *          @ORM\UniqueConstraint(name="text_document_status_name_unq",columns={"name"})
+ *     }
+ * )
  */
-final class Status
+class Status
 {
+    /**
+     * @ORM\Id
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\GeneratedValue(strategy="SEQUENCE")
+     * @ORM\SequenceGenerator(sequenceName="authors_id_seq")
+     * @var int id статуса
+     */
+    private int $id = -1;
     /**
      * Статус в наличии
      */
@@ -29,7 +46,7 @@ final class Status
 
     /**
      * Статус
-     *
+     * @ORM\Column(name="name", type="string", length=50)
      * @var string
      */
     private string $name;
@@ -76,7 +93,4 @@ final class Status
     {
         return $this->name;
     }
-
-
-
 }
