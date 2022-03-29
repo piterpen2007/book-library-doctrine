@@ -30,7 +30,7 @@ class AssocTest extends TestCase
         $connection = [
             'driver' => 'pdo_pgsql',
             'user' => 'postgres',
-            'password' => 'qwerty',
+            'password' => 'Qwerty12',
             'host' => 'localhost',
             'port' => 5432
         ];
@@ -74,7 +74,7 @@ class AssocTest extends TestCase
      * @throws ORM\Tools\ToolsException|ORM\ORMException
      * @throws Exception
      */
-    public function testOneToOneUser(): void
+    public function testOneToOneUnidirectionalUserOwn(): void
     {
         $em = self::createEntityManager(
             [__DIR__ . '/AssocTestEntities/OneToOne/UnidirectionalUserOwn'],
@@ -92,11 +92,13 @@ class AssocTest extends TestCase
     }
 
     /**
-     * @throws ORM\Tools\ToolsException
+     * Иллюстрация однонаправленной связи один к одному, когда владельцем связи выступает сущность адресс
+     *
+     *
+     * @throws ORM\Tools\ToolsException|ORM\ORMException
      * @throws Exception
-     * @throws ORM\ORMException
      */
-    public function testOneToOneAddress(): void
+    public function testOneToOneUnidirectionalAddressOwn(): void
     {
         $em = self::createEntityManager(
             [__DIR__ . '/AssocTestEntities/OneToOne/UnidirectionalAddressOwn'],
@@ -112,6 +114,80 @@ class AssocTest extends TestCase
             $em->getConnection()->createSchemaManager()->listTableNames()
         );
     }
+
+
+    /**
+     * @throws ORM\Tools\ToolsException
+     * @throws Exception
+     * @throws ORM\ORMException
+     */
+    public function testOneToOneTwoUnidirectional(): void
+    {
+        $em = self::createEntityManager(
+            [__DIR__ . '/AssocTestEntities/OneToOne/TwoUnidirectional'],
+            $this->testDbName
+        );
+
+        //Action
+        $tool = new ORM\Tools\SchemaTool($em);
+        $tool->createSchema($em->getMetadataFactory()->getAllMetadata());
+
+        $this->assertEqualsCanonicalizing(
+            ['users', 'address'],
+            $em->getConnection()->createSchemaManager()->listTableNames()
+        );
+    }
+
+    /**
+     * Иллюстрация двунаправленной связи один к одному, когда владельцем связи выступает сущность юзер
+     *
+     * @throws ORM\Tools\ToolsException
+     * @throws Exception
+     * @throws ORM\ORMException
+     */
+    public function testOneToOneBiDirectionalUserOwn(): void
+    {
+        $em = self::createEntityManager(
+            [__DIR__ . '/AssocTestEntities/OneToOne/BiDirectionalUserOwn'],
+            $this->testDbName
+        );
+
+        //Action
+        $tool = new ORM\Tools\SchemaTool($em);
+        $tool->createSchema($em->getMetadataFactory()->getAllMetadata());
+
+        $this->assertEqualsCanonicalizing(
+            ['users', 'address'],
+            $em->getConnection()->createSchemaManager()->listTableNames()
+        );
+    }
+
+
+    /**
+     * Иллюстрация двунаправленной связи один к одному, когда владельцем связи выступает сущность адресс
+     *
+     * @throws ORM\Tools\ToolsException
+     * @throws Exception
+     * @throws ORM\ORMException
+     */
+    public function testOneToOneBiDirectionalAddressOwn(): void
+    {
+        $em = self::createEntityManager(
+            [__DIR__ . '/AssocTestEntities/OneToOne/BiDirectionalAddressOwn'],
+            $this->testDbName
+        );
+
+        //Action
+        $tool = new ORM\Tools\SchemaTool($em);
+        $tool->createSchema($em->getMetadataFactory()->getAllMetadata());
+
+        $this->assertEqualsCanonicalizing(
+            ['users', 'address'],
+            $em->getConnection()->createSchemaManager()->listTableNames()
+        );
+    }
+
+
 
 
 }
