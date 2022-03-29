@@ -14,11 +14,6 @@ interface TextDocumentRepositoryInterface
      */
     public function findBy(array $criteria): array;
 
-    /** Сохранить сущность в репозитории
-     * @param AbstractTextDocument $entity
-     * @return AbstractTextDocument
-     */
-    public function save(AbstractTextDocument $entity): AbstractTextDocument;
     public function nextId(): int;
 
     /** Добавляет новую сущность

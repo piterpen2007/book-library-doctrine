@@ -2,9 +2,9 @@
 
 namespace EfTech\BookLibrary\Controller;
 
+use Doctrine\ORM\EntityManagerInterface;
 use EfTech\BookLibrary\Exception;
 use EfTech\BookLibrary\Infrastructure\Controller\ControllerInterface;
-use EfTech\BookLibrary\Infrastructure\Db\ConnectionInterface;
 use EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory;
 use EfTech\BookLibrary\Service\ArchiveTextDocumentService\ArchivingResultDto;
 use EfTech\BookLibrary\Service\ArchiveTextDocumentService\Exception\TextDocumentNotFoundException;
@@ -20,21 +20,21 @@ class UpdateMoveToArchiveBooksController implements ControllerInterface
      * @var ArchivingTextDocumentService
      */
     private ArchivingTextDocumentService $archivingTextDocumentService;
-    private ConnectionInterface $connection;
+    private EntityManagerInterface $em;
 
     /**
      * @param ArchivingTextDocumentService $archivingTextDocumentService
      * @param ServerResponseFactory $serverResponseFactory
-     * @param ConnectionInterface $connection
+     * @param EntityManagerInterface $em
      */
     public function __construct(
         ArchivingTextDocumentService $archivingTextDocumentService,
         \EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory $serverResponseFactory,
-        \EfTech\BookLibrary\Infrastructure\Db\ConnectionInterface $connection
+        EntityManagerInterface $em
     ) {
         $this->archivingTextDocumentService = $archivingTextDocumentService;
         $this->serverResponseFactory = $serverResponseFactory;
-        $this->connection = $connection;
+        $this->em = $em;
     }
 
     /**
@@ -43,7 +43,7 @@ class UpdateMoveToArchiveBooksController implements ControllerInterface
     public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
         try {
-            $this->connection->beginTransaction();
+            $this->em->beginTransaction();
             $attributes = $request->getAttributes();
             if (false === array_key_exists('id', $attributes)) {
                 throw new Exception\RuntimeException('there is no information about the id of the text document');
@@ -51,13 +51,14 @@ class UpdateMoveToArchiveBooksController implements ControllerInterface
             $resultDto = $this->archivingTextDocumentService->archive((int)$attributes['id']);
             $httpCode = 200;
             $jsonData = $this->buildJsonData($resultDto);
-            $this->connection->commit();
+            $this->em->flush();
+            $this->em->commit();
         } catch (TextDocumentNotFoundException $e) {
-            $this->connection->rollBack();
+            $this->em->rollBack();
             $httpCode = 404;
             $jsonData = ['status' => 'fail', 'message' => $e->getMessage()];
         } catch (Throwable $e) {
-            $this->connection->rollBack();
+            $this->em->rollBack();
             $httpCode = 500;
             $jsonData = ['status' => 'fail', 'message' => $e->getMessage()];
         }

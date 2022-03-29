@@ -2,8 +2,8 @@
 
 namespace EfTech\BookLibrary\Controller;
 
+use Doctrine\ORM\EntityManagerInterface;
 use EfTech\BookLibrary\Infrastructure\Controller\ControllerInterface;
-use EfTech\BookLibrary\Infrastructure\Db\ConnectionInterface;
 use EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory;
 use EfTech\BookLibrary\Service\ArrivalNewTextDocumentService;
 use EfTech\BookLibrary\Service\ArrivalNewTextDocumentService\NewBookDto;
@@ -18,28 +18,33 @@ class CreateRegisterBooksController implements ControllerInterface
 {
     private ServerResponseFactory $serverResponseFactory;
     private ArrivalNewTextDocumentService $arrivalNewTextDocumentService;
-    private ConnectionInterface $connection;
+    /**
+     * Менеджер сущностей
+     *
+     * @var EntityManagerInterface
+     */
+    private EntityManagerInterface $entityManager;
 
     /**
      * @param ArrivalNewTextDocumentService $arrivalNewTextDocumentService
      * @param ServerResponseFactory $serverResponseFactory
-     * @param ConnectionInterface $connection
+     * @param EntityManagerInterface $entityManager
      */
     public function __construct(
         ArrivalNewTextDocumentService $arrivalNewTextDocumentService,
         \EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory $serverResponseFactory,
-        \EfTech\BookLibrary\Infrastructure\Db\ConnectionInterface $connection
+        EntityManagerInterface $entityManager
     ) {
         $this->arrivalNewTextDocumentService = $arrivalNewTextDocumentService;
         $this->serverResponseFactory = $serverResponseFactory;
-        $this->connection = $connection;
+        $this->entityManager = $entityManager;
     }
 
 
     public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
         try {
-            $this->connection->beginTransaction();
+            $this->entityManager->beginTransaction();
             $requestData = json_decode($request->getBody(), true, 512, JSON_THROW_ON_ERROR);
             $validationResult = $this->validateData($requestData);
 
@@ -53,9 +58,10 @@ class CreateRegisterBooksController implements ControllerInterface
                 $jsonData = ['status' => 'fail','message' => implode('.', $validationResult)];
             }
 
-            $this->connection->commit();
+            $this->entityManager->flush();
+            $this->entityManager->commit();
         } catch (\Throwable $e) {
-            $this->connection->rollBack();
+            $this->entityManager->rollBack();
             $httpCode = 500;
             $jsonData = ['status' => 'fail','message' => $e->getMessage()];
         }

@@ -71,7 +71,7 @@ abstract class AbstractTextDocument
      *
      *
      * @var Status
-     * @ORM\ManyToOne(targetEntity=\EfTech\BookLibrary\Entity\TextDocument\Status::class)
+     * @ORM\ManyToOne(targetEntity=\EfTech\BookLibrary\Entity\TextDocument\Status::class, cascade={"persist"})
      * @ORM\JoinColumn(name="status_id",referencedColumnName="id")
      *
      */

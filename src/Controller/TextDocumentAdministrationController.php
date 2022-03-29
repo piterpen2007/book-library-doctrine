@@ -2,10 +2,10 @@
 
 namespace EfTech\BookLibrary\Controller;
 
+use Doctrine\ORM\EntityManagerInterface;
 use EfTech\BookLibrary\Exception\RuntimeException;
 use EfTech\BookLibrary\Infrastructure\Auth\HttpAuthProvider;
 use EfTech\BookLibrary\Infrastructure\Controller\ControllerInterface;
-use EfTech\BookLibrary\Infrastructure\Db\ConnectionInterface;
 use EfTech\BookLibrary\Infrastructure\http\ServerResponseFactory;
 use Psr\Log\LoggerInterface;
 use EfTech\BookLibrary\Infrastructure\ViewTemplate\ViewTemplateInterface;
@@ -46,7 +46,7 @@ class TextDocumentAdministrationController implements ControllerInterface
      */
     private SearchTextDocumentService $searchTextDocumentService;
 
-    private ConnectionInterface $connection;
+    private EntityManagerInterface $em;
 
     /**
      * @param LoggerInterface $logger Логер
@@ -56,7 +56,7 @@ class TextDocumentAdministrationController implements ControllerInterface
      * @param ArrivalNewTextDocumentService $arrivalNewTextDocumentService
      * @param HttpAuthProvider $httpAuthProvider
      * @param ServerResponseFactory $serverResponseFactory
-     * @param ConnectionInterface $connection
+     * @param EntityManagerInterface $em
      */
     public function __construct(
         LoggerInterface $logger,
@@ -66,7 +66,7 @@ class TextDocumentAdministrationController implements ControllerInterface
         ArrivalNewTextDocumentService $arrivalNewTextDocumentService,
         HttpAuthProvider $httpAuthProvider,
         ServerResponseFactory $serverResponseFactory,
-        ConnectionInterface $connection
+        EntityManagerInterface $em
     ) {
         $this->logger = $logger;
         $this->searchTextDocumentService = $searchTextDocumentService;
@@ -75,7 +75,7 @@ class TextDocumentAdministrationController implements ControllerInterface
         $this->arrivalNewTextDocumentService = $arrivalNewTextDocumentService;
         $this->httpAuthProvider = $httpAuthProvider;
         $this->serverResponseFactory = $serverResponseFactory;
-        $this->connection = $connection;
+        $this->em = $em;
     }
 
 
@@ -212,7 +212,7 @@ class TextDocumentAdministrationController implements ControllerInterface
     private function createBook(array $dataToCreate): void
     {
         try {
-            $this->connection->beginTransaction();
+            $this->em->beginTransaction();
             $this->arrivalNewTextDocumentService->registerBook(
                 new NewBookDto(
                     $dataToCreate['title'],
@@ -220,9 +220,10 @@ class TextDocumentAdministrationController implements ControllerInterface
                     $this->extractAuthorIdList($dataToCreate)
                 )
             );
-            $this->connection->commit();
+            $this->em->flush();
+            $this->em->commit();
         } catch (Throwable $e) {
-            $this->connection->rollBack();
+            $this->em->rollBack();
             throw new RuntimeException(
                 'Ошибка при создании книги' . $e->getMessage(),
                 $e->getCode(),
@@ -322,6 +323,7 @@ class TextDocumentAdministrationController implements ControllerInterface
     private function createMagazine(array $dataToCreate): void
     {
         try {
+            $this->em->beginTransaction();
             $this->arrivalNewTextDocumentService->registerMagazine(
                 new NewMagazineDto(
                     $dataToCreate['title'],
@@ -330,8 +332,10 @@ class TextDocumentAdministrationController implements ControllerInterface
                     (int)$dataToCreate['number']
                 )
             );
+            $this->em->flush();
+            $this->em->commit();
         } catch (Throwable $e) {
-            $this->connection->rollBack();
+            $this->em->rollBack();
             throw new RuntimeException(
                 'Ошибка при создании журнала' . $e->getMessage(),
                 $e->getCode(),

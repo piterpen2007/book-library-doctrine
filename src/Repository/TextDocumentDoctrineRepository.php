@@ -86,16 +86,6 @@ class TextDocumentDoctrineRepository extends EntityRepository implements
         return $preparedCriteriaName;
     }
 
-
-
-    /**
-     * @inheritDoc
-     */
-    public function save(AbstractTextDocument $entity): AbstractTextDocument
-    {
-        throw new RuntimeException('Сохранение сущности текстовой документ не реализовано');
-    }
-
     public function nextId(): int
     {
         throw new RuntimeException('Генерация id для сущности текстовой документ не реализовано');

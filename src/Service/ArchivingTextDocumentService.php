@@ -38,7 +38,6 @@ class ArchivingTextDocumentService
         $entity = current($entities);
         $entity->moveToArchive();
 
-        $this->textDocumentRepository->save($entity);
 
         return new ArchivingResultDto($entity->getId(), $entity->getTitleForPrinting(), $entity->getStatus());
     }
