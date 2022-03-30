@@ -3,8 +3,14 @@
 namespace EfTech\BookLibrary\DoctrineEventSubscriber;
 
 use Doctrine\Common\EventSubscriber;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\OnFlushEventArgs;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
+use Doctrine\ORM\UnitOfWork;
+use EfTech\BookLibrary\Entity\AbstractTextDocument;
+use EfTech\BookLibrary\Entity\TextDocument\Status;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -29,16 +35,62 @@ class EntityEventSubscriber implements EventSubscriber
 
     public function getSubscribedEvents(): array
     {
-        return [Events::postLoad];
+        return [Events::preUpdate,Events::onFlush];
     }
 
     /**
-     * Обработчик события загрузки сущности
+     * Обработчик события onFlush
      *
-     * @param LifecycleEventArgs $args
+     * @param OnFlushEventArgs $args
      */
-    public function postLoad(LifecycleEventArgs $args): void
+    public function onFlush(OnFlushEventArgs $args): void
     {
+        $uof = $args->getEntityManager()->getUnitOfWork();
+
+        $entityInsert = $uof->getScheduledEntityInsertions();
+
+        $em = $args->getEntityManager();
+
+        foreach ($entityInsert as $item) {
+            $this->dispatchInsertStatus($item,$uof);
+            $this->dispatchInsertTextDocument($item,$uof,$em);
+        }
+    }
+
+    private function dispatchInsertTextDocument( $entityInsert, UnitOfWork $uof, EntityManagerInterface $em): void
+    {
+        if ($entityInsert instanceof AbstractTextDocument) {
+            $oldStatus = $entityInsert->getStatus();
+            $entityStatus = $em->getRepository(Status::class)
+                ->findOneBy(['name' => $oldStatus->getName()]);
+            $uof->propertyChanged($entityInsert, 'status',$oldStatus, $entityStatus );
+        }
+    }
+
+    private function dispatchInsertStatus( $entityInsert, UnitOfWork $uof): void
+    {
+        if ($entityInsert instanceof Status) {
+            $uof->scheduleForDelete($entityInsert);
+        }
+    }
+    /**
+     * Обработчик события preUpdate
+     *
+     * @param PreUpdateEventArgs $args
+     */
+    public function preUpdate(PreUpdateEventArgs $args): void
+    {
+        $entity = $args->getEntity();
+
+        if ($entity instanceof AbstractTextDocument && $args->hasChangedField('status')) {
+
+            $entityStatus = $args->getEntityManager()
+                ->getRepository(Status::class)
+                ->findOneBy(['name' => $entity->getStatus()->getName()]);
+
+            $args->setNewValue('status', $entityStatus);
+        }
+
         $this->logger->debug('Event postLoad:' . get_class($args->getEntity()));
     }
 }

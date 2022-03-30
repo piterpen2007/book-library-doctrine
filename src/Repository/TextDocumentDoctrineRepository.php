@@ -50,7 +50,7 @@ class TextDocumentDoctrineRepository extends EntityRepository implements
      */
     public function buildWere(QueryBuilder $queryBuilder, array $criteria): void
     {
-        if (0 === $this->count($criteria)) {
+        if (0 === count($criteria)) {
             return;
         }
 
@@ -88,7 +88,8 @@ class TextDocumentDoctrineRepository extends EntityRepository implements
 
     public function nextId(): int
     {
-        throw new RuntimeException('Генерация id для сущности текстовой документ не реализовано');
+       return $this->getClassMetadata()
+            ->idGenerator->generateId($this->getEntityManager(),null);
     }
 
     /**
@@ -96,6 +97,7 @@ class TextDocumentDoctrineRepository extends EntityRepository implements
      */
     public function add(AbstractTextDocument $entity): AbstractTextDocument
     {
-        throw new RuntimeException('Добавление новых сущностей текстовой документ не реализовано');
+        $this->getEntityManager()->persist($entity);
+        return $entity;
     }
 }

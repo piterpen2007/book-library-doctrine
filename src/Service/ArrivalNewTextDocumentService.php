@@ -58,7 +58,7 @@ final class ArrivalNewTextDocumentService
             return [];
         }
 
-        $authorsCollection = $this->authorRepository->findBy(['list_id' => $authorIdList]);
+        $authorsCollection = $this->authorRepository->findBy(['id' => $authorIdList]);
 
         if (count($authorsCollection) !== count($authorIdList)) {
             $actualCurrentIdList = array_map(static function (Author $a) {
