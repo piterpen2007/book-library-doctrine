@@ -59,19 +59,25 @@ abstract class AbstractTextDocument
      * @var DateTimeImmutable Год выпуска книги
      */
     private DateTimeImmutable $year;
-    /** Данные о закупочных ценах
+    /**
+     * Данные о закупочных ценах
      *
+     * @var Collection
      *
-     * @var PurchasePrice[]
+     * @ORM\OneToMany(
+     *     targetEntity=\EfTech\BookLibrary\ValueObject\PurchasePrice::class,
+     *     mappedBy="textDocument"
+     * )
      */
-    private array $purchasePrices;
+    private Collection $purchasePrices;
+
 
 
     /** Статус текстовго документа
      *
      *
      * @var Status
-     * @ORM\ManyToOne(targetEntity=\EfTech\BookLibrary\Entity\TextDocument\Status::class, cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity=\EfTech\BookLibrary\Entity\TextDocument\Status::class, cascade={"persist"},fetch="EAGER")
      * @ORM\JoinColumn(name="status_id",referencedColumnName="id")
      *
      */
@@ -103,7 +109,7 @@ abstract class AbstractTextDocument
                 throw new DomainException('Некорректный формат данных по закупочной цене');
             }
         }
-        $this->purchasePrices = $purchasePrices;
+        $this->purchasePrices = new ArrayCollection($purchasePrices);
         $this->status = $status;
         foreach ($authors as $author) {
             if (!$author instanceof Author) {
@@ -133,7 +139,7 @@ abstract class AbstractTextDocument
      */
     public function getPurchasePrices(): array
     {
-        return $this->purchasePrices;
+        return $this->purchasePrices->toArray();
     }
 
 

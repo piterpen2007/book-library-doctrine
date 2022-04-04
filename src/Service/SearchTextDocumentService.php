@@ -69,10 +69,10 @@ class SearchTextDocumentService
      *
      * @param AbstractTextDocument $textDocument
      *
-     * @return TextDocumentDto
+     * @return array
     SearchTextDocumentService\TextDocumentDto
      */
-    private function createDto(AbstractTextDocument $textDocument): TextDocumentDto
+    private function createDto(AbstractTextDocument $textDocument): array
     {
         $authors = array_map(static function (Author $a) {
             return new AuthorDto(
@@ -84,16 +84,33 @@ class SearchTextDocumentService
             );
         }, $textDocument->getAuthors());
 
-        return new
-        TextDocumentDto(
-            $this->getTextDocumentType($textDocument),
-            $textDocument->getId(),
-            $textDocument->getTitle(),
-            $textDocument->getTitleForPrinting(),
-            $textDocument->getYear()->format('Y'),
-            $authors,
-            $textDocument instanceof Magazine ? $textDocument->getNumber() : null
-        );
+        $dtoCollection = [];
+
+        if ($textDocument instanceof Magazine) {
+            $magazineNumbers = $textDocument->getNumbers();
+            foreach ($magazineNumbers as $magazineNumber) {
+                $dtoCollection[] = new TextDocumentDto(
+                    $this->getTextDocumentType($textDocument),
+                    $textDocument->getId(),
+                    $textDocument->getTitle(),
+                    $magazineNumber->getTitleForPrinting(),
+                    $textDocument->getYear()->format('Y'),
+                    $authors,
+                    $magazineNumber->getNumber()
+                );
+            }
+        } else {
+            $dtoCollection[] = new TextDocumentDto(
+                $this->getTextDocumentType($textDocument),
+                $textDocument->getId(),
+                $textDocument->getTitle(),
+                $textDocument->getTitleForPrinting(),
+                $textDocument->getYear()->format('Y'),
+                $authors,
+                null
+            );
+        }
+        return $dtoCollection;
     }
 
     /**
@@ -106,10 +123,13 @@ class SearchTextDocumentService
     {
         $criteria = $this->searchCriteriaToArray($searchCriteria);
         $entitiesCollection = $this->textDocumentRepository->findBy($criteria);
-        $dtoCollection = [];
+        $argsArrayMerge = [[]];
+
         foreach ($entitiesCollection as $entity) {
-            $dtoCollection[] = $this->createDto($entity);
+            $argsArrayMerge[] = $this->createDto($entity);
         }
+
+        $dtoCollection = array_merge(...$argsArrayMerge);
         $this->logger->debug("Найдено книг: " . count($entitiesCollection));
         return $dtoCollection;
     }

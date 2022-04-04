@@ -5,6 +5,7 @@ namespace EfTech\BookLibrary\Repository;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use EfTech\BookLibrary\Entity\AbstractTextDocument;
+use EfTech\BookLibrary\Entity\Magazine;
 use EfTech\BookLibrary\Entity\TextDocumentRepositoryInterface;
 use EfTech\BookLibrary\Exception\RuntimeException;
 
@@ -31,13 +32,55 @@ class TextDocumentDoctrineRepository extends EntityRepository implements
      */
     public function findBy(array $criteria, ?array $orderBy = null, $limit = null, $offset = null): array
     {
+        $allTextDocumentsWithoutMagazine = $this->loadAllTextDocumentsWithoutMagazine($criteria);
+        $magazines = $this->loadMagazines($criteria);
+
+        return array_merge($allTextDocumentsWithoutMagazine, $magazines);
+    }
+
+    /**
+     * Загржает данные о журналах
+     *
+     * @param array $criteria
+     * @return array
+     */
+    public function loadMagazines(array $criteria): array
+    {
         $queryBuilder = $this->getEntityManager()->createQueryBuilder();
 
-        $queryBuilder->select(['t'])
+        $queryBuilder->select(['t','a'])
+            ->from(Magazine::class, 't')
+            ->leftJoin('t.authors', 'a')
+            ->leftJoin('t.numbers', 'nm')
+        ;
+
+        $this->buildWere($queryBuilder, $criteria);
+
+
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+    /**
+     * Загружает все текстовые документы кроме журналов
+     *
+     *
+     * @param array $criteria
+     * @return AbstractTextDocument[]
+     */
+    private function loadAllTextDocumentsWithoutMagazine(array $criteria): array
+    {
+        $queryBuilder = $this->getEntityManager()->createQueryBuilder();
+
+        $queryBuilder->select(['t','a'])
             ->from(AbstractTextDocument::class, 't')
             ->leftJoin('t.authors', 'a');
 
         $this->buildWere($queryBuilder, $criteria);
+
+        $queryBuilder->andWhere(
+            $queryBuilder->expr()
+                ->not($queryBuilder->expr()->isInstanceOf('t', Magazine::class))
+        );
 
         return $queryBuilder->getQuery()->getResult();
     }
@@ -88,8 +131,8 @@ class TextDocumentDoctrineRepository extends EntityRepository implements
 
     public function nextId(): int
     {
-       return $this->getClassMetadata()
-            ->idGenerator->generateId($this->getEntityManager(),null);
+        return $this->getClassMetadata()
+            ->idGenerator->generateId($this->getEntityManager(), null);
     }
 
     /**

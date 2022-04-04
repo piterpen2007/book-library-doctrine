@@ -7,7 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Класс, реализующий логику создания пользователя
  *
- * @ORM\MappedSuperclass()
+ * @ORM\Entity
+ * @ORM\Table(name="users")
  */
 class User
 {
@@ -18,6 +19,8 @@ class User
      *
      * @ORM\Id()
      * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\GeneratedValue(strategy="SEQUENCE")
+     * @ORM\SequenceGenerator(sequenceName="user_id_seq")
      */
     private int $id;
 
@@ -80,6 +83,4 @@ class User
     {
         return $this->password;
     }
-
 }
-

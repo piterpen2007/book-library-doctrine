@@ -2,74 +2,77 @@
 
 namespace EfTech\BookLibrary\ValueObject;
 
-use EfTech\BookLibrary\Exception\RuntimeException;
 use Doctrine\ORM\Mapping as ORM;
+use EfTech\BookLibrary\Exception;
 
 /**
- * @ORM\Entity
+ * Страна
+ *
  * @ORM\Table(
- *
  *     name="country",
- *     uniqueConstraints = {
- *           @ORM\UniqueConstraint(name="country_code2_idx", columns={"code2"}),
- *           @ORM\UniqueConstraint(name="country_code3_unq", columns={"code3"}),
- *           @ORM\UniqueConstraint(name="country_code_unq", columns={"code"})
+ *     uniqueConstraints={
+ *          @ORM\UniqueConstraint(name="country_code2_id_unq", columns={"code2"}),
+ *          @ORM\UniqueConstraint(name="country_code_id_unq", columns={"code"}),
+ *          @ORM\UniqueConstraint(name="country_code3_id_unq", columns={"code3"})
  *     }
- *
  * )
- *
- *  Страна
+ * @ORM\Entity()
  */
 class Country
 {
     /**
-     * @ORM\Id
+     * Идентификатор страны
+     *
+     * @var int|null
+     *
+     * @ORM\Id()
      * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\GeneratedValue(strategy="SEQUENCE")
      * @ORM\SequenceGenerator(sequenceName="country_id_seq")
-     *
      */
     private ?int $id = null;
+
     /**
      * Уникальны код страны из двух символов. Символы это латинские буквы
      *
-     * @ORM\Column(name="code2", type="string", length=2, nullable=false)
-     *
      * @var string
+     *
+     * @ORM\Column(name="code2", type="string", length=2, nullable=false)
      */
     private string $code2;
 
     /**
      * Уникальны код страны из трех символов. Символы это латинские буквы
      *
-     * @ORM\Column(name="code3", type="string", length=3, nullable=false)
      * @var string
+     *
+     * @ORM\Column(name="code3", type="string", length=3, nullable=false)
      */
     private string $code3;
 
     /**
      * Уникальны код страны из двух символов. Символы это цифры
      *
-     * @ORM\Column(name="code", type="string", length=3, nullable=false)
-     *
      * @var string
+     *
+     * @ORM\Column(name="code", type="string", length=3, nullable=false)
      */
     private string $code;
 
     /**
      * Название страны
      *
-     * @ORM\Column(name="name", type="string", length=100, nullable=false)
-     *
      * @var string
+     *
+     * @ORM\Column(name="name", type="string", length=100, nullable=false)
      */
     private string $name;
 
     /**
      * @param string $code2 - Уникальны код страны из двух символов. Символы это латинские буквы
      * @param string $code3 - Уникальны код страны из трех символов. Символы это латинские буквы
-     * @param string $code - Уникальны код страны из двух символов. Символы это цифры
-     * @param string $name - Название страны
+     * @param string $code  - Уникальны код страны из двух символов. Символы это цифры
+     * @param string $name  - Название страны
      */
     public function __construct(string $code2, string $code3, string $code, string $name)
     {
@@ -85,31 +88,31 @@ class Country
      *
      * @param string $code2 - Уникальны код страны из двух символов. Символы это латинские буквы
      * @param string $code3 - Уникальны код страны из трех символов. Символы это латинские буквы
-     * @param string $code - Уникальны код страны из двух символов. Символы это цифры
-     * @param string $name - Название страны
+     * @param string $code  - Уникальны код страны из двух символов. Символы это цифры
+     * @param string $name  - Название страны
      *
      * @return void
      */
     private function validate(string $code2, string $code3, string $code, string $name): void
     {
         if (1 !== preg_match('/^[A-Z]{2}$/', $code2)) {
-            throw new RuntimeException('Некорректный двухбуквенный код страны');
+            throw new Exception\RuntimeException('Некорректный двухбуквенный код страны');
         }
 
         if (1 !== preg_match('/^[A-Z]{3}$/', $code3)) {
-            throw new RuntimeException('Некорректный трехбуквенный код страны');
+            throw new Exception\RuntimeException('Некорректный трехбуквенный код страны');
         }
 
         if (1 !== preg_match('/^\d{3}$/', $code)) {
-            throw new RuntimeException('Некорректный числовой код страны');
+            throw new Exception\RuntimeException('Некорректный числовой код страны');
         }
 
         if (100 < strlen($name)) {
-            throw new RuntimeException('Длина имени страны не может превышать 100 символов');
+            throw new Exception\RuntimeException('Длина имени страны не может превышать 100 символов');
         }
 
         if ('' === trim($name)) {
-            throw new RuntimeException('Имя страны не может быть пустой строкой');
+            throw new Exception\RuntimeException('Имя страны не может быть пустой строкой');
         }
     }
 
@@ -162,4 +165,5 @@ class Country
     {
         return $this->code2;
     }
+
 }

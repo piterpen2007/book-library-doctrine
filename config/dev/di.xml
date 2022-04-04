@@ -50,6 +50,13 @@
         <factory service="Doctrine\ORM\EntityManagerInterface" method="getRepository"/>
         <argument key="$className">EfTech\BookLibrary\Entity\AbstractTextDocument</argument>
     </service>
+
+    <service id="EfTech\BookLibrary\Repository\MagazineNumberDoctrineRepository">
+        <factory service="Doctrine\ORM\EntityManagerInterface" method="getRepository"/>
+        <argument key="$className">EfTech\BookLibrary\Entity\MagazineNumber</argument>
+    </service>
+
+
     <service id="EfTech\BookLibrary\Infrastructure\DataLoader\DataLoaderInterface"
              class="EfTech\BookLibrary\Infrastructure\DataLoader\JsonDataLoader"/>
 

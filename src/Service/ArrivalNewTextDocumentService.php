@@ -7,6 +7,8 @@ use EfTech\BookLibrary\Entity\Author;
 use EfTech\BookLibrary\Entity\AuthorRepositoryInterface;
 use EfTech\BookLibrary\Entity\Book;
 use EfTech\BookLibrary\Entity\Magazine;
+use EfTech\BookLibrary\Entity\MagazineNumber;
+use EfTech\BookLibrary\Entity\MagazineNumberRepositoryInterface;
 use EfTech\BookLibrary\Entity\TextDocument\Status;
 use EfTech\BookLibrary\Entity\TextDocumentRepositoryInterface;
 use EfTech\BookLibrary\Service\ArchiveTextDocumentService\Exception\RuntimeException;
@@ -34,15 +36,25 @@ final class ArrivalNewTextDocumentService
     private AuthorRepositoryInterface $authorRepository;
 
     /**
+     * Репозиторий для работы с номерами журналов
+     *
+     * @var MagazineNumberRepositoryInterface
+     */
+    private MagazineNumberRepositoryInterface $magazineNumberRepository;
+
+    /**
      * @param TextDocumentRepositoryInterface $textDocumentRepository - Репозиторий для работы с текстовыми документами
-     * @param AuthorRepositoryInterface       $authorRepository       - Репозиторий для работы с авторами
+     * @param AuthorRepositoryInterface $authorRepository - Репозиторий для работы с авторами
+     * @param MagazineNumberRepositoryInterface $magazineNumberRepository Репозиторий для работы с номерами журналов
      */
     public function __construct(
         TextDocumentRepositoryInterface $textDocumentRepository,
-        AuthorRepositoryInterface $authorRepository
+        AuthorRepositoryInterface $authorRepository,
+        \EfTech\BookLibrary\Entity\MagazineNumberRepositoryInterface $magazineNumberRepository
     ) {
         $this->textDocumentRepository = $textDocumentRepository;
         $this->authorRepository = $authorRepository;
+        $this->magazineNumberRepository = $magazineNumberRepository;
     }
 
     /**
@@ -98,6 +110,37 @@ final class ArrivalNewTextDocumentService
     }
 
     /**
+     * Получает журнал на основе данных из дто
+     *
+     * @param NewMagazineDto $dto
+     * @return Magazine
+     */
+    private function getMagazineEntity(NewMagazineDto $dto): Magazine
+    {
+        $magazines = $this->textDocumentRepository->findBy(['title' => $dto->getTitle()]);
+        $countMagazines = count($magazines);
+
+        if (0 === $countMagazines) {
+            $magazine = new Magazine(
+                $this->textDocumentRepository->nextId(),
+                $dto->getTitle(),
+                DateTimeImmutable::createFromFormat('Y', $dto->getYear()),
+                $this->loadAuthorEntities($dto->getAuthorIds()),
+                //$magazineDto->getNumber(),
+                [],
+                new Status(Status::STATUS_IN_STOCK)
+            );
+        } elseif (1 === $countMagazines) {
+            $magazine = current($magazines);
+        } else {
+            throw new \EfTech\BookLibrary\Exception\RuntimeException(
+                "Найдено $countMagazines журналов с именем {$dto->getTitle()}"
+            );
+        }
+        return $magazine;
+    }
+
+    /**
      * Регистрация нового журнала
      *
      * @param NewMagazineDto $magazineDto
@@ -106,22 +149,35 @@ final class ArrivalNewTextDocumentService
      */
     public function registerMagazine(NewMagazineDto $magazineDto): ResultRegisteringTextDocumentDto
     {
-        $entity = new Magazine(
-            $this->textDocumentRepository->nextId(),
-            $magazineDto->getTitle(),
-            DateTimeImmutable::createFromFormat('Y', $magazineDto->getYear()),
-            $this->loadAuthorEntities($magazineDto->getAuthorIds()),
-            $magazineDto->getNumber(),
-            [],
-            new Status(Status::STATUS_IN_STOCK)
-        );
-        $this->textDocumentRepository->add($entity);
+        $magazine = $this->getMagazineEntity($magazineDto);
+
+        $existMagazineNumbers = $this->magazineNumberRepository
+            ->findBy(['magazine' => $magazine, 'number' => $magazineDto->getNumber()]);
+
+        $countExistsMagazineNumbers = count($existMagazineNumbers);
+
+        if (0 === $countExistsMagazineNumbers) {
+            $magazineNumber = new MagazineNumber(
+                $this->magazineNumberRepository->nextId(),
+                $magazine,
+                $magazineDto->getNumber()
+            );
+            $magazine->getNumbers()->add($magazineNumber);
+            $this->magazineNumberRepository->add($magazineNumber);
+        } elseif (1 === $countExistsMagazineNumbers) {
+            $magazineNumber = current($existMagazineNumbers);
+        } else {
+            throw new \EfTech\BookLibrary\Exception\RuntimeException(
+                "Найденно более одного номера журнала с названием "
+                . "{$magazineDto->getTitle()} и номером {$magazineDto->getNumber()}"
+            );
+        }
+
 
         return new ResultRegisteringTextDocumentDto(
-            $entity->getId(),
-            $entity->getTitleForPrinting(),
-            $entity->getStatus()->getName()
+            $magazineNumber->getId(),
+            $magazineNumber->getTitleForPrinting(),
+            $magazineNumber->getStatus()->getName()
         );
     }
-
 }

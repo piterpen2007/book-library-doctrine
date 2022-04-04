@@ -192,7 +192,18 @@ php ./bin/doctrine-migration.php migrations:generate
 
 php .\bin\doctrine.php orm:schema-tool:update --dump-sql
 
- php .\bin\doctrine.php orm:validate-schema
+php .\bin\doctrine.php orm:validate-schema
+
+Обновление baseline
+
+truncate doctrine_migration_versions;
+
+drop table backup_magazine_numbers;
+
+drop table backup_magazines;
+
+dump структуры
+
 
 
 

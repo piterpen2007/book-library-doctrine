@@ -28,7 +28,6 @@ class Magazine extends AbstractTextDocument
      * @param string $title
      * @param DateTimeImmutable $year
      * @param array $authors
-     * @param int $number
      * @param array $purchasePrices
      * @param Status $status
      */
@@ -37,31 +36,22 @@ class Magazine extends AbstractTextDocument
         string $title,
         DateTimeImmutable $year,
         array $authors,
-        int $number,
         array $purchasePrices,
-        Status $status
+        Status $status,
+        array $number
     ) {
         parent::__construct($id, $title, $year, $purchasePrices, $status, $authors);
         $this->number = $number;
     }
 
     /**
-     * @return int
+     * @return MagazineNumber[]
      */
-    public function getNumber(): int
+    public function getNumbers(): array
     {
         return $this->number;
     }
 
-    /**
-     * @param int $number
-     * @return Magazine
-     */
-    public function setNumber(int $number): Magazine
-    {
-        $this->number = $number;
-        return $this;
-    }
 
     /** Выводит заголовок для печати
      *
