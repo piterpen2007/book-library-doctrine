@@ -5,51 +5,53 @@ namespace EfTech\BookLibrary\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Выпуск журнала
- * @ORM\Entity()
- * @ORM\Table(name="text_document_magazine_number", indexes={
- *      @ORM\Index(name="magazine_number_idx", columns={"number"})
- *     })
+ * @ORM\Entity(repositoryClass=\EFTech\BookLibrary\Repository\MagazineNumberDoctrineRepository::class)
+ * @ORM\Table(
+ *     name="text_document_magazine_numbers",
+ *     indexes={
+ *          @ORM\Index(name="magazine_number_idx", columns={"number"})
+ *     }
+ * )
  */
 class MagazineNumber
 {
     /**
-     * Идентификатор журнала
-     *
      * @var int
      *
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="SEQUENCE")
-     * @ORM\SequenceGenerator(sequenceName="text_document_magazine_number_id_seq")
-     * @ORM\Column(name="id", type="integer")
+     * @ORM\SequenceGenerator(sequenceName="text_document_magazine_numbers_id_seq")
+     * @ORM\Column(type="integer", name="id")
      */
     private int $id;
 
     /**
-     * К какому журналу принадлежит выпуск
+     * Журнал
+     *
+     * @ORM\ManyToOne(
+     *     targetEntity=\EFTech\BookLibrary\Entity\Magazine::class,
+     *     inversedBy="numbers",
+     *     cascade={"persist"}
+     * )
+     * @ORM\JoinColumn(name="magazine_id", referencedColumnName="id")
      *
      * @var Magazine
-     *
-     * @ORM\ManyToOne(targetEntity=\EfTech\BookLibrary\Entity\Magazine::class, inversedBy="numbers",
-     *     cascade={"persist"})
-     * Какая колонка в текущей таблице будет ссылаться на какую-то колонку в другой таблице
-     * @ORM\JoinColumn(name="magazine_id", referencedColumnName="id")
      */
     private Magazine $magazine;
 
     /**
      * Номер выпуска
      *
-     * @var int
-     *
      * @ORM\Column(name="number", type="integer", nullable=false)
+     *
+     * @var int
      */
     private int $number;
 
     /**
-     * @param int      $id       - Идентификатор выпуска
+     * @param int $id            - id номера журнала
      * @param Magazine $magazine - Журнал
-     * @param int      $number   - Номер выпуска
+     * @param int $number        - Номер выпуска
      */
     public function __construct(int $id, Magazine $magazine, int $number)
     {
@@ -59,7 +61,7 @@ class MagazineNumber
     }
 
     /**
-     * Возвращает идентификатор выпуска
+     * id номера журнала
      *
      * @return int
      */
@@ -69,7 +71,7 @@ class MagazineNumber
     }
 
     /**
-     * Возвращает журнал выпуска
+     * Журнал
      *
      * @return Magazine
      */
@@ -79,7 +81,7 @@ class MagazineNumber
     }
 
     /**
-     * Возвращает номер выпуска
+     * Номер выпуска
      *
      * @return int
      */
@@ -88,14 +90,12 @@ class MagazineNumber
         return $this->number;
     }
 
-
     /**
-     * Выводит заголовок для печати
-     *
-     * @return string
+     * @inheritDoc
      */
     public function getTitleForPrinting(): string
     {
-        return "Название: {$this->getMagazine()->getTitleForPrinting()}. Номер: {$this->getNumber()}.";
+        return "{$this->getMagazine()->getTitleForPrinting()} Номер: {$this->getNumber()}.";
     }
+
 }
