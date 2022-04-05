@@ -198,7 +198,7 @@ PUT http://book-library-fedyancev.ru:8083/books/6/moveToArchive
    client.assert(response.contentType.mimeType === "application/json", 'Проверяю application/json. Фактическое знаение: ' + response.contentType.mimeType);
    client.assert(response.body['id'] === 6, "id журнала не корректен");
    client.assert(response.body['status'] === "archive", "статус книги не корректен");
-   client.assert(response.body['title_for_printing'] === 'Glamorama . Эллис Брет . 1998', "название книги не корректно");
+   client.assert(response.body['title_for_printing'] === 'Glamorama .Эллис Брет 1998', "название книги не корректно");
  });
  %}
 
@@ -218,7 +218,7 @@ Content-Type: application/json
    client.assert(response.contentType.mimeType === "application/json", 'Проверяю application/json. Фактическое знаение: ' + response.contentType.mimeType);
    client.assert(response.body.hasOwnProperty('id'), "Отсутствует id книги");
    client.assert(response.body['status'] === "inStock", "статус книги не корректен");
-   client.assert(response.body['title_for_printing'] === 'Текстовой документ .Кормильцев Илья, Эллис Брет, Паланик Чак 2021', "название книги не корректно");
+   client.assert(response.body['title_for_printing'] === 'Текстовой документ .Кормильцев Илья, Паланик Чак, Эллис Брет 2021', "название книги не корректно");
  });
  %}
 
@@ -240,7 +240,7 @@ Content-Type: application/json
    client.assert(response.contentType.mimeType === "application/json", 'Проверяю application/json. Фактическое знаение: ' + response.contentType.mimeType);
    client.assert(response.body.hasOwnProperty('id'), "Отсутствует id журнала");
    client.assert(response.body['status'] === "inStock", "статус журнала не корректен");
-   client.assert(response.body['title_for_printing'] === 'Новый журнал . 2021 . Номер:  10', "название книги не корректно");
+   client.assert(response.body['title_for_printing'] === 'Новый журнал. 2021. Номер: 10.', "название книги не корректно");
  });
  %}
 
